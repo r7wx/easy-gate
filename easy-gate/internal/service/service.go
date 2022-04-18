@@ -44,9 +44,9 @@ func NewService(cfgRoutine *config.Routine) *Service {
 
 // Serve - Serve application
 func (s Service) Serve() {
-	log.Println("Serving API on 0.0.0.0:8080")
+	log.Println("Serving API on 0.0.0.0:8081")
 	http.HandleFunc("/api/data", s.data)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8081", nil)
 }
 
 func (s Service) data(w http.ResponseWriter, req *http.Request) {
