@@ -1,0 +1,15 @@
+services:
+  easy-gate:
+    build: ./easy-gate
+    container_name: easy-gate
+    restart: always
+    networks:
+      - easy-gate-net
+    expose:
+      - 8080
+    volumes:
+      - ./easy-gate.json:/etc/easy-gate/easy-gate.json
+
+networks:
+  easy-gate-net:
+    driver: bridge

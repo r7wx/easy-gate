@@ -1,0 +1,50 @@
+{
+    "title": "Easy Gate",
+    "icon": "fa-brands fa-buffer",
+    "motd": "Welcome to Easy Gate",
+    "groups": [
+        {
+            "name": "internal",
+            "subnet": "192.168.1.1/24"
+        },
+        {
+            "name": "vpn",
+            "subnet": "10.8.1.1/24"
+        }
+    ],
+    "services": [
+        {
+            "icon": "fa-brands fa-git-square",
+            "name": "Git",
+            "url": "https://git.example.internal",
+            "groups": [
+                "internal"
+            ]
+        },
+        {
+            "icon": "fa-brands fa-git-square",
+            "name": "Git",
+            "url": "https://git.example.vpn",
+            "groups": [
+                "vpn"
+            ]
+        },
+        {
+            "icon": "fa-brands fa-docker",
+            "name": "Portainer",
+            "url": "https://portainer.example.internal",
+            "groups": [
+                "internal"
+            ]
+        }
+    ],
+    "notes": [
+        {
+            "name": "Simple note",
+            "text": "This is a simple note for vpn users",
+            "groups": [
+                "vpn"
+            ]
+        }
+    ]
+}
