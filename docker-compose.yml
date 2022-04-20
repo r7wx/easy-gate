@@ -2,13 +2,11 @@ services:
   easy-gate:
     build: .
     container_name: easy-gate
-    networks:
-      - easy-gate-net
+    network_mode: host
     ports:
-      - 8080:8080
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: host
     volumes:
       - ./easy-gate.json:/etc/easy-gate/easy-gate.json
-
-networks:
-  easy-gate-net:
-    driver: bridge

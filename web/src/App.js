@@ -22,32 +22,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { far } from '@fortawesome/free-regular-svg-icons';
-import { fas } from '@fortawesome/free-solid-svg-icons';
-import { fab } from '@fortawesome/free-brands-svg-icons';
-import Service from './components/Service';
-import Note from './components/Note';
-import React from 'react';
-import axios from 'axios';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { far } from "@fortawesome/free-regular-svg-icons";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { fab } from "@fortawesome/free-brands-svg-icons";
+import Service from "./components/Service";
+import Note from "./components/Note";
+import React from "react";
+import axios from "axios";
 
 library.add(fas, far, fab);
 
 function App() {
   const [data, setData] = React.useState({
-    "title": "",
-    "icon": "",
-    "motd": "",
-    "services": [],
-    "notes": []
+    title: "",
+    icon: "",
+    motd: "",
+    services: [],
+    notes: [],
   });
 
   const fetchData = () => {
-    axios.get('/api/data')
-      .then(res => {
+    axios
+      .get("/api/data")
+      .then((res) => {
         setData(res.data);
-      }).catch(_ => { });
+      })
+      .catch((_) => {});
   };
 
   React.useEffect(() => {
@@ -62,11 +64,15 @@ function App() {
         <FontAwesomeIcon icon={data.icon} /> {data.title}
       </h1>
       <p className="text-base">{data.motd}</p>
-      <div className="grid grid-cols-6 auto-cols-max mt-5">
-        {data.services.map(service => <Service key={service.name} service={service} />)}
+      <div className="grid grid-cols-12 auto-cols-max mt-5">
+        {data.services.map((service) => (
+          <Service key={service.name} service={service} />
+        ))}
       </div>
       <div className="grid grid-cols-6 auto-cols-max mt-5">
-        {data.notes.map(note => <Note key={note.title} note={note} />)}
+        {data.notes.map((note) => (
+          <Note key={note.title} note={note} />
+        ))}
       </div>
     </main>
   );

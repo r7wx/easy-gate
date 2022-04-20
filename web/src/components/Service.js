@@ -22,18 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function Service() {
-    return (
-        <div className="px-6 py-5 rounded overflow-hidden shadow-lg 
-        text-center cursor-pointer hover:shadow-gray-600 mr-3">
-            <FontAwesomeIcon icon="fa-brands fa-docker"
-                className='fa-3x' />
-            <h3 className='mt-2'>Portainer</h3>
-            <p className='text-sm'>portainer.network.priv</p>
-        </div>
-    );
+function Service(props) {
+  const openService = (url) => {
+    window.open(url, "_blank");
+  };
+
+  return (
+    <div
+      onClick={() => openService(props.service.url)}
+      className="px-6 py-5 rounded overflow-hidden shadow-lg text-center
+      cursor-pointer hover:shadow-gray-600 mr-3">
+      <FontAwesomeIcon icon={props.service.icon} className="fa-3x" />
+      <h3 className="mt-2">{props.service.name}</h3>
+    </div>
+  );
 }
 
 export default Service;

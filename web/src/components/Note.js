@@ -22,18 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-function Note() {
-    return (
-        <div className="px-6 py-5 rounded overflow-hidden shadow-lg 
+function Note(props) {
+  return (
+    <div
+      className="px-6 py-5 rounded overflow-hidden shadow-lg 
         text-left shadow-gray-600 mr-3">
-            <h3 className='text-sm'>
-                Simple Note
-            </h3>
-            <p className='text-sm'>
-                This is a simple note for vpn users
-            </p>
-        </div>
-    );
+      <h3 className="text-sm">{props.note.name}</h3>
+      <p className="text-sm">{props.note.text}</p>
+    </div>
+  );
 }
 
 export default Note;

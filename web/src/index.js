@@ -22,13 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import ReactDOM from 'react-dom/client';
+import ReactDOM from "react-dom/client";
 import "@fontsource/roboto";
-import React from 'react';
-import App from './App';
-import './index.css';
+import React from "react";
+import App from "./App";
+import "./index.css";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <App />

@@ -5,7 +5,7 @@
     "groups": [
         {
             "name": "internal",
-            "subnet": "192.168.1.1/24"
+            "subnet": "192.168.50.1/24"
         },
         {
             "name": "vpn",
@@ -43,8 +43,14 @@
             "name": "Simple note",
             "text": "This is a simple note for vpn users",
             "groups": [
-                "vpn"
+                "vpn",
+                "internal"
             ]
+        },
+        {
+            "name": "Global note",
+            "text": "This note will be visible to everyone",
+            "groups": []
         }
     ]
 }
