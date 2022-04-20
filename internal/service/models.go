@@ -34,6 +34,9 @@ type note struct {
 }
 
 type response struct {
+	Title    string    `json:"title"`
+	Icon     string    `json:"icon"`
+	Motd     string    `json:"motd"`
 	Services []service `json:"services"`
 	Notes    []note    `json:"notes"`
 }

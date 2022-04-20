@@ -59,6 +59,9 @@ func (s Service) data(w http.ResponseWriter, req *http.Request) {
 	cfg := s.ConfigRoutine.GetConfiguration()
 
 	response := response{
+		Title:    cfg.Title,
+		Icon:     cfg.Icon,
+		Motd:     cfg.Motd,
 		Services: s.getServices(cfg, reqAddr),
 		Notes:    s.getNotes(cfg, reqAddr),
 	}

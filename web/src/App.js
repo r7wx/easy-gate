@@ -35,8 +35,6 @@ import axios from 'axios';
 library.add(fas, far, fab);
 
 function App() {
-  const [services, setServices] = React.useState([]);
-  const [notes, setNotes] = React.useState([]);
   const [data, setData] = React.useState({
     "title": "",
     "icon": "",
@@ -54,18 +52,9 @@ function App() {
 
   React.useEffect(() => {
     fetchData();
+  }, []);
 
-    document.title = data.title;
-    data.services.forEach(service => {
-      setServices(services => [...services,
-      <Service key={service.name} service={service} />]);
-    });
-
-    data.notes.forEach(note => {
-      setNotes(notes => [...notes,
-      <Note key={note.title} note={note} />]);
-    });
-  }, [data, services, notes]);
+  document.title = data.title;
 
   return (
     <main className="py-6 px-12">
@@ -74,10 +63,10 @@ function App() {
       </h1>
       <p className="text-base">{data.motd}</p>
       <div className="grid grid-cols-6 auto-cols-max mt-5">
-        {services}
+        {data.services.map(service => <Service key={service.name} service={service} />)}
       </div>
       <div className="grid grid-cols-6 auto-cols-max mt-5">
-        {notes}
+        {data.notes.map(note => <Note key={note.title} note={note} />)}
       </div>
     </main>
   );
