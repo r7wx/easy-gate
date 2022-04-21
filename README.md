@@ -6,5 +6,8 @@
 <h4 align="center">A gate to your self hosted infrastructure</h3>
 
 <p align="center">
-   Badges will go here
+<a href="https://github.com/r7wx/easy-gate/actions/workflows/build.yml">
+<img src="https://github.com/r7wx/easy-gate/actions/workflows/build.yml/badge.svg"/></a>
+<a href="https://github.com/r7wx/easy-gate/actions/workflows/test.yml">
+<img src="https://github.com/r7wx/easy-gate/actions/workflows/test.yml/badge.svg"/></a>
 </p>
