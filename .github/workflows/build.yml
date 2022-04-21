@@ -8,15 +8,31 @@ on:
 
 jobs:
 
-  build:
+  go-build:
     runs-on: ubuntu-latest
+    
     steps:
     - uses: actions/checkout@v3
-
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
         go-version: 1.18
-
-    - name: Build
+    - name: Go Build
       run: go build -v ./...
+      
+  react-build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: yarn --cwd ./web install --immutable
+    - run: yarn --cwd ./web build ./web
