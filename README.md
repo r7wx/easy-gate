@@ -1,9 +1,10 @@
-<p align="center">
-    <img src="assets/logo.svg" width="185px">
-</p>
-<h2 align="center">easy-gate</h2>
-<p align="center">
-A gate to your self hosted infrastructure
-</p>
+<h1 align="center">
+  <a href="https://github.com/r7wx/easy-gate"><img width="150" src="assets/logo.svg" /></a>
+  <br /> 
+  easy-gate
+</h1>
+<h4 align="center">A gate to your self hosted infrastructure</h3>
 
----
+<p align="center">
+   Badges will go here
+</p>
