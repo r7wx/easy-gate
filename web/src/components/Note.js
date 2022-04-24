@@ -27,7 +27,7 @@ function Note(props) {
     <div
       className="px-6 py-5 rounded overflow-hidden shadow-lg 
         text-left shadow-gray-600 mr-3">
-      <h3 className="text-sm">{props.note.name}</h3>
+      <h3 className="text-sm font-semibold">{props.note.name}</h3>
       <p className="text-sm">{props.note.text}</p>
     </div>
   );

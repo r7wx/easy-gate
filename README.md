@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://github.com/r7wx/easy-gate"><img width="120" src="assets/logo.svg" /></a>
+  <a href="https://github.com/r7wx/easy-gate"><img width="100" src="assets/logo.svg" /></a>
   <br /> 
   easy-gate
 </h1>

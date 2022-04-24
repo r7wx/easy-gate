@@ -55,7 +55,6 @@ func (s Service) data(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
-	log.Println("Request from", reqAddr)
 	cfg := s.ConfigRoutine.GetConfiguration()
 
 	response := response{

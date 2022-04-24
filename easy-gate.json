@@ -36,6 +36,26 @@
             "groups": [
                 "internal"
             ]
+        },
+        {
+            "icon": "fa-solid fa-folder-open",
+            "name": "Files",
+            "url": "https://files.example.internal",
+            "groups": [
+                "internal"
+            ]
+        },
+        {
+            "icon": "fa-brands fa-google",
+            "name": "Google",
+            "url": "https://www.google.com",
+            "groups": []
+        },
+        {
+            "icon": "fa-brands fa-youtube",
+            "name": "Youtube",
+            "url": "https://www.youtube.com",
+            "groups": []
         }
     ],
     "notes": [
@@ -43,14 +63,25 @@
             "name": "Simple note",
             "text": "This is a simple note for vpn users",
             "groups": [
-                "vpn",
-                "internal"
+                "vpn"
             ]
         },
         {
             "name": "Global note",
             "text": "This note will be visible to everyone",
             "groups": []
+        },
+        {
+            "name": "How to use our internal services",
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec arcu purus. Maecenas ut erat ut tellus vulputate pellentesque sit amet quis metus. Praesent sollicitudin ultricies leo. Sed ornare libero non vehicula cursus. Aliquam vulputate pulvinar elit, sit amet tempus justo condimentum in. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus",
+            "groups": []
+        },
+        {
+            "name": "Another note",
+            "text": "Another note for internal network users only",
+            "groups": [
+                "internal"
+            ]
         }
     ]
 }

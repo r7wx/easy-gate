@@ -2,11 +2,7 @@ services:
   easy-gate:
     build: .
     container_name: easy-gate
-    network_mode: host
     ports:
-      - target: 8080
-        published: 8080
-        protocol: tcp
-        mode: host
+      - 8080:8080
     volumes:
       - ./easy-gate.json:/etc/easy-gate/easy-gate.json

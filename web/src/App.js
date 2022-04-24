@@ -64,16 +64,26 @@ function App() {
         <FontAwesomeIcon icon={data.icon} /> {data.title}
       </h1>
       <p className="text-base">{data.motd}</p>
-      <div className="grid grid-cols-12 auto-cols-max mt-5">
-        {data.services.map((service) => (
-          <Service key={service.name} service={service} />
-        ))}
-      </div>
-      <div className="grid grid-cols-6 auto-cols-max mt-5">
-        {data.notes.map((note) => (
-          <Note key={note.title} note={note} />
-        ))}
-      </div>
+      {data.services && (
+        <React.Fragment>
+          <h3 className="text-xl mt-5">Services</h3>
+          <div className="grid grid-cols-12 auto-cols-max mt-5">
+            {data.services.map((service) => (
+              <Service key={service.name} service={service} />
+            ))}
+          </div>
+        </React.Fragment>
+      )}
+      {data.notes && (
+        <React.Fragment>
+          <h3 className="text-xl mt-5">Notes</h3>
+          <div className="grid grid-cols-6 auto-cols-max mt-5">
+            {data.notes.map((note) => (
+              <Note key={note.title} note={note} />
+            ))}
+          </div>
+        </React.Fragment>
+      )}
     </main>
   );
 }

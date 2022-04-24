@@ -1,0 +1,25 @@
+services:
+  easy-gate:
+    build: ../.
+    container_name: easy-gate
+    expose:
+      - 8080
+    networks:
+      - nginx-net
+    volumes:
+      - ../easy-gate.json:/etc/easy-gate/easy-gate.json
+      - ./easy-gate.nginx.conf:/etc/nginx/conf.d/default.conf
+  
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+     - 80:80
+    networks:
+      - nginx-net  
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+
+networks:
+  nginx-net:
+    driver: bridge
