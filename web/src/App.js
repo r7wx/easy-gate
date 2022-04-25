@@ -66,7 +66,9 @@ function App() {
       <p className="text-base">{data.motd}</p>
       {data.services && (
         <React.Fragment>
-          <h3 className="text-xl mt-5">Services</h3>
+          <h3 className="text-xl mt-5">
+            <FontAwesomeIcon icon="fa-brands fa-buffer" /> Services
+          </h3>
           <div className="grid grid-cols-12 auto-cols-max mt-5">
             {data.services.map((service) => (
               <Service key={service.name} service={service} />
@@ -76,7 +78,9 @@ function App() {
       )}
       {data.notes && (
         <React.Fragment>
-          <h3 className="text-xl mt-5">Notes</h3>
+          <h3 className="text-xl mt-5">
+            <FontAwesomeIcon icon="fa-regular fa-note-sticky" /> Notes
+          </h3>
           <div className="grid grid-cols-6 auto-cols-max mt-5">
             {data.notes.map((note) => (
               <Note key={note.title} note={note} />

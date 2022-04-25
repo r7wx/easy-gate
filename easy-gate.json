@@ -1,6 +1,6 @@
 {
     "title": "Easy Gate",
-    "icon": "fa-brands fa-buffer",
+    "icon": "fa-solid fa-cubes",
     "motd": "Welcome to Easy Gate",
     "groups": [
         {
@@ -46,6 +46,79 @@
             ]
         },
         {
+            "icon": "fa-solid fa-box-archive",
+            "name": "Archive",
+            "url": "https://archive.example.internal",
+            "groups": [
+                "internal"
+            ]
+        },
+        {
+            "icon": "fa-solid fa-chart-line",
+            "name": "Kibana",
+            "url": "https://kibana.example.internal",
+            "groups": [
+                "internal"
+            ]
+        },
+        {
+            "icon": "fa-solid fa-download",
+            "name": "Transmission",
+            "url": "https://transmission.example.internal",
+            "groups": [
+                "internal"
+            ]
+        },
+        {
+            "icon": "fa-solid fa-bookmark",
+            "name": "Bookmarks",
+            "url": "https://bookmarks.example.internal",
+            "groups": [
+                "internal"
+            ]
+        },
+        {
+            "icon": "fa-solid fa-book",
+            "name": "Calibre",
+            "url": "https://calibre.example.internal",
+            "groups": [
+                "internal"
+            ]
+        },
+        {
+            "icon": "fa-solid fa-comment",
+            "name": "Webchat",
+            "url": "https://chat.example.internal",
+            "groups": []
+        },
+        {
+            "icon": "fa-solid fa-cloud",
+            "name": "Owncloud",
+            "url": "https://owncloud.example.internal",
+            "groups": [
+                "internal",
+                "vpn"
+            ]
+        },
+        {
+            "icon": "fa-brands fa-wikipedia-w",
+            "name": "Wiki",
+            "url": "https://wiki.example.internal",
+            "groups": [
+                "internal",
+                "vpn"
+            ]
+        },
+        {
+            "icon": "fa-brands fa-mastodon",
+            "name": "Mastodon",
+            "url": "https://mastodon.example.internal",
+            "groups": [
+                "internal",
+                "vpn"
+            ]
+        },
+        {
             "icon": "fa-brands fa-google",
             "name": "Google",
             "url": "https://www.google.com",
@@ -55,6 +128,12 @@
             "icon": "fa-brands fa-youtube",
             "name": "Youtube",
             "url": "https://www.youtube.com",
+            "groups": []
+        },
+        {
+            "icon": "fa-brands fa-stack-overflow",
+            "name": "Stackoverflow",
+            "url": "https://stackoverflow.com",
             "groups": []
         }
     ],
