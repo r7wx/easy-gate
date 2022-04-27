@@ -69,7 +69,7 @@ function App() {
           <h3 className="text-xl mt-5">
             <FontAwesomeIcon icon="fa-brands fa-buffer" /> Services
           </h3>
-          <div className="grid grid-cols-12 auto-cols-max mt-5">
+          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12 mt-5">
             {data.services.map((service) => (
               <Service key={service.name} service={service} />
             ))}
@@ -81,7 +81,7 @@ function App() {
           <h3 className="text-xl mt-5">
             <FontAwesomeIcon icon="fa-regular fa-note-sticky" /> Notes
           </h3>
-          <div className="grid grid-cols-6 auto-cols-max mt-5">
+          <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 mt-5">
             {data.notes.map((note) => (
               <Note key={note.title} note={note} />
             ))}
