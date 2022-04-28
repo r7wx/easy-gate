@@ -64,7 +64,7 @@ function App() {
         <FontAwesomeIcon icon={data.icon} /> {data.title}
       </h1>
       <p className="text-base">{data.motd}</p>
-      {data.services && (
+      {data.services.length > 0 && (
         <React.Fragment>
           <h3 className="text-xl mt-5">
             <FontAwesomeIcon icon="fa-brands fa-buffer" /> Services
@@ -76,7 +76,7 @@ function App() {
           </div>
         </React.Fragment>
       )}
-      {data.notes && (
+      {data.notes.length > 0 && (
         <React.Fragment>
           <h3 className="text-xl mt-5">
             <FontAwesomeIcon icon="fa-regular fa-note-sticky" /> Notes
