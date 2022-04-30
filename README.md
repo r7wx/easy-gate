@@ -24,7 +24,7 @@ Easy Gate is a simple web application built in Go and React that acts as the hom
 ## Deployment
 
 <p align="justify">
-Easy Gate can be deployed on any server that supports Docker. If your infrastructure is running behind a configured nginx instance, it is recommended to read the **Docker Compose (with nginx)** section.
+Easy Gate can be deployed on any server that supports Docker. If your infrastructure is running behind a configured nginx instance, it is recommended to read the Docker Compose (with nginx) section.
 </p>
 
 ### Docker
