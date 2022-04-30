@@ -30,30 +30,31 @@ import (
 
 // Routine - Config routine struct
 type Routine struct {
-	mu       sync.Mutex
-	Config   *Config
-	FilePath string
-	Interval time.Duration
+	mu           sync.Mutex
+	Config       *Config
+	FilePath     string
+	LastChecksum string
+	Interval     time.Duration
 }
 
 // NewRoutine - Create new config routine
 func NewRoutine(filePath string, interval time.Duration) *Routine {
-	cfg, err := LoadConfigFile(filePath)
+	cfg, checksum, err := LoadConfigFile(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	return &Routine{
-		FilePath: filePath,
-		Config:   cfg,
-		Interval: interval,
+		FilePath:     filePath,
+		Config:       cfg,
+		Interval:     interval,
+		LastChecksum: checksum,
 	}
 }
 
 // GetConfiguration - Get current configuration
 func (r *Routine) GetConfiguration() *Config {
 	defer r.mu.Unlock()
-
 	r.mu.Lock()
 	return r.Config
 }
@@ -61,14 +62,17 @@ func (r *Routine) GetConfiguration() *Config {
 // Start - Start config routine
 func (r *Routine) Start() {
 	for {
-		cfg, err := LoadConfigFile(r.FilePath)
+		cfg, checksum, err := LoadConfigFile(r.FilePath)
 		if err != nil {
 			continue
 		}
 
-		r.mu.Lock()
-		r.Config = cfg
-		r.mu.Unlock()
+		if checksum != r.LastChecksum {
+			r.mu.Lock()
+			r.Config = cfg
+			r.mu.Unlock()
+		}
+		r.LastChecksum = checksum
 
 		time.Sleep(r.Interval)
 	}

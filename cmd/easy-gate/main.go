@@ -38,7 +38,7 @@ func main() {
 	}
 
 	cfgRoutine := config.NewRoutine(cfgFilePath,
-		1*time.Minute)
+		1*time.Second)
 	go cfgRoutine.Start()
 
 	service := service.Service{

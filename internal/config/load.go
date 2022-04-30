@@ -23,29 +23,38 @@ SOFTWARE.
 package config
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"io/ioutil"
 	"os"
 )
 
 // LoadConfigFile - Load configuration from file
-func LoadConfigFile(filePath string) (*Config, error) {
+func LoadConfigFile(filePath string) (*Config, string, error) {
 	jsonFile, err := os.Open(filePath)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	defer jsonFile.Close()
 
 	fileData, err := ioutil.ReadAll(jsonFile)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
+	checksum := checksum(fileData)
 
 	cfg := Config{}
 	err = json.Unmarshal(fileData, &cfg)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
-	return &cfg, nil
+	return &cfg, checksum, nil
+}
+
+func checksum(data []byte) string {
+	hash := sha256.New()
+	hash.Write(data)
+	return hex.EncodeToString(hash.Sum(nil))
 }
