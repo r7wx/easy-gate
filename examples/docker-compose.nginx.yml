@@ -1,6 +1,6 @@
 services:
   easy-gate:
-    build: ../.
+    image: r7wx/easy-gate:latest
     container_name: easy-gate
     expose:
       - 8080
