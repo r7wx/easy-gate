@@ -76,11 +76,10 @@ In order to correctly use the groups feature you must bind another file to the e
 
 ```bash
 [...]
-location / {
+location /api {
   proxy_redirect off;
-  proxy_set_header Host $host;
-  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-  proxy_pass http://easy-gate:8080;
+  proxy_pass_request_headers on;
+  proxy_pass http://127.0.0.1:8081;
 }
 [...]
 ```
