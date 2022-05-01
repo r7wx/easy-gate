@@ -71,7 +71,7 @@ easy-gate:
 ```
 
 <p align="justify">
-In order to correctly use the groups feature you must bind another file to the easy-gate container: ./easy-gate.nginx.conf:/etc/nginx/conf.d/default.conf. This file will overwrite the internal easy-gate nginx configuration in order to forward requests headers:
+In order to correctly use the groups feature you must overwrite the internal easy-gate nginx configuration in order to forward requests headers:
 </p>
 
 ```bash
@@ -84,7 +84,7 @@ location /api {
 [...]
 ```
 
-You can find the complete file in the examples directory.
+You can find the complete file in the examples directory (examples/easy-gate.nginx.conf).
 
 ## Configuration
 
