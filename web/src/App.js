@@ -25,70 +25,85 @@ SOFTWARE.
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { far } from "@fortawesome/free-regular-svg-icons";
-import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import React, { useEffect, useState } from "react";
+import Loading from "./components/Loading";
 import Service from "./components/Service";
 import Note from "./components/Note";
-import React from "react";
 import axios from "axios";
 
 library.add(fas, far, fab);
 
 function App() {
-  const [data, setData] = React.useState({
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState({
     title: "",
     icon: "",
     motd: "",
     services: [],
     notes: [],
+    theme: {
+      background: "#FFFFFF",
+      text: "#000000",
+      box: "#FFFFFF",
+      boxShadow: "#000000",
+    },
   });
 
-  const fetchData = () => {
-    axios
-      .get("/api/data")
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch((_) => {});
-  };
-
-  React.useEffect(() => {
+  useEffect(() => {
+    const fetchData = () => {
+      axios
+        .get("/api/data")
+        .then((res) => {
+          setData(res.data);
+          document.title = res.data.title;
+          setLoading(false);
+        })
+        .catch((_) => {
+          setLoading(true);
+        });
+    };
     fetchData();
   }, []);
 
-  document.title = data.title;
-
   return (
-    <main className="py-6 px-12">
-      <h1 className="text-4xl">
-        <FontAwesomeIcon icon={data.icon} /> {data.title}
-      </h1>
-      <p className="text-base">{data.motd}</p>
-      {data.services.length > 0 && (
-        <React.Fragment>
-          <h3 className="text-xl mt-5">
-            <FontAwesomeIcon icon="fa-brands fa-buffer" /> Services
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12 mt-5">
-            {data.services.map((service) => (
-              <Service key={service.name} service={service} />
-            ))}
-          </div>
-        </React.Fragment>
+    <React.Fragment>
+      {!loading ? (
+        <main className="py-6 px-12">
+          <h1 className="text-4xl">
+            <FontAwesomeIcon icon={data.icon} /> {data.title}
+          </h1>
+          <p className="text-base">{data.motd}</p>
+          {data.services.length > 0 && (
+            <React.Fragment>
+              <h3 className="text-xl mt-5">
+                <FontAwesomeIcon icon="fa-brands fa-buffer" /> Services
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12 mt-5">
+                {data.services.map((service) => (
+                  <Service key={service.name} service={service} />
+                ))}
+              </div>
+            </React.Fragment>
+          )}
+          {data.notes.length > 0 && (
+            <React.Fragment>
+              <h3 className="text-xl mt-5">
+                <FontAwesomeIcon icon="fa-regular fa-note-sticky" /> Notes
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 mt-5">
+                {data.notes.map((note) => (
+                  <Note key={note.title} note={note} />
+                ))}
+              </div>
+            </React.Fragment>
+          )}
+        </main>
+      ) : (
+        <Loading />
       )}
-      {data.notes.length > 0 && (
-        <React.Fragment>
-          <h3 className="text-xl mt-5">
-            <FontAwesomeIcon icon="fa-regular fa-note-sticky" /> Notes
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 mt-5">
-            {data.notes.map((note) => (
-              <Note key={note.title} note={note} />
-            ))}
-          </div>
-        </React.Fragment>
-      )}
-    </main>
+    </React.Fragment>
   );
 }
 
