@@ -63,6 +63,7 @@ func (s Service) data(w http.ResponseWriter, req *http.Request) {
 		Motd:     cfg.Motd,
 		Services: s.getServices(cfg, reqAddr),
 		Notes:    s.getNotes(cfg, reqAddr),
+		Theme:    theme(cfg.Theme),
 	}
 
 	res, err := json.Marshal(response)

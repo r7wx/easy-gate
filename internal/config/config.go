@@ -43,11 +43,20 @@ type Note struct {
 	Groups []string `json:"groups"`
 }
 
+// Theme - Self Gate theme configuration struct
+type Theme struct {
+	Background string `json:"background"`
+	Text       string `json:"text"`
+	Box        string `json:"box"`
+	Shadows    string `json:"shadows"`
+}
+
 // Config - Self Gate configuration struct
 type Config struct {
-	Title    string    `json:"title"`
+	Theme    Theme     `json:"theme"`
 	Icon     string    `json:"icon"`
 	Motd     string    `json:"motd"`
+	Title    string    `json:"title"`
 	Groups   []Group   `json:"groups"`
 	Services []Service `json:"services"`
 	Notes    []Note    `json:"notes"`

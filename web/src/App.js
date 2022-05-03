@@ -30,6 +30,7 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
 import Loading from "./components/Loading";
 import Service from "./components/Service";
+import { Helmet } from "react-helmet";
 import Note from "./components/Note";
 import axios from "axios";
 
@@ -47,7 +48,7 @@ function App() {
       background: "#FFFFFF",
       text: "#000000",
       box: "#FFFFFF",
-      boxShadow: "#000000",
+      shadows: "#000000",
     },
   });
 
@@ -57,7 +58,6 @@ function App() {
         .get("/api/data")
         .then((res) => {
           setData(res.data);
-          document.title = res.data.title;
           setLoading(false);
         })
         .catch((_) => {
@@ -71,6 +71,16 @@ function App() {
     <React.Fragment>
       {!loading ? (
         <main className="py-6 px-12">
+          <Helmet>
+            {data.title && <title>{data.title}</title>}
+            {data.theme && (
+              <style>
+                {`body { background-color: ${data.theme.background}; 
+                color: ${data.theme.text}}`}
+              </style>
+            )}
+          </Helmet>
+
           <h1 className="text-4xl">
             <FontAwesomeIcon icon={data.icon} /> {data.title}
           </h1>

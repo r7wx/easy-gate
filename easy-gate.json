@@ -2,10 +2,16 @@
     "title": "Easy Gate",
     "icon": "fa-solid fa-cubes",
     "motd": "Welcome to Easy Gate",
+    "theme": {
+        "background": "#00171F",
+        "text": "#FFFFFF",
+        "box": "#FFFFFF",
+        "shadows": "#000000"
+    },
     "groups": [
         {
             "name": "internal",
-            "subnet": "192.168.1.1/24"
+            "subnet": "192.168.50.100/24"
         },
         {
             "name": "vpn",
@@ -15,7 +21,7 @@
     "services": [
         {
             "icon": "fa-brands fa-git-square",
-            "name": "Git",
+            "name": "Github",
             "url": "https://git.example.internal",
             "groups": [
                 "internal"

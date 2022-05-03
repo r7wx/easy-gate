@@ -33,7 +33,15 @@ type note struct {
 	Text string `json:"text"`
 }
 
+type theme struct {
+	Background string `json:"background"`
+	Text       string `json:"text"`
+	Box        string `json:"box"`
+	Shadows    string `json:"shadows"`
+}
+
 type response struct {
+	Theme    theme     `json:"theme"`
 	Title    string    `json:"title"`
 	Icon     string    `json:"icon"`
 	Motd     string    `json:"motd"`
