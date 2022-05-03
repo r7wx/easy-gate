@@ -20,29 +20,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package main
+package share
 
-import (
-	"os"
-	"time"
+import "fmt"
 
-	"github.com/r7wx/easy-gate/internal/config"
-	"github.com/r7wx/easy-gate/internal/service"
-	"github.com/r7wx/easy-gate/internal/share"
-)
+const banner = `                                        _       
+  ___  __ _ ___ _   _        __ _  __ _| |_ ___ 
+ / _ \/ _  / __| | | |_____ / _  |/ _  | __/ _ \
+|  __/ (_| \__ \ |_| |_____| (_| | (_| | ||  __/
+ \___|\__,_|___/\__, |      \__, |\__,_|\__\___|
+                |___/       |___/          
 
-func main() {
-	share.PrintBanner()
-	cfgFilePath := "easy-gate.json"
-	args := os.Args[1:]
-	if len(args) >= 1 {
-		cfgFilePath = args[0]
-	}
+`
 
-	cfgRoutine := config.NewRoutine(cfgFilePath,
-		1*time.Second)
-	go cfgRoutine.Start()
-
-	service := service.NewService(cfgRoutine)
-	service.Serve()
+// PrintBanner - Print application banner
+func PrintBanner() {
+	fmt.Print(banner)
 }
