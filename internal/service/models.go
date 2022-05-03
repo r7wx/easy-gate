@@ -35,9 +35,7 @@ type note struct {
 
 type theme struct {
 	Background string `json:"background"`
-	Text       string `json:"text"`
-	Box        string `json:"box"`
-	Shadows    string `json:"shadows"`
+	Foreground string `json:"foreground"`
 }
 
 type response struct {

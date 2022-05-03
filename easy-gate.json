@@ -3,10 +3,8 @@
     "icon": "fa-solid fa-cubes",
     "motd": "Welcome to Easy Gate",
     "theme": {
-        "background": "#00171F",
-        "text": "#FFFFFF",
-        "box": "#FFFFFF",
-        "shadows": "#000000"
+        "background": "#292929",
+        "foreground": "#F8FAFC"
     },
     "groups": [
         {

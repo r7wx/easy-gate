@@ -46,9 +46,7 @@ function App() {
     notes: [],
     theme: {
       background: "#FFFFFF",
-      text: "#000000",
-      box: "#FFFFFF",
-      shadows: "#000000",
+      foreground: "#000000",
     },
   });
 
@@ -76,11 +74,10 @@ function App() {
             {data.theme && (
               <style>
                 {`body { background-color: ${data.theme.background}; 
-                color: ${data.theme.text}}`}
+                color: ${data.theme.foreground}}`}
               </style>
             )}
           </Helmet>
-
           <h1 className="text-4xl">
             <FontAwesomeIcon icon={data.icon} /> {data.title}
           </h1>

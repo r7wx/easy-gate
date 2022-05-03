@@ -46,9 +46,7 @@ type Note struct {
 // Theme - Self Gate theme configuration struct
 type Theme struct {
 	Background string `json:"background"`
-	Text       string `json:"text"`
-	Box        string `json:"box"`
-	Shadows    string `json:"shadows"`
+	Foreground string `json:"foreground"`
 }
 
 // Config - Self Gate configuration struct
