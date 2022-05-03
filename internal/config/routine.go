@@ -64,7 +64,7 @@ func (r *Routine) Start() {
 	for {
 		cfg, checksum, err := LoadConfigFile(r.FilePath)
 		if err != nil {
-			log.Println("Error loading configuration file: ", err)
+			log.Println("[Easy Gate] Error loading configuration file: ", err)
 			continue
 		}
 

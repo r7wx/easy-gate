@@ -3,6 +3,7 @@ services:
     image: r7wx/easy-gate:latest
     build: .
     container_name: easy-gate
+    restart: unless-stopped
     ports:
       - 8080:8080
     volumes:

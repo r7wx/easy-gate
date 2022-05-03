@@ -20,27 +20,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package main
+package web
 
 import (
-	"os"
-	"time"
-
-	"github.com/r7wx/easy-gate/internal/config"
-	"github.com/r7wx/easy-gate/internal/service"
+	"embed"
+	"io/fs"
+	"log"
+	"net/http"
 )
 
-func main() {
-	cfgFilePath := "easy-gate.json"
-	args := os.Args[1:]
-	if len(args) >= 1 {
-		cfgFilePath = args[0]
+//go:embed build/*
+var webFS embed.FS
+
+// GetWebFS - Get embedded frontend file system
+func GetWebFS() http.FileSystem {
+	fs, err := fs.Sub(webFS, "build")
+	if err != nil {
+		log.Fatal("Error loading embedded filesystem:", err)
 	}
-
-	cfgRoutine := config.NewRoutine(cfgFilePath,
-		1*time.Second)
-	go cfgRoutine.Start()
-
-	service := service.NewService(cfgRoutine)
-	service.Serve()
+	return http.FS(fs)
 }

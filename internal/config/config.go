@@ -51,11 +51,16 @@ type Theme struct {
 
 // Config - Self Gate configuration struct
 type Config struct {
-	Theme    Theme     `json:"theme"`
-	Icon     string    `json:"icon"`
-	Motd     string    `json:"motd"`
-	Title    string    `json:"title"`
-	Groups   []Group   `json:"groups"`
-	Services []Service `json:"services"`
-	Notes    []Note    `json:"notes"`
+	Theme       Theme     `json:"theme"`
+	Addr        string    `json:"addr"`
+	Title       string    `json:"title"`
+	CertFile    string    `json:"cert_file"`
+	KeyFile     string    `json:"key_file"`
+	Icon        string    `json:"icon"`
+	Motd        string    `json:"motd"`
+	Groups      []Group   `json:"groups"`
+	Services    []Service `json:"services"`
+	Notes       []Note    `json:"notes"`
+	BehindProxy bool      `json:"behind_proxy"`
+	UseSSL      bool      `json:"use_ssl"`
 }

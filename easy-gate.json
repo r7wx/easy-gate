@@ -1,4 +1,9 @@
 {
+    "addr": "0.0.0.0:8080",
+    "use_ssl": false,
+    "cert_file": "",
+    "key_file": "",
+    "behind_proxy": false,
     "title": "Easy Gate",
     "icon": "fa-solid fa-cubes",
     "motd": "Welcome to Easy Gate",
