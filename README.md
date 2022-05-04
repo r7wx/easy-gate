@@ -18,21 +18,23 @@
 <img src="assets/screenshot.png" />
 
 <p align="justify">
-Easy Gate is a simple web application built in Go and React that acts as the home page for your self-hosted infrastructure. Services and notes are parsed from a JSON file in real-time (without restarting the application). Services and notes can be assigned to one or more groups to show items only to specific users (based on their IP addresses).
+Easy Gate is a simple web application built in Go and React that acts as the home page for your self-hosted infrastructure. Services and notes are parsed from a JSON file in real-time (without restarting the application). Items can also be assigned to one or more groups to show them only to specific users (based on their IP addresses).
 </p>
 
 ### Features
 
 - Service and note parsing from a JSON file in real-time (without restarting the application).
 - Service and note assignment to one or more groups to show items only to specific users (based on their IP addresses).
-- Fully customizable theme.
+- Customizable theme.
 - Run as dependecy free standalone executable or as a Docker image.
 
 ## Deployment
 
 ### Standalone Executable
 
+<p align="justify">
 In order to run Easy Gate as a standalone binary, you can build it from source code or download a pre-built binary from the latest release.
+</p>
 
 **Build from source:**
 
@@ -47,6 +49,10 @@ make
 ```bash
 easy-gate <path to easy-gate.json>
 ```
+
+<p align="justify">
+If no command line argument is provided Easy Gate will search the configuration file from the current directory.
+</p>
 
 ### Docker
 
@@ -86,7 +92,7 @@ docker-compose up
 ### Docker Compose (behind nginx)
 
 <p align="justify">
-If you need to host Easy Gate behind an already running nginx instance, you can use the docker-compose file in the examples directory:
+If you need to host Easy Gate behind an already running nginx instance (or other reverse proxies), you can use the docker-compose file in the examples directory:
 </p>
 
 ```yml
@@ -139,7 +145,7 @@ It is also mandatory to set "behind_proxy" to true in easy-gate.json:
 [...]
 ```
 
-You can find the complete docker-compose and nginx configuration files in the examples directory.
+You can find the complete docker-compose and nginx configuration files in the examples directory. The same logic applies to standalone and docker image deployments.
 
 ## Configuration
 
