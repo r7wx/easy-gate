@@ -22,46 +22,23 @@ SOFTWARE.
 
 package config
 
-import (
-	"crypto/sha256"
-	"encoding/hex"
-	"encoding/json"
-	"io/ioutil"
-	"os"
-)
-
-// LoadConfigFile - Load configuration from file
-func LoadConfigFile(filePath string) (*Config, string, error) {
-	jsonFile, err := os.Open(filePath)
-	if err != nil {
-		return nil, "", err
-	}
-	defer jsonFile.Close()
-
-	fileData, err := ioutil.ReadAll(jsonFile)
-	if err != nil {
-		return nil, "", err
-	}
-	checksum := checksum(fileData)
-
-	cfg := Config{}
-	err = json.Unmarshal(fileData, &cfg)
-	if err != nil {
-		return nil, "", err
+func isHexColor(color string) bool {
+	if len(color) < 4 || len(color) > 7 {
+		return false
 	}
 
-	if !isHexColor(cfg.Theme.Background) {
-		cfg.Theme.Background = "#FFFFFF"
-	}
-	if !isHexColor(cfg.Theme.Foreground) {
-		cfg.Theme.Foreground = "#000000"
+	if color[0] != '#' {
+		return false
 	}
 
-	return &cfg, checksum, nil
-}
+	for i := 1; i < len(color); i++ {
+		c := color[i]
+		if (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F') {
+			continue
+		}
 
-func checksum(data []byte) string {
-	hash := sha256.New()
-	hash.Write(data)
-	return hex.EncodeToString(hash.Sum(nil))
+		return false
+	}
+
+	return true
 }
