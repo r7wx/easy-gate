@@ -20,29 +20,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package service
+package web
 
-type service struct {
-	Icon string `json:"icon"`
-	Name string `json:"name"`
-	URL  string `json:"url"`
-}
+import (
+	"embed"
+	"io/fs"
+	"log"
+	"net/http"
+)
 
-type note struct {
-	Name string `json:"name"`
-	Text string `json:"text"`
-}
+//go:embed build/*
+var webFS embed.FS
 
-type theme struct {
-	Background string `json:"background"`
-	Foreground string `json:"foreground"`
-}
-
-type response struct {
-	Theme    theme     `json:"theme"`
-	Title    string    `json:"title"`
-	Icon     string    `json:"icon"`
-	Motd     string    `json:"motd"`
-	Services []service `json:"services"`
-	Notes    []note    `json:"notes"`
+// GetWebFS - Get embedded frontend file system
+func GetWebFS() http.FileSystem {
+	fs, err := fs.Sub(webFS, "build")
+	if err != nil {
+		log.Fatal("Error loading embedded filesystem:", err)
+	}
+	return http.FS(fs)
 }

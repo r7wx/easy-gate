@@ -41,8 +41,6 @@ func main() {
 		1*time.Second)
 	go cfgRoutine.Start()
 
-	service := service.Service{
-		ConfigRoutine: cfgRoutine,
-	}
+	service := service.NewService(cfgRoutine)
 	service.Serve()
 }

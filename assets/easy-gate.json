@@ -1,7 +1,16 @@
 {
+    "addr": "0.0.0.0:8080",
+    "use_tls": false,
+    "cert_file": "",
+    "key_file": "",
+    "behind_proxy": false,
     "title": "Easy Gate",
-    "icon": "fa-brands fa-buffer",
+    "icon": "fa-solid fa-cubes",
     "motd": "Welcome to Easy Gate",
+    "theme": {
+        "background": "#FFFFFF",
+        "foreground": "#000000"
+    },
     "groups": [],
     "services": [],
     "notes": []

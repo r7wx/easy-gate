@@ -1,2 +1,7 @@
-node_modules/
-build/
+**/node_modules
+.vscode/
+.github/
+**/build
+examples/
+dist/
+.git/

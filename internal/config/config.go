@@ -43,12 +43,24 @@ type Note struct {
 	Groups []string `json:"groups"`
 }
 
+// Theme - Self Gate theme configuration struct
+type Theme struct {
+	Background string `json:"background"`
+	Foreground string `json:"foreground"`
+}
+
 // Config - Self Gate configuration struct
 type Config struct {
-	Title    string    `json:"title"`
-	Icon     string    `json:"icon"`
-	Motd     string    `json:"motd"`
-	Groups   []Group   `json:"groups"`
-	Services []Service `json:"services"`
-	Notes    []Note    `json:"notes"`
+	Theme       Theme     `json:"theme"`
+	Addr        string    `json:"addr"`
+	Title       string    `json:"title"`
+	CertFile    string    `json:"cert_file"`
+	KeyFile     string    `json:"key_file"`
+	Icon        string    `json:"icon"`
+	Motd        string    `json:"motd"`
+	Groups      []Group   `json:"groups"`
+	Services    []Service `json:"services"`
+	Notes       []Note    `json:"notes"`
+	BehindProxy bool      `json:"behind_proxy"`
+	UseTLS      bool      `json:"use_tls"`
 }

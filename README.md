@@ -18,19 +18,46 @@
 <img src="assets/screenshot.png" />
 
 <p align="justify">
-Easy Gate is a simple web application built in Go and React that acts as the home page for your self-hosted infrastructure. Services and notes are parsed from a JSON file in real-time (without restarting the application). Services and notes can be assigned to one or more groups to show items only to specific users (based on their IP addresses).
+Easy Gate is a simple web application built in Go and React that acts as the home page for your self-hosted infrastructure. Services and notes are parsed from a JSON file in real-time (without restarting the application). Items can also be assigned to one or more groups to show them only to specific users (based on their IP addresses).
 </p>
+
+### Features
+
+- Service and note parsing from a JSON file in real-time (without restarting the application).
+- Service and note assignment to one or more groups to show items only to specific users (based on their IP addresses).
+- Customizable theme.
+- Run as dependecy free standalone executable or as a Docker image.
 
 ## Deployment
 
+### Standalone Executable
+
 <p align="justify">
-Easy Gate can be deployed on any server that supports Docker. If your infrastructure is running behind a configured nginx instance, it is recommended to read the Docker Compose (with nginx) section.
+In order to run Easy Gate as a standalone binary, you can build it from source code or download a pre-built binary from the latest release.
+</p>
+
+**Build from source:**
+
+```bash
+git clone https://github.com/r7wx/easy-gate.git
+cd easy-gate
+make
+```
+
+**Run executable:**
+
+```bash
+easy-gate <path to easy-gate.json>
+```
+
+<p align="justify">
+If no command line argument is provided Easy Gate will search the configuration file in current directory.
 </p>
 
 ### Docker
 
 <p align="justify">
-You can deploy an instance of easy-gate by using docker:
+You can deploy an instance of Easy Gate by using docker:
 </p>
 
 ```bash
@@ -38,25 +65,39 @@ docker run -d --name=easy-gate \
   -p 8080:8080 \
   -v /path/to/easy-gate.json:/etc/easy-gate/easy-gate.json \
   --restart unless-stopped \
-  r7wx/easy-gate
+  r7wx/easy-gate:latest
 ```
 
 ### Docker Compose
 
-You can also run easy-gate by using the provided docker-compose file:
+You can run Easy Gate by using the provided docker-compose file:
+
+```yml
+services:
+  easy-gate:
+    image: r7wx/easy-gate:latest
+    build: .
+    container_name: easy-gate
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    volumes:
+      - ./easy-gate.json:/etc/easy-gate/easy-gate.json
+```
 
 ```bash
 docker-compose up
 ```
 
-### Docker Compose (with nginx)
+### Docker Compose (behind nginx)
 
 <p align="justify">
-If you need to host easy-gate behind an already installed nginx instance, you can use the docker-compose file in the examples directory:
+If you need to host Easy Gate behind an already running nginx instance (or other reverse proxies), you can use the docker-compose file in the examples directory:
 </p>
 
-```bash
-easy-gate:
+```yml
+services:
+  easy-gate:
     image: r7wx/easy-gate:latest
     container_name: easy-gate
     expose:
@@ -65,32 +106,76 @@ easy-gate:
       - nginx-net
     volumes:
       - ../easy-gate.json:/etc/easy-gate/easy-gate.json
-      - ./easy-gate.nginx.conf:/etc/nginx/conf.d/default.conf
 
-[...]
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - 80:80
+    networks:
+      - nginx-net
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+
+networks:
+  nginx-net:
+    driver: bridge
 ```
 
 <p align="justify">
-In order to correctly use the groups feature you must overwrite the internal easy-gate nginx configuration in order to forward requests headers:
+In order to correctly use the groups feature, the nginx instance (or your other reverse proxy) must be configured to use the X-Forwarded-For header:
 </p>
 
-```bash
+```nginx
 [...]
-location /api {
-  proxy_redirect off;
-  proxy_pass_request_headers on;
-  proxy_pass http://127.0.0.1:8081;
+location / {
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_pass http://easy-gate:8080;
 }
 [...]
 ```
 
-You can find the complete file in the examples directory (examples/easy-gate.nginx.conf).
+It is also mandatory to set "behind_proxy" to true in easy-gate.json:
+
+```json
+[...]
+"behind_proxy": true,
+[...]
+```
+
+You can find the complete docker-compose and nginx configuration files in the examples directory. The same logic applies to standalone and docker image deployments.
 
 ## Configuration
 
 <p align="justify">
-Easy gate can be configured by the easy-gate.json file. An illustrative configuration file is provided in the root directory of this repository (easy-gate.json).
+Easy gate can be configured by the easy-gate.json file. An example configuration is provided in the root directory of this repository (easy-gate.json).
 </p>
+
+### Options
+
+- **addr:** IP address to listen on
+- **use_tls:** If true, the application will use TLS
+- **cert_file:** Path to the SSL certificate file (if TLS is enabled)
+- **key_file:** Path to the SSL key file (if TLS is enabled)
+- **behind_proxy:** If true, the application will use the X-Forwarded-For header to determine the IP address of the client
+- **title:** Title of the application
+- **icon:** Font-awesome icon to use as the application icon
+- **motd:** Message to display on home page
+
+### Theme
+
+<p align="justify">
+Easy Gate theme can be configured by providing colors for background and foreground. Theme changes will be applied immediately.
+</p>
+
+Example of a dark mode theme:
+
+```json
+"theme": {
+  "background": "#1d1d1d",
+  "foreground": "#ffffff"
+}
+```
 
 ### Groups
 

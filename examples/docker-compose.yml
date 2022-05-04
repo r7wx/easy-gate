@@ -8,13 +8,12 @@ services:
       - nginx-net
     volumes:
       - ../easy-gate.json:/etc/easy-gate/easy-gate.json
-      - ./easy-gate.nginx.conf:/etc/nginx/conf.d/default.conf
 
   nginx:
     image: nginx:latest
     container_name: nginx
     ports:
-     - 80:80
+      - 80:80
     networks:
       - nginx-net
     volumes:

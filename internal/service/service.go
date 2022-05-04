@@ -25,9 +25,11 @@ package service
 import (
 	"encoding/json"
 	"log"
+	"net"
 	"net/http"
 
 	"github.com/r7wx/easy-gate/internal/config"
+	"github.com/r7wx/easy-gate/web"
 )
 
 // Service - Self Gate service struct
@@ -44,30 +46,49 @@ func NewService(cfgRoutine *config.Routine) *Service {
 
 // Serve - Serve application
 func (s Service) Serve() {
-	log.Println("Serving API on 0.0.0.0:8081")
+	cfg := s.ConfigRoutine.GetConfiguration()
+
 	http.HandleFunc("/api/data", s.data)
-	http.ListenAndServe(":8081", nil)
+	http.Handle("/", http.FileServer(web.GetWebFS()))
+
+	if cfg.UseTLS {
+		log.Println("[Easy Gate] Serving API on", cfg.Addr, "(HTTPS)")
+		if err := http.ListenAndServeTLS(cfg.Addr, cfg.CertFile,
+			cfg.KeyFile, nil); err != nil {
+			log.Fatal(err)
+		}
+	}
+	log.Println("[Easy Gate] Serving API on", cfg.Addr)
+	if err := http.ListenAndServe(cfg.Addr, nil); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func (s Service) data(w http.ResponseWriter, req *http.Request) {
-	reqAddr := req.Header.Get("X-Forwarded-For")
-	if reqAddr == "" {
-		http.Error(w, "", http.StatusBadRequest)
-		return
-	}
 	cfg := s.ConfigRoutine.GetConfiguration()
+
+	reqIP, _, err := net.SplitHostPort(req.RemoteAddr)
+	if cfg.BehindProxy {
+		reqIP = req.Header.Get("X-Forwarded-For")
+		if reqIP == "" {
+			http.Error(w, "", http.StatusBadRequest)
+			return
+		}
+	}
+	log.Println("[Easy Gate] Request from", reqIP)
 
 	response := response{
 		Title:    cfg.Title,
 		Icon:     cfg.Icon,
 		Motd:     cfg.Motd,
-		Services: s.getServices(cfg, reqAddr),
-		Notes:    s.getNotes(cfg, reqAddr),
+		Services: s.getServices(cfg, reqIP),
+		Notes:    s.getNotes(cfg, reqIP),
+		Theme:    theme(cfg.Theme),
 	}
 
 	res, err := json.Marshal(response)
 	if err != nil {
-		log.Println(err)
+		log.Println("[Easy Gate] Service error:", err)
 		http.Error(w, "", http.StatusInternalServerError)
 		return
 	}
