@@ -51,7 +51,7 @@ func (s Service) Serve() {
 	http.HandleFunc("/api/data", s.data)
 	http.Handle("/", http.FileServer(web.GetWebFS()))
 
-	if cfg.UseSSL {
+	if cfg.UseTLS {
 		log.Println("[Easy Gate] Serving API on", cfg.Addr, "(HTTPS)")
 		if err := http.ListenAndServeTLS(cfg.Addr, cfg.CertFile,
 			cfg.KeyFile, nil); err != nil {

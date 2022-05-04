@@ -62,5 +62,5 @@ type Config struct {
 	Services    []Service `json:"services"`
 	Notes       []Note    `json:"notes"`
 	BehindProxy bool      `json:"behind_proxy"`
-	UseSSL      bool      `json:"use_ssl"`
+	UseTLS      bool      `json:"use_tls"`
 }

@@ -51,7 +51,7 @@ easy-gate <path to easy-gate.json>
 ```
 
 <p align="justify">
-If no command line argument is provided Easy Gate will search the configuration file from the current directory.
+If no command line argument is provided Easy Gate will search the configuration file in current directory.
 </p>
 
 ### Docker
@@ -122,7 +122,9 @@ networks:
     driver: bridge
 ```
 
-In order to correctly use the groups feature, the nginx instance must be configured to use the X-Forwarded-For header:
+<p align="justify">
+In order to correctly use the groups feature, the nginx instance (or your other reverse proxy) must be configured to use the X-Forwarded-For header:
+</p>
 
 ```nginx
 [...]
@@ -137,11 +139,7 @@ It is also mandatory to set "behind_proxy" to true in easy-gate.json:
 
 ```json
 [...]
-"cert_file": "",
-"key_file": "",
 "behind_proxy": true,
-"title": "Easy Gate",
-"icon": "fa-solid fa-cubes",
 [...]
 ```
 
@@ -156,9 +154,9 @@ Easy gate can be configured by the easy-gate.json file. An example configuration
 ### Options
 
 - **addr:** IP address to listen on
-- **use_ssl:** If true, the application will use SSL
-- **cert_file:** Path to the SSL certificate file
-- **key_file:** Path to the SSL key file
+- **use_tls:** If true, the application will use TLS
+- **cert_file:** Path to the SSL certificate file (if TLS is enabled)
+- **key_file:** Path to the SSL key file (if TLS is enabled)
 - **behind_proxy:** If true, the application will use the X-Forwarded-For header to determine the IP address of the client
 - **title:** Title of the application
 - **icon:** Font-awesome icon to use as the application icon

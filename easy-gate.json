@@ -1,6 +1,6 @@
 {
     "addr": "0.0.0.0:8080",
-    "use_ssl": false,
+    "use_tls": false,
     "cert_file": "",
     "key_file": "",
     "behind_proxy": false,
@@ -14,7 +14,7 @@
     "groups": [
         {
             "name": "internal",
-            "subnet": "192.168.1.100/24"
+            "subnet": "192.168.1.1/24"
         },
         {
             "name": "vpn",
@@ -24,7 +24,7 @@
     "services": [
         {
             "icon": "fa-brands fa-git-square",
-            "name": "Github",
+            "name": "Git",
             "url": "https://git.example.internal",
             "groups": [
                 "internal"
