@@ -116,7 +116,7 @@ networks:
     driver: bridge
 ```
 
-In order to correctly use the groups feature you mus, the nginx instance must be configured to use the X-Forwarded-For header:
+In order to correctly use the groups feature, the nginx instance must be configured to use the X-Forwarded-For header:
 
 ```nginx
 [...]
