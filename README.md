@@ -30,7 +30,7 @@ Easy Gate is a simple web application built in Go and React that acts as the hom
 
 ## Deployment
 
-### Standalone executable
+### Standalone Executable
 
 In order to run Easy Gate as a standalone binary, you can build it from source code or download a pre-built binary from the latest release.
 
