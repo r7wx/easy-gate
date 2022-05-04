@@ -8,13 +8,13 @@
     "icon": "fa-solid fa-cubes",
     "motd": "Welcome to Easy Gate",
     "theme": {
-        "background": "#292929",
-        "foreground": "#F8FAFC"
+        "background": "#FFFFFF",
+        "foreground": "#000000"
     },
     "groups": [
         {
             "name": "internal",
-            "subnet": "192.168.50.100/24"
+            "subnet": "192.168.1.100/24"
         },
         {
             "name": "vpn",

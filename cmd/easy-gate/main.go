@@ -28,11 +28,9 @@ import (
 
 	"github.com/r7wx/easy-gate/internal/config"
 	"github.com/r7wx/easy-gate/internal/service"
-	"github.com/r7wx/easy-gate/internal/share"
 )
 
 func main() {
-	share.PrintBanner()
 	cfgFilePath := "easy-gate.json"
 	args := os.Args[1:]
 	if len(args) >= 1 {

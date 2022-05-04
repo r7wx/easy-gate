@@ -4,7 +4,7 @@ easy-gate:
 	CGO_ENABLED=0 go build -trimpath -ldflags="-w -s" -o build/easy-gate cmd/easy-gate/main.go
 
 easy-gate-web:
-	yarn --cwd ./web install --modules-folder ./web/node_modules
+	yarn --cwd ./web install
 	yarn --cwd ./web build
 
 release: easy-gate-web
@@ -17,7 +17,7 @@ release: easy-gate-web
 clean:
 	rm -rf build
 	rm -rf dist
-	rm -rf web/build
+	rm -rf web/build/*
 
 docker-release:
 	sudo docker buildx build --platform=linux/amd64,linux/arm/v7,linux/arm64/v8 -t r7wx/easy-gate:$(tag) --push .
