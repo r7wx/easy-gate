@@ -96,3 +96,30 @@ func TestConfig(t *testing.T) {
 		counter++
 	}
 }
+
+func TestHexColors(t *testing.T) {
+	if !isHexColor("#ff0000") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isHexColor("#f00") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isHexColor("#ffff") {
+		t.Fatal("Expected true, got false")
+	}
+	if isHexColor("FFFFFF") {
+		t.Fatal("Expected false, got true")
+	}
+	if isHexColor("#FFFFFFF") {
+		t.Fatal("Expected false, got true")
+	}
+	if isHexColor("#") {
+		t.Fatal("Expected false, got true")
+	}
+	if isHexColor("#FFG") {
+		t.Fatal("Expected false, got true")
+	}
+	if isHexColor("32984327493827@@@AA") {
+		t.Fatal("Expected false, got true")
+	}
+}
