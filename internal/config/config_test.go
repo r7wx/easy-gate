@@ -123,3 +123,51 @@ func TestHexColors(t *testing.T) {
 		t.Fatal("Expected false, got true")
 	}
 }
+
+func TestURLs(t *testing.T) {
+	if !isURL("http://example.com") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isURL("https://example.com") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isURL("example.internal.priv") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isURL("test.test") {
+		t.Fatal("Expected true, got false")
+	}
+	if isURL("example") {
+		t.Fatal("Expected false, got true")
+	}
+	if isURL("javascript:void(0)") {
+		t.Fatal("Expected false, got true")
+	}
+	if isURL("javascript:alert(1)") {
+		t.Fatal("Expected false, got true")
+	}
+	if isURL("javascript: alert(1)") {
+		t.Fatal("Expected false, got true")
+	}
+}
+
+func TestIcons(t *testing.T) {
+	if !isIcon("fa-brands fa-github") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isIcon("fa-regular fa-cube") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isIcon("fa-solid fa-flask-vial") {
+		t.Fatal("Expected true, got false")
+	}
+	if isIcon("") {
+		t.Fatal("Expected false, got true")
+	}
+	if isIcon("bg-white text-red") {
+		t.Fatal("Expected false, got true")
+	}
+	if isIcon("fa-brands fa-github fa-brands fa-github") {
+		t.Fatal("Expected false, got true")
+	}
+}

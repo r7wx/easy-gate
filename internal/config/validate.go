@@ -22,6 +22,10 @@ SOFTWARE.
 
 package config
 
+import (
+	"regexp"
+)
+
 func isHexColor(color string) bool {
 	if len(color) < 4 || len(color) > 7 {
 		return false
@@ -36,9 +40,48 @@ func isHexColor(color string) bool {
 		if (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F') {
 			continue
 		}
-
 		return false
 	}
 
 	return true
+}
+
+func isURL(url string) bool {
+	r, _ := regexp.Compile(
+		`^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$`,
+	)
+	return r.MatchString(url)
+}
+
+func isIcon(icon string) bool {
+	r, _ := regexp.Compile(
+		`^(fa-(solid|regular|brands) (fa-[A-Za-z0-9--]+))$`,
+	)
+	return r.MatchString(icon)
+}
+
+func validateConfig(cfg *Config) {
+	if !isIcon(cfg.Icon) {
+		cfg.Icon = "fa-solid fa-cube"
+	}
+
+	validServices := []Service{}
+	for _, service := range cfg.Services {
+		if !isIcon(service.Icon) {
+			service.Icon = "fa-solid fa-cube"
+		}
+		if !isURL(service.URL) {
+			service.Icon = "fa-solid fa-circle-xmark"
+			service.URL = "invalid.url"
+		}
+		validServices = append(validServices, service)
+	}
+	cfg.Services = validServices
+
+	if !isHexColor(cfg.Theme.Background) {
+		cfg.Theme.Background = "#FFFFFF"
+	}
+	if !isHexColor(cfg.Theme.Foreground) {
+		cfg.Theme.Foreground = "#000000"
+	}
 }
