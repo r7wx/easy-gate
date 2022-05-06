@@ -9,10 +9,8 @@ in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,15 +20,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-function Error(props) {
-  return (
-    <div
-      className="my-3 bg-red-100 border-l-4 border-red-500 text-red-700 p-4"
-      role="alert">
-      <p className="font-bold">Configuration errror</p>
-      <p>{props.error}</p>
-    </div>
-  );
+package errors
+
+import "fmt"
+
+// ErrorType - Easy Gate error type
+type ErrorType string
+
+// Easy Gate errors enum
+const (
+	InvalidIcon  ErrorType = "icon"
+	InvalidURL   ErrorType = "url"
+	InvalidColor ErrorType = "color"
+)
+
+// ErrorElement - Easy Gate error element
+type ErrorElement string
+
+// Easy Gate error context enum
+const (
+	Root    ErrorElement = "root"
+	Service ErrorElement = "service"
+)
+
+// EasyGateError - Easy Gate Error struct
+type EasyGateError struct {
+	ErrorType ErrorType
+	Element   ErrorElement
+	Name      string
 }
 
-export default Error;
+// NewEasyGateError - Create a new Easy Gate error
+func NewEasyGateError(errorType ErrorType, element ErrorElement, name string) error {
+	return EasyGateError{errorType, element, name}
+}
+
+func (e EasyGateError) Error() string {
+	message := fmt.Sprintf("Invalid %s for %s element",
+		e.ErrorType, e.Element)
+	if e.Name != "" {
+		message = fmt.Sprintf("%s: %s", message, e.Name)
+	}
+	return message
+}

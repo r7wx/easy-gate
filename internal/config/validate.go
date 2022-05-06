@@ -24,6 +24,8 @@ package config
 
 import (
 	"regexp"
+
+	"github.com/r7wx/easy-gate/internal/errors"
 )
 
 func isHexColor(color string) bool {
@@ -60,28 +62,45 @@ func isIcon(icon string) bool {
 	return r.MatchString(icon)
 }
 
-func validateConfig(cfg *Config) {
+func validateConfig(cfg Config) error {
 	if !isIcon(cfg.Icon) {
-		cfg.Icon = "fa-solid fa-cube"
+		return errors.NewEasyGateError(
+			errors.InvalidIcon,
+			errors.Root, "")
 	}
 
-	validServices := []Service{}
 	for _, service := range cfg.Services {
 		if !isIcon(service.Icon) {
-			service.Icon = "fa-solid fa-cube"
+			return errors.NewEasyGateError(
+				errors.InvalidIcon,
+				errors.Service,
+				service.Name,
+			)
 		}
+
 		if !isURL(service.URL) {
-			service.Icon = "fa-solid fa-circle-xmark"
-			service.URL = "invalid.url"
+			return errors.NewEasyGateError(
+				errors.InvalidURL,
+				errors.Service,
+				service.Name,
+			)
 		}
-		validServices = append(validServices, service)
 	}
-	cfg.Services = validServices
 
 	if !isHexColor(cfg.Theme.Background) {
-		cfg.Theme.Background = "#FFFFFF"
+		return errors.NewEasyGateError(
+			errors.InvalidColor,
+			errors.Root,
+			"background",
+		)
 	}
 	if !isHexColor(cfg.Theme.Foreground) {
-		cfg.Theme.Foreground = "#000000"
+		return errors.NewEasyGateError(
+			errors.InvalidColor,
+			errors.Root,
+			"foreground",
+		)
 	}
+
+	return nil
 }

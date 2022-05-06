@@ -32,7 +32,7 @@ import (
 	"github.com/r7wx/easy-gate/web"
 )
 
-// Service - Self Gate service struct
+// Service - Easy Gate service struct
 type Service struct {
 	ConfigRoutine *config.Routine
 }

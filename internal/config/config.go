@@ -22,13 +22,13 @@ SOFTWARE.
 
 package config
 
-// Group - Self Gate group configuration struct
+// Group - Easy Gate group configuration struct
 type Group struct {
 	Name   string `json:"name"`
 	Subnet string `json:"subnet"`
 }
 
-// Service - Self Gate service configuration struct
+// Service - Easy Gate service configuration struct
 type Service struct {
 	Icon   string   `json:"icon"`
 	Name   string   `json:"name"`
@@ -36,20 +36,20 @@ type Service struct {
 	Groups []string `json:"groups"`
 }
 
-// Note - Self Gate note configuration struct
+// Note - Easy Gate note configuration struct
 type Note struct {
 	Name   string   `json:"name"`
 	Text   string   `json:"text"`
 	Groups []string `json:"groups"`
 }
 
-// Theme - Self Gate theme configuration struct
+// Theme - Easy Gate theme configuration struct
 type Theme struct {
 	Background string `json:"background"`
 	Foreground string `json:"foreground"`
 }
 
-// Config - Self Gate configuration struct
+// Config - Easy Gate configuration struct
 type Config struct {
 	Theme       Theme     `json:"theme"`
 	Addr        string    `json:"addr"`

@@ -31,11 +31,23 @@ import (
 )
 
 const (
-	testConfigFilePath = "./config.json"
+	testConfigFilePath = "./test-config.json"
 )
 
 func TestMain(m *testing.M) {
 	testCfg := Config{
+		Addr:        ":8080",
+		UseTLS:      false,
+		CertFile:    "",
+		KeyFile:     "",
+		BehindProxy: false,
+		Title:       "Test",
+		Icon:        "fa-solid fa-cubes",
+		Motd:        "",
+		Theme: Theme{
+			Background: "#ffffff",
+			Foreground: "#000000",
+		},
 		Groups:   []Group{},
 		Services: []Service{},
 		Notes:    []Note{},
@@ -68,10 +80,24 @@ func TestConfig(t *testing.T) {
 		}
 
 		newCfg := Config{
+			Addr:        ":8080",
+			UseTLS:      false,
+			CertFile:    "",
+			KeyFile:     "",
+			BehindProxy: false,
+			Title:       "Test",
+			Icon:        "fa-solid fa-cubes",
+			Motd:        "",
+			Theme: Theme{
+				Background: "#ffffff",
+				Foreground: "#000000",
+			},
 			Groups: []Group{},
 			Services: []Service{
 				{
+					Icon: "fa-solid fa-cube",
 					Name: time.Now().String(),
+					URL:  "http://example.com",
 				},
 			},
 			Notes: []Note{},
@@ -87,7 +113,11 @@ func TestConfig(t *testing.T) {
 		}
 
 		time.Sleep(10 * time.Millisecond)
-		cfg, _ := routine.GetConfiguration()
+		cfg, err := routine.GetConfiguration()
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		if cfg.Services[0].Name != newCfg.Services[0].Name {
 			t.Fatalf("Expected %v, got %v",
 				cfg.Services[0].Name, newCfg.Services[0].Name)
@@ -129,6 +159,12 @@ func TestURLs(t *testing.T) {
 		t.Fatal("Expected true, got false")
 	}
 	if !isURL("https://example.com") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isURL("https://example.com/test/test.xy") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isURL("https://example.com/test/test.xy?test=test") {
 		t.Fatal("Expected true, got false")
 	}
 	if !isURL("example.internal.priv") {

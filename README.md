@@ -6,6 +6,8 @@
 <h4 align="center">A gate to your self hosted infrastructure</h3>
 
 <p align="center">
+<img src="https://img.shields.io/github/v/release/r7wx/easy-gate" alt="Release" />
+<img src="https://img.shields.io/docker/pulls/r7wx/easy-gate" alt="Docker Pulls" />
 <a href="https://github.com/r7wx/easy-gate/actions/workflows/build.yml">
 <img src="https://github.com/r7wx/easy-gate/actions/workflows/build.yml/badge.svg"/></a>
 <a href="https://github.com/r7wx/easy-gate/actions/workflows/test.yml">

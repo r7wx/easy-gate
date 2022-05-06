@@ -49,7 +49,10 @@ func LoadConfigFile(filePath string) (*Config, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
-	validateConfig(&cfg)
+
+	if err := validateConfig(cfg); err != nil {
+		return nil, "", err
+	}
 
 	return &cfg, checksum, nil
 }

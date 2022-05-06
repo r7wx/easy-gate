@@ -79,12 +79,10 @@ function App() {
               </style>
             )}
           </Helmet>
-          <div>
-            <h1 className="text-4xl">
-              <FontAwesomeIcon icon={data.icon} /> {data.title}
-            </h1>
-            <p className="text-base">{data.motd}</p>
-          </div>
+          <h1 className="text-4xl">
+            <FontAwesomeIcon icon={data.icon} /> {data.title}
+          </h1>
+          <p className="text-base">{data.motd}</p>
           {data.error.length > 0 && <Error error={data.error} />}
           {data.services.length > 0 && (
             <React.Fragment>
