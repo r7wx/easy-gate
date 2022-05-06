@@ -84,7 +84,10 @@ func (s Service) data(w http.ResponseWriter, req *http.Request) {
 		Services: s.getServices(cfg, reqIP),
 		Notes:    s.getNotes(cfg, reqIP),
 		Theme:    theme(cfg.Theme),
-		Error:    cfgError,
+		Error:    "",
+	}
+	if cfgError != nil {
+		response.Error = cfgError.Error()
 	}
 
 	res, err := json.Marshal(response)
