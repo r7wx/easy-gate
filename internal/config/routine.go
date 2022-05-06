@@ -31,6 +31,7 @@ import (
 // Routine - Config routine struct
 type Routine struct {
 	mu           sync.Mutex
+	Error        error
 	Config       *Config
 	FilePath     string
 	LastChecksum string
@@ -53,10 +54,10 @@ func NewRoutine(filePath string, interval time.Duration) *Routine {
 }
 
 // GetConfiguration - Get current configuration
-func (r *Routine) GetConfiguration() *Config {
+func (r *Routine) GetConfiguration() (*Config, error) {
 	defer r.mu.Unlock()
 	r.mu.Lock()
-	return r.Config
+	return r.Config, r.Error
 }
 
 // Start - Start config routine
@@ -64,10 +65,11 @@ func (r *Routine) Start() {
 	for {
 		cfg, checksum, err := LoadConfigFile(r.FilePath)
 		if err != nil {
-			log.Println("[Easy Gate] Error loading configuration file: ", err)
+			r.Error = err
 			continue
 		}
 
+		r.Error = nil
 		if checksum != r.LastChecksum {
 			r.mu.Lock()
 			r.Config = cfg

@@ -33,11 +33,23 @@ import (
 )
 
 const (
-	testConfigFilePath = "./config.json"
+	testConfigFilePath = "./test-config.json"
 )
 
 func TestMain(m *testing.M) {
 	testCfg := config.Config{
+		Addr:        ":8080",
+		UseTLS:      false,
+		CertFile:    "",
+		KeyFile:     "",
+		BehindProxy: false,
+		Title:       "Test",
+		Icon:        "fa-solid fa-cubes",
+		Motd:        "",
+		Theme: config.Theme{
+			Background: "#ffffff",
+			Foreground: "#000000",
+		},
 		Groups: []config.Group{
 			{
 				Name:   "test",
@@ -51,14 +63,20 @@ func TestMain(m *testing.M) {
 		Services: []config.Service{
 			{
 				Name:   "service1",
+				Icon:   "fa-solid fa-cubes",
+				URL:    "http://example.com/service1",
 				Groups: []string{},
 			},
 			{
 				Name:   "service2",
+				Icon:   "fa-solid fa-cubes",
+				URL:    "http://example.com/service2",
 				Groups: []string{"test"},
 			},
 			{
 				Name:   "service3",
+				Icon:   "fa-solid fa-cubes",
+				URL:    "http://example.com/service3",
 				Groups: []string{"test2"},
 			},
 		},
@@ -99,7 +117,7 @@ func TestService(t *testing.T) {
 	go routine.Start()
 
 	service := NewService(routine)
-	cfg := service.ConfigRoutine.GetConfiguration()
+	cfg, _ := service.ConfigRoutine.GetConfiguration()
 
 	services := service.getServices(cfg, "192.168.1.1")
 	for _, s := range services {

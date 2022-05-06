@@ -31,11 +31,23 @@ import (
 )
 
 const (
-	testConfigFilePath = "./config.json"
+	testConfigFilePath = "./test-config.json"
 )
 
 func TestMain(m *testing.M) {
 	testCfg := Config{
+		Addr:        ":8080",
+		UseTLS:      false,
+		CertFile:    "",
+		KeyFile:     "",
+		BehindProxy: false,
+		Title:       "Test",
+		Icon:        "fa-solid fa-cubes",
+		Motd:        "",
+		Theme: Theme{
+			Background: "#ffffff",
+			Foreground: "#000000",
+		},
 		Groups:   []Group{},
 		Services: []Service{},
 		Notes:    []Note{},
@@ -68,10 +80,24 @@ func TestConfig(t *testing.T) {
 		}
 
 		newCfg := Config{
+			Addr:        ":8080",
+			UseTLS:      false,
+			CertFile:    "",
+			KeyFile:     "",
+			BehindProxy: false,
+			Title:       "Test",
+			Icon:        "fa-solid fa-cubes",
+			Motd:        "",
+			Theme: Theme{
+				Background: "#ffffff",
+				Foreground: "#000000",
+			},
 			Groups: []Group{},
 			Services: []Service{
 				{
+					Icon: "fa-solid fa-cube",
 					Name: time.Now().String(),
+					URL:  "http://example.com",
 				},
 			},
 			Notes: []Note{},
@@ -87,7 +113,11 @@ func TestConfig(t *testing.T) {
 		}
 
 		time.Sleep(10 * time.Millisecond)
-		cfg := routine.GetConfiguration()
+		cfg, err := routine.GetConfiguration()
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		if cfg.Services[0].Name != newCfg.Services[0].Name {
 			t.Fatalf("Expected %v, got %v",
 				cfg.Services[0].Name, newCfg.Services[0].Name)
@@ -120,6 +150,66 @@ func TestHexColors(t *testing.T) {
 		t.Fatal("Expected false, got true")
 	}
 	if isHexColor("32984327493827@@@AA") {
+		t.Fatal("Expected false, got true")
+	}
+}
+
+func TestURLs(t *testing.T) {
+	if !isURL("http://example.com") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isURL("https://example.com") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isURL("https://example.com/test/test.xy") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isURL("https://example.com/test/test.xy?test=test") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isURL("https://example.com/test/test.xy?test=test#test") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isURL("ftp://example.com") {
+		t.Fatal("Expected true, got false")
+	}
+	if isURL("example.internal.priv") {
+		t.Fatal("Expected false, got true")
+	}
+	if isURL("test.test") {
+		t.Fatal("Expected false, got true")
+	}
+	if isURL("example") {
+		t.Fatal("Expected false, got true")
+	}
+	if isURL("javascript:void(0)") {
+		t.Fatal("Expected false, got true")
+	}
+	if isURL("javascript:alert(1)") {
+		t.Fatal("Expected false, got true")
+	}
+	if isURL("javascript: alert(1)") {
+		t.Fatal("Expected false, got true")
+	}
+}
+
+func TestIcons(t *testing.T) {
+	if !isIcon("fa-brands fa-github") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isIcon("fa-regular fa-cube") {
+		t.Fatal("Expected true, got false")
+	}
+	if !isIcon("fa-solid fa-flask-vial") {
+		t.Fatal("Expected true, got false")
+	}
+	if isIcon("") {
+		t.Fatal("Expected false, got true")
+	}
+	if isIcon("bg-white text-red") {
+		t.Fatal("Expected false, got true")
+	}
+	if isIcon("fa-brands fa-github fa-brands fa-github") {
 		t.Fatal("Expected false, got true")
 	}
 }

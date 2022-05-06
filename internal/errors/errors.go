@@ -20,30 +20,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package service
+package errors
 
-type service struct {
-	Icon string `json:"icon"`
-	Name string `json:"name"`
-	URL  string `json:"url"`
+import "fmt"
+
+// ErrorType - Easy Gate error type
+type ErrorType string
+
+// Easy Gate errors enum
+const (
+	InvalidIcon  ErrorType = "icon"
+	InvalidURL   ErrorType = "url"
+	InvalidColor ErrorType = "color"
+)
+
+// ErrorElement - Easy Gate error element
+type ErrorElement string
+
+// Easy Gate error context enum
+const (
+	Root    ErrorElement = "root"
+	Service ErrorElement = "service"
+)
+
+// EasyGateError - Easy Gate Error struct
+type EasyGateError struct {
+	ErrorType ErrorType
+	Element   ErrorElement
+	Name      string
 }
 
-type note struct {
-	Name string `json:"name"`
-	Text string `json:"text"`
+// NewEasyGateError - Create a new Easy Gate error
+func NewEasyGateError(errorType ErrorType, element ErrorElement, name string) error {
+	return EasyGateError{errorType, element, name}
 }
 
-type theme struct {
-	Background string `json:"background"`
-	Foreground string `json:"foreground"`
-}
-
-type response struct {
-	Error    string    `json:"error"`
-	Theme    theme     `json:"theme"`
-	Title    string    `json:"title"`
-	Icon     string    `json:"icon"`
-	Motd     string    `json:"motd"`
-	Services []service `json:"services"`
-	Notes    []note    `json:"notes"`
+func (e EasyGateError) Error() string {
+	message := fmt.Sprintf("Invalid %s for %s element",
+		e.ErrorType, e.Element)
+	if e.Name != "" {
+		message = fmt.Sprintf("%s: %s", message, e.Name)
+	}
+	return message
 }

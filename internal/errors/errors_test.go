@@ -20,25 +20,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package config
+package errors
 
-func isHexColor(color string) bool {
-	if len(color) < 4 || len(color) > 7 {
-		return false
+import "testing"
+
+func TestErrors(t *testing.T) {
+	err := NewEasyGateError(InvalidIcon, Root, "")
+	if err.Error() != "Invalid icon for root element" {
+		t.Fatalf("Expected 'Invalid icon for root element', got '%s'",
+			err.Error())
 	}
 
-	if color[0] != '#' {
-		return false
+	err = NewEasyGateError(InvalidIcon, Service, "service1")
+	if err.Error() != "Invalid icon for service element: service1" {
+		t.Fatalf("Expected 'Invalid icon for service element: service1', got '%s'",
+			err.Error())
 	}
 
-	for i := 1; i < len(color); i++ {
-		c := color[i]
-		if (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F') {
-			continue
-		}
-
-		return false
+	err = NewEasyGateError(InvalidURL, Service, "service1")
+	if err.Error() != "Invalid url for service element: service1" {
+		t.Fatalf("Expected 'Invalid url for service element: service1', got '%s'",
+			err.Error())
 	}
 
-	return true
+	err = NewEasyGateError(InvalidColor, Root, "background")
+	if err.Error() != "Invalid color for root element: background" {
+		t.Fatalf("Expected 'Invalid color for root element: background', got '%s'",
+			err.Error())
+	}
 }

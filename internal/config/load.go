@@ -50,11 +50,8 @@ func LoadConfigFile(filePath string) (*Config, string, error) {
 		return nil, "", err
 	}
 
-	if !isHexColor(cfg.Theme.Background) {
-		cfg.Theme.Background = "#FFFFFF"
-	}
-	if !isHexColor(cfg.Theme.Foreground) {
-		cfg.Theme.Foreground = "#000000"
+	if err := validateConfig(cfg); err != nil {
+		return nil, "", err
 	}
 
 	return &cfg, checksum, nil
