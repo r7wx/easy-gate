@@ -39,6 +39,7 @@ type theme struct {
 }
 
 type response struct {
+	Error    error     `json:"error"`
 	Theme    theme     `json:"theme"`
 	Title    string    `json:"title"`
 	Icon     string    `json:"icon"`

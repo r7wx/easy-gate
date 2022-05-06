@@ -87,7 +87,7 @@ func TestConfig(t *testing.T) {
 		}
 
 		time.Sleep(10 * time.Millisecond)
-		cfg := routine.GetConfiguration()
+		cfg, _ := routine.GetConfiguration()
 		if cfg.Services[0].Name != newCfg.Services[0].Name {
 			t.Fatalf("Expected %v, got %v",
 				cfg.Services[0].Name, newCfg.Services[0].Name)

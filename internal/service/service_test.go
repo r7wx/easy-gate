@@ -99,7 +99,7 @@ func TestService(t *testing.T) {
 	go routine.Start()
 
 	service := NewService(routine)
-	cfg := service.ConfigRoutine.GetConfiguration()
+	cfg, _ := service.ConfigRoutine.GetConfiguration()
 
 	services := service.getServices(cfg, "192.168.1.1")
 	for _, s := range services {

@@ -46,7 +46,7 @@ func NewService(cfgRoutine *config.Routine) *Service {
 
 // Serve - Serve application
 func (s Service) Serve() {
-	cfg := s.ConfigRoutine.GetConfiguration()
+	cfg, _ := s.ConfigRoutine.GetConfiguration()
 
 	http.HandleFunc("/api/data", s.data)
 	http.Handle("/", http.FileServer(web.GetWebFS()))
@@ -65,7 +65,7 @@ func (s Service) Serve() {
 }
 
 func (s Service) data(w http.ResponseWriter, req *http.Request) {
-	cfg := s.ConfigRoutine.GetConfiguration()
+	cfg, cfgError := s.ConfigRoutine.GetConfiguration()
 
 	reqIP, _, err := net.SplitHostPort(req.RemoteAddr)
 	if cfg.BehindProxy {
@@ -84,6 +84,7 @@ func (s Service) data(w http.ResponseWriter, req *http.Request) {
 		Services: s.getServices(cfg, reqIP),
 		Notes:    s.getNotes(cfg, reqIP),
 		Theme:    theme(cfg.Theme),
+		Error:    cfgError,
 	}
 
 	res, err := json.Marshal(response)
