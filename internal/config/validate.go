@@ -50,8 +50,7 @@ func isHexColor(color string) bool {
 
 func isURL(url string) bool {
 	r, _ := regexp.Compile(
-		`^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$`,
-	)
+		`^(https?|ftp)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]`)
 	return r.MatchString(url)
 }
 

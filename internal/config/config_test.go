@@ -167,11 +167,17 @@ func TestURLs(t *testing.T) {
 	if !isURL("https://example.com/test/test.xy?test=test") {
 		t.Fatal("Expected true, got false")
 	}
-	if !isURL("example.internal.priv") {
+	if !isURL("https://example.com/test/test.xy?test=test#test") {
 		t.Fatal("Expected true, got false")
 	}
-	if !isURL("test.test") {
+	if !isURL("ftp://example.com") {
 		t.Fatal("Expected true, got false")
+	}
+	if isURL("example.internal.priv") {
+		t.Fatal("Expected false, got true")
+	}
+	if isURL("test.test") {
+		t.Fatal("Expected false, got true")
 	}
 	if isURL("example") {
 		t.Fatal("Expected false, got true")
