@@ -25,27 +25,25 @@ package config
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"io/ioutil"
 	"os"
 )
 
 // LoadConfigFile - Load configuration from file
 func LoadConfigFile(filePath string) (*Config, string, error) {
-	jsonFile, err := os.Open(filePath)
+	cfgFile, err := os.Open(filePath)
 	if err != nil {
 		return nil, "", err
 	}
-	defer jsonFile.Close()
+	defer cfgFile.Close()
 
-	fileData, err := ioutil.ReadAll(jsonFile)
+	fileData, err := ioutil.ReadAll(cfgFile)
 	if err != nil {
 		return nil, "", err
 	}
 	checksum := checksum(fileData)
 
-	cfg := Config{}
-	err = json.Unmarshal(fileData, &cfg)
+	cfg, err := Unmarshal(fileData)
 	if err != nil {
 		return nil, "", err
 	}
@@ -54,7 +52,7 @@ func LoadConfigFile(filePath string) (*Config, string, error) {
 		return nil, "", err
 	}
 
-	return &cfg, checksum, nil
+	return cfg, checksum, nil
 }
 
 func checksum(data []byte) string {

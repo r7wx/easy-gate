@@ -52,13 +52,13 @@ func (s Service) Serve() {
 	http.Handle("/", http.FileServer(web.GetWebFS()))
 
 	if cfg.UseTLS {
-		log.Println("[Easy Gate] Serving API on", cfg.Addr, "(HTTPS)")
+		log.Println("[Easy Gate] Listening for connections on", cfg.Addr, "(HTTPS)")
 		if err := http.ListenAndServeTLS(cfg.Addr, cfg.CertFile,
 			cfg.KeyFile, nil); err != nil {
 			log.Fatal(err)
 		}
 	}
-	log.Println("[Easy Gate] Serving API on", cfg.Addr)
+	log.Println("[Easy Gate] Listening for connections on", cfg.Addr)
 	if err := http.ListenAndServe(cfg.Addr, nil); err != nil {
 		log.Fatal(err)
 	}

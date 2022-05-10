@@ -22,45 +22,85 @@ SOFTWARE.
 
 package config
 
+import (
+	"encoding/json"
+
+	"github.com/r7wx/easy-gate/internal/errors"
+	"gopkg.in/yaml.v3"
+)
+
 // Group - Easy Gate group configuration struct
 type Group struct {
-	Name   string `json:"name"`
-	Subnet string `json:"subnet"`
+	Name   string `json:"name" yaml:"name"`
+	Subnet string `json:"subnet" yaml:"subnet"`
 }
 
 // Service - Easy Gate service configuration struct
 type Service struct {
-	Icon   string   `json:"icon"`
-	Name   string   `json:"name"`
-	URL    string   `json:"url"`
-	Groups []string `json:"groups"`
+	Icon   string   `json:"icon" yaml:"icon"`
+	Name   string   `json:"name" yaml:"name"`
+	URL    string   `json:"url" yaml:"url"`
+	Groups []string `json:"groups" yaml:"groups"`
 }
 
 // Note - Easy Gate note configuration struct
 type Note struct {
-	Name   string   `json:"name"`
-	Text   string   `json:"text"`
-	Groups []string `json:"groups"`
+	Name   string   `json:"name" yaml:"name"`
+	Text   string   `json:"text" yaml:"text"`
+	Groups []string `json:"groups" yaml:"groups"`
 }
 
 // Theme - Easy Gate theme configuration struct
 type Theme struct {
-	Background string `json:"background"`
-	Foreground string `json:"foreground"`
+	Background string `json:"background" yaml:"background"`
+	Foreground string `json:"foreground" yaml:"foreground"`
 }
 
 // Config - Easy Gate configuration struct
 type Config struct {
-	Theme       Theme     `json:"theme"`
-	Addr        string    `json:"addr"`
-	Title       string    `json:"title"`
-	CertFile    string    `json:"cert_file"`
-	KeyFile     string    `json:"key_file"`
-	Icon        string    `json:"icon"`
-	Motd        string    `json:"motd"`
-	Groups      []Group   `json:"groups"`
-	Services    []Service `json:"services"`
-	Notes       []Note    `json:"notes"`
-	BehindProxy bool      `json:"behind_proxy"`
-	UseTLS      bool      `json:"use_tls"`
+	Theme       Theme     `json:"theme" yaml:"theme"`
+	Addr        string    `json:"addr" yaml:"addr"`
+	Title       string    `json:"title" yaml:"title"`
+	CertFile    string    `json:"cert_file" yaml:"cert_file"`
+	KeyFile     string    `json:"key_file" yaml:"key_file"`
+	Icon        string    `json:"icon" yaml:"icon"`
+	Motd        string    `json:"motd" yaml:"motd"`
+	Groups      []Group   `json:"groups" yaml:"groups"`
+	Services    []Service `json:"services" yaml:"services"`
+	Notes       []Note    `json:"notes" yaml:"notes"`
+	BehindProxy bool      `json:"behind_proxy" yaml:"behind_proxy"`
+	UseTLS      bool      `json:"use_tls" yaml:"use_tls"`
+}
+
+type format int
+
+const (
+	jsonFormat format = iota + 1
+	yamlFormat
+)
+
+// Unmarshal - Unmarshal config bytes into config struct
+func Unmarshal(configBytes []byte) (*Config, error) {
+	config := &Config{}
+
+	allowedFormats := []format{jsonFormat, yamlFormat}
+	for _, format := range allowedFormats {
+		switch format {
+		case jsonFormat:
+			err := json.Unmarshal(configBytes, config)
+			if err == nil {
+				return config, nil
+			}
+		case yamlFormat:
+			err := yaml.Unmarshal(configBytes, config)
+			if err == nil {
+				return config, nil
+			}
+		}
+	}
+
+	return nil, errors.NewEasyGateError(
+		errors.InvalidFormat,
+		errors.ConfigurationFile, "",
+	)
 }

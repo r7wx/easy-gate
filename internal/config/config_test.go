@@ -26,104 +26,133 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"reflect"
 	"testing"
 	"time"
+
+	"gopkg.in/yaml.v3"
 )
 
+var testCfg Config = Config{
+	Addr:        ":8080",
+	UseTLS:      false,
+	CertFile:    "",
+	KeyFile:     "",
+	BehindProxy: false,
+	Title:       "Test",
+	Icon:        "fa-solid fa-cubes",
+	Motd:        "",
+	Theme: Theme{
+		Background: "#ffffff",
+		Foreground: "#000000",
+	},
+	Groups: []Group{
+		{
+			Name:   "Group 1",
+			Subnet: "127.0.0.1/32",
+		},
+	},
+	Services: []Service{
+		{
+			Name:   "Service 1",
+			Icon:   "fa-solid fa-cube",
+			URL:    "http://test:8080",
+			Groups: []string{},
+		},
+		{
+			Name:   "Service 2",
+			Icon:   "fa-solid fa-cube",
+			URL:    "http://test2:8080",
+			Groups: []string{"Group 1"},
+		},
+	},
+	Notes: []Note{
+		{
+			Name:   "Note 1",
+			Text:   "This is a test note",
+			Groups: []string{},
+		},
+		{
+			Name:   "Note 2",
+			Text:   "This is another test note",
+			Groups: []string{"Group 1"},
+		},
+	},
+}
+
 const (
-	testConfigFilePath = "./test-config.json"
+	testJSONPath = "./test-config.json"
+	testYAMLPath = "./test-config.yml"
 )
 
 func TestMain(m *testing.M) {
-	testCfg := Config{
-		Addr:        ":8080",
-		UseTLS:      false,
-		CertFile:    "",
-		KeyFile:     "",
-		BehindProxy: false,
-		Title:       "Test",
-		Icon:        "fa-solid fa-cubes",
-		Motd:        "",
-		Theme: Theme{
-			Background: "#ffffff",
-			Foreground: "#000000",
-		},
-		Groups:   []Group{},
-		Services: []Service{},
-		Notes:    []Note{},
-	}
-
 	cfgJSON, err := json.Marshal(testCfg)
 	if err != nil {
 		panic(err)
 	}
-	err = ioutil.WriteFile(testConfigFilePath,
+	err = ioutil.WriteFile(testJSONPath,
 		cfgJSON, 0644)
 	if err != nil {
 		panic(err)
 	}
 
+	cfgYAML, err := yaml.Marshal(testCfg)
+	err = ioutil.WriteFile(testYAMLPath,
+		cfgYAML, 0644)
+	if err != nil {
+		panic(err)
+	}
+
 	exitCode := m.Run()
-	os.Remove(testConfigFilePath)
+	os.Remove(testJSONPath)
+	os.Remove(testYAMLPath)
 	os.Exit(exitCode)
 }
 
-func TestConfig(t *testing.T) {
-	routine := NewRoutine(testConfigFilePath,
-		8*time.Millisecond)
+func TestJSON(t *testing.T) {
+	routine := NewRoutine(testJSONPath, 1*time.Second)
 	go routine.Start()
 
-	counter := 0
-	for {
-		if counter == 150 {
-			break
-		}
+	cfg, err := routine.GetConfiguration()
+	if err != nil {
+		t.Fatal(err)
+	}
 
-		newCfg := Config{
-			Addr:        ":8080",
-			UseTLS:      false,
-			CertFile:    "",
-			KeyFile:     "",
-			BehindProxy: false,
-			Title:       "Test",
-			Icon:        "fa-solid fa-cubes",
-			Motd:        "",
-			Theme: Theme{
-				Background: "#ffffff",
-				Foreground: "#000000",
-			},
-			Groups: []Group{},
-			Services: []Service{
-				{
-					Icon: "fa-solid fa-cube",
-					Name: time.Now().String(),
-					URL:  "http://example.com",
-				},
-			},
-			Notes: []Note{},
-		}
-		cfgJSON, err := json.Marshal(newCfg)
-		if err != nil {
-			t.Fatal(err)
-		}
-		err = ioutil.WriteFile(testConfigFilePath,
-			cfgJSON, 0644)
-		if err != nil {
-			t.Fatal(err)
-		}
+	if !reflect.DeepEqual(*cfg, testCfg) {
+		t.Fatal("JSON configuration not parsed correctly")
+	}
+}
 
-		time.Sleep(10 * time.Millisecond)
-		cfg, err := routine.GetConfiguration()
-		if err != nil {
-			t.Fatal(err)
-		}
+func TestYAML(t *testing.T) {
+	routine := NewRoutine(testYAMLPath, 1*time.Second)
+	go routine.Start()
 
-		if cfg.Services[0].Name != newCfg.Services[0].Name {
-			t.Fatalf("Expected %v, got %v",
-				cfg.Services[0].Name, newCfg.Services[0].Name)
-		}
+	cfg, err := routine.GetConfiguration()
+	if err != nil {
+		t.Fatal(err)
+	}
 
-		counter++
+	if !reflect.DeepEqual(*cfg, testCfg) {
+		t.Fatal("YAML configuration not parsed correctly")
+	}
+}
+
+func TestFailConditions(t *testing.T) {
+	_, err := Unmarshal([]byte("AAAAAAA"))
+	if err == nil {
+		t.Fatal("Expected error, got nil")
+	}
+
+	routine := Routine{
+		FilePath: "TEST_FILE_DOES_NOT_EXIST.NOT_EXIST",
+		Interval: 1 * time.Second,
+	}
+	go routine.Start()
+	time.Sleep(2 * time.Second)
+
+	_, err = routine.GetConfiguration()
+	if err == nil {
+		t.Fatal("Expected error, got nil")
 	}
 }
 
