@@ -137,22 +137,140 @@ func TestYAML(t *testing.T) {
 	}
 }
 
-func TestFailConditions(t *testing.T) {
-	_, err := Unmarshal([]byte("AAAAAAA"))
-	if err == nil {
-		t.Fatal("Expected error, got nil")
+func TestJSONEnv(t *testing.T) {
+	TestJSON, err := json.Marshal(testCfg)
+	if err != nil {
+		t.Fatal(err)
 	}
+	os.Setenv(EnvName, string(TestJSON))
 
-	routine := Routine{
-		FilePath: "TEST_FILE_DOES_NOT_EXIST.NOT_EXIST",
-		Interval: 1 * time.Second,
-	}
+	routine := NewRoutine("", 1*time.Second)
 	go routine.Start()
-	time.Sleep(2 * time.Second)
 
-	_, err = routine.GetConfiguration()
+	cfg, err := routine.GetConfiguration()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !reflect.DeepEqual(*cfg, testCfg) {
+		t.Fatal("Env configuration not parsed correctly (JSON)")
+	}
+
+	os.Unsetenv(EnvName)
+}
+
+func TestYAMLEnv(t *testing.T) {
+	TestYAML, err := yaml.Marshal(testCfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	os.Setenv(EnvName, string(TestYAML))
+
+	routine := NewRoutine("", 1*time.Second)
+	go routine.Start()
+
+	cfg, err := routine.GetConfiguration()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !reflect.DeepEqual(*cfg, testCfg) {
+		t.Fatal("Env configuration not parsed correctly (YAML)")
+	}
+
+	os.Unsetenv(EnvName)
+}
+
+func TestInvalidFormat(t *testing.T) {
+	cfgRaw := []byte("invalid")
+	_, err := Unmarshal(cfgRaw)
 	if err == nil {
-		t.Fatal("Expected error, got nil")
+		t.Fatal("Expected error")
+	}
+}
+
+func TestInvalidLoad(t *testing.T) {
+	_, _, err := LoadConfig("")
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	_, _, err = loadConfig([]byte("invalid"))
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	invalidCfg, _ := json.Marshal(Config{})
+	_, _, err = loadConfig(invalidCfg)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+}
+
+func TestInvalidConfigElements(t *testing.T) {
+	err := validateConfig(&Config{
+		Icon: "xxx",
+	})
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	err = validateConfig(&Config{
+		Icon: "fa-solid fa-cubes",
+		Services: []Service{
+			{
+				Icon: "xxx",
+			},
+		},
+	})
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	err = validateConfig(&Config{
+		Icon: "fa-solid fa-cubes",
+		Services: []Service{
+			{
+				Icon: "fa-solid fa-cubes",
+				URL:  "xxx",
+			},
+		},
+	})
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	err = validateConfig(&Config{
+		Icon: "fa-solid fa-cubes",
+		Services: []Service{
+			{
+				Icon: "fa-solid fa-cubes",
+				URL:  "http://test",
+			},
+		},
+		Theme: Theme{
+			Background: "xxx",
+		},
+	})
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	err = validateConfig(&Config{
+		Icon: "fa-solid fa-cubes",
+		Services: []Service{
+			{
+				Icon: "fa-solid fa-cubes",
+				URL:  "http://test",
+			},
+		},
+		Theme: Theme{
+			Background: "#000000",
+			Foreground: "xxx",
+		},
+	})
+	if err == nil {
+		t.Fatal("Expected error")
 	}
 }
 

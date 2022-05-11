@@ -26,11 +26,23 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"io/ioutil"
+	"log"
 	"os"
 )
 
-// LoadConfigFile - Load configuration from file
-func LoadConfigFile(filePath string) (*Config, string, error) {
+// EnvName - Configuration environment variable name
+const (
+	EnvName = "EASY_GATE_CONFIG"
+)
+
+// LoadConfig - Load configuration from environment or file
+func LoadConfig(filePath string) (*Config, string, error) {
+	envCfg := os.Getenv(EnvName)
+	if envCfg != "" {
+		log.Println("Loading configuration from environment")
+		return loadConfig([]byte(envCfg))
+	}
+
 	cfgFile, err := os.Open(filePath)
 	if err != nil {
 		return nil, "", err
@@ -41,9 +53,13 @@ func LoadConfigFile(filePath string) (*Config, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
-	checksum := checksum(fileData)
 
-	cfg, err := Unmarshal(fileData)
+	return loadConfig(fileData)
+}
+
+func loadConfig(cfgData []byte) (*Config, string, error) {
+	checksum := checksum(cfgData)
+	cfg, err := Unmarshal(cfgData)
 	if err != nil {
 		return nil, "", err
 	}

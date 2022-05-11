@@ -48,4 +48,10 @@ func TestErrors(t *testing.T) {
 		t.Fatalf("Expected 'Invalid color for root element: background', got '%s'",
 			err.Error())
 	}
+
+	err = NewEasyGateError(InvalidFormat, ConfigurationFile, "")
+	if err.Error() != "Invalid format for configuration file element" {
+		t.Fatalf("Expected 'Invalid format for configuration file element', got '%s'",
+			err.Error())
+	}
 }

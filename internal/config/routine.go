@@ -40,7 +40,7 @@ type Routine struct {
 
 // NewRoutine - Create new config routine
 func NewRoutine(filePath string, interval time.Duration) *Routine {
-	cfg, checksum, err := LoadConfigFile(filePath)
+	cfg, checksum, err := LoadConfig(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -63,9 +63,11 @@ func (r *Routine) GetConfiguration() (*Config, error) {
 // Start - Start config routine
 func (r *Routine) Start() {
 	for {
-		cfg, checksum, err := LoadConfigFile(r.FilePath)
+		cfg, checksum, err := LoadConfig(r.FilePath)
 		if err != nil {
+			r.Lock()
 			r.Error = err
+			r.Unlock()
 			continue
 		}
 

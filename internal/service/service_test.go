@@ -111,7 +111,7 @@ func TestMain(m *testing.M) {
 	os.Exit(exitCode)
 }
 
-func TestService(t *testing.T) {
+func TestGetServices(t *testing.T) {
 	routine := config.NewRoutine(testConfigFilePath,
 		8*time.Millisecond)
 	go routine.Start()
@@ -125,22 +125,10 @@ func TestService(t *testing.T) {
 			t.Fail()
 		}
 	}
-	notes := service.getNotes(cfg, "192.168.1.1")
-	for _, n := range notes {
-		if n.Name != "note1" && n.Name != "note2" {
-			t.Fail()
-		}
-	}
 
 	services = service.getServices(cfg, "10.1.5.1")
 	for _, s := range services {
 		if s.Name != "service1" && s.Name != "service3" {
-			t.Fail()
-		}
-	}
-	notes = service.getNotes(cfg, "10.1.5.1")
-	for _, n := range notes {
-		if n.Name != "note1" && n.Name != "note3" {
 			t.Fail()
 		}
 	}
@@ -151,10 +139,57 @@ func TestService(t *testing.T) {
 			t.Fail()
 		}
 	}
+}
+
+func TestGetNotes(t *testing.T) {
+	routine := config.NewRoutine(testConfigFilePath,
+		8*time.Millisecond)
+	go routine.Start()
+
+	service := NewService(routine)
+	cfg, _ := service.ConfigRoutine.GetConfiguration()
+
+	notes := service.getNotes(cfg, "192.168.1.1")
+	for _, n := range notes {
+		if n.Name != "note1" && n.Name != "note2" {
+			t.Fail()
+		}
+	}
+
+	notes = service.getNotes(cfg, "10.1.5.1")
+	for _, n := range notes {
+		if n.Name != "note1" && n.Name != "note3" {
+			t.Fail()
+		}
+	}
+
 	notes = service.getNotes(cfg, "1.1.1.1")
 	for _, n := range notes {
 		if n.Name != "note1" {
 			t.Fail()
 		}
+	}
+}
+
+func TestIsAllowed(t *testing.T) {
+	if !isAllowed([]config.Group{{
+		Name:   "test",
+		Subnet: "127.0.0.1/32",
+	}}, []string{"test"}, "127.0.0.1") {
+		t.Fail()
+	}
+
+	if isAllowed([]config.Group{{
+		Name:   "test",
+		Subnet: "127.0.0.1/32",
+	}}, []string{"test"}, "xxxxxx") {
+		t.Fail()
+	}
+
+	if isAllowed([]config.Group{{
+		Name:   "test",
+		Subnet: "xxxxxxxxxxx",
+	}}, []string{"test"}, "127.0.0.1") {
+		t.Fail()
 	}
 }

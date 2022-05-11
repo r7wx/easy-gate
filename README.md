@@ -245,3 +245,38 @@ A note entry is used to define a simple text note which has a title and a conten
 ### Icons
 
 Icons are provided by the [Font Awesome](https://fontawesome.com/icons?d=gallery) library. Get the appropriate icon name by using the Font Awesome website (only free icons are available).
+
+### YAML
+
+The configuration file can also be written in YAML format. You can find an example file in the root directory of this repository (easy-gate.yml):
+
+```yml
+addr: 0.0.0.0:8080
+use_tls: false
+cert_file: ""
+key_file: ""
+behind_proxy: false
+title: Easy Gate
+icon: fa-solid fa-cubes
+motd: Welcome to Easy Gate
+theme:
+  background: "#FFFFFF"
+  foreground: "#000000"
+groups:
+  - name: internal
+    subnet: 192.168.1.1/24
+  - name: vpn
+    subnet: 10.8.1.1/24
+services:
+  - icon: fa-brands fa-git-square
+    name: Git
+    url: https://git.example.internal
+    groups:
+      - internal
+  - icon: fa-brands fa-git-square
+    name: Git
+    url: https://git.example.vpn
+    groups:
+      - vpn
+[...]
+```
