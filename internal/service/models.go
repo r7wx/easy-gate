@@ -23,9 +23,16 @@ SOFTWARE.
 package service
 
 type service struct {
-	Icon string `json:"icon"`
-	Name string `json:"name"`
-	URL  string `json:"url"`
+	Icon  string `json:"icon"`
+	Name  string `json:"name"`
+	URL   string `json:"url"`
+	Category int `json:"category"`
+}
+
+type category struct {
+	Id 	  		int    `json:"id"`
+	Title 		string `json:"title"`
+	Description string `json:"description"`
 }
 
 type note struct {
@@ -39,11 +46,12 @@ type theme struct {
 }
 
 type response struct {
-	Error    string    `json:"error"`
-	Theme    theme     `json:"theme"`
-	Title    string    `json:"title"`
-	Icon     string    `json:"icon"`
-	Motd     string    `json:"motd"`
-	Services []service `json:"services"`
-	Notes    []note    `json:"notes"`
+	Error      string    `json:"error"`
+	Theme      theme     `json:"theme"`
+	Title      string    `json:"title"`
+	Icon       string    `json:"icon"`
+	Motd       string    `json:"motd"`
+	Services   []service `json:"services"`
+	Categories []category `json:"categories"`
+	Notes      []note    `json:"notes"`
 }

@@ -34,6 +34,14 @@ type Service struct {
 	Name   string   `json:"name"`
 	URL    string   `json:"url"`
 	Groups []string `json:"groups"`
+	Category int 	`json:"category"`
+	Labels []int 	`json:"labels"`
+}
+
+type Category struct {
+	Id 	  		int	   `json:"id"`
+	Title 		string `json:"title"`
+	Description string `json:"description"`
 }
 
 // Note - Easy Gate note configuration struct
@@ -51,16 +59,17 @@ type Theme struct {
 
 // Config - Easy Gate configuration struct
 type Config struct {
-	Theme       Theme     `json:"theme"`
-	Addr        string    `json:"addr"`
-	Title       string    `json:"title"`
-	CertFile    string    `json:"cert_file"`
-	KeyFile     string    `json:"key_file"`
-	Icon        string    `json:"icon"`
-	Motd        string    `json:"motd"`
-	Groups      []Group   `json:"groups"`
-	Services    []Service `json:"services"`
-	Notes       []Note    `json:"notes"`
-	BehindProxy bool      `json:"behind_proxy"`
-	UseTLS      bool      `json:"use_tls"`
+	Theme       Theme      `json:"theme"`
+	Addr        string     `json:"addr"`
+	Title       string     `json:"title"`
+	CertFile    string     `json:"cert_file"`
+	KeyFile     string     `json:"key_file"`
+	Icon        string     `json:"icon"`
+	Motd        string     `json:"motd"`
+	Groups      []Group    `json:"groups"`
+	Services    []Service  `json:"services"`
+	Categories  []Category `json:"categories"`
+	Notes       []Note     `json:"notes"`
+	BehindProxy bool       `json:"behind_proxy"`
+	UseTLS      bool       `json:"use_tls"`
 }

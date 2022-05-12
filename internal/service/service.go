@@ -78,13 +78,14 @@ func (s Service) data(w http.ResponseWriter, req *http.Request) {
 	log.Println("[Easy Gate] Request from", reqIP)
 
 	response := response{
-		Title:    cfg.Title,
-		Icon:     cfg.Icon,
-		Motd:     cfg.Motd,
-		Services: s.getServices(cfg, reqIP),
-		Notes:    s.getNotes(cfg, reqIP),
-		Theme:    theme(cfg.Theme),
-		Error:    "",
+		Title:      cfg.Title,
+		Icon:       cfg.Icon,
+		Motd:       cfg.Motd,
+		Services:   s.getServices(cfg, reqIP),
+		Categories: s.getCategories(cfg),
+		Notes:      s.getNotes(cfg, reqIP),
+		Theme:      theme(cfg.Theme),
+		Error:      "",
 	}
 	if cfgError != nil {
 		response.Error = cfgError.Error()

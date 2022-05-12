@@ -4,9 +4,9 @@
     "cert_file": "",
     "key_file": "",
     "behind_proxy": false,
-    "title": "Easy Gate",
+    "title": "CTI Gateway",
     "icon": "fa-solid fa-cubes",
-    "motd": "Welcome to Easy Gate",
+    "motd": "Welcome to CTI Gateway!",
     "theme": {
         "background": "#FFFFFF",
         "foreground": "#000000"
@@ -23,136 +23,482 @@
     ],
     "services": [
         {
-            "icon": "fa-brands fa-git-square",
-            "name": "Git",
-            "url": "https://git.example.internal",
-            "groups": [
-                "internal"
-            ]
+            "icon": "fa-brands fa-bitbucket",
+            "name": "CTI Bitbucket",
+            "url": "https://bitbucket.com",
+            "groups": [],
+            "category": 5,
+            "labels": []
         },
         {
-            "icon": "fa-brands fa-git-square",
-            "name": "Git",
-            "url": "https://git.example.vpn",
-            "groups": [
-                "vpn"
-            ]
+            "icon": "fa-brands fa-bitbucket",
+            "name": "ICG Bitbucket",
+            "url": "https://bitbucket.com",
+            "groups": [],
+            "category": 5,
+            "labels": []
         },
         {
-            "icon": "fa-brands fa-docker",
-            "name": "Portainer",
-            "url": "https://portainer.example.internal",
-            "groups": [
-                "internal"
-            ]
+            "icon": "fa-solid fa-frog",
+            "name": "Artifactory",
+            "url": "https://bitbucket.com",
+            "groups": [],
+            "category": 5,
+            "labels": []
+        },
+
+
+        {
+            "icon": "fa-brands fa-confluence",
+            "name": "CTI Confluence",
+            "url": "https://confluence.com",
+            "groups": [],
+            "category": 1,
+            "labels": []
         },
         {
-            "icon": "fa-solid fa-folder-open",
-            "name": "Files",
-            "url": "https://files.example.internal",
-            "groups": [
-                "internal"
-            ]
+            "icon": "fa-brands fa-confluence",
+            "name": "ICG Confluence",
+            "url": "https://confluence.com",
+            "groups": [],
+            "category": 1,
+            "labels": []
         },
         {
-            "icon": "fa-solid fa-box-archive",
-            "name": "Archive",
-            "url": "https://archive.example.internal",
-            "groups": [
-                "internal"
-            ]
+            "icon": "fa-brands fa-confluence",
+            "name": "RND Confluence",
+            "url": "https://confluence.com",
+            "groups": [],
+            "category": 1,
+            "labels": []
         },
         {
-            "icon": "fa-solid fa-chart-line",
-            "name": "Kibana",
-            "url": "https://kibana.example.internal",
-            "groups": [
-                "internal"
-            ]
+            "icon": "fa-brands fa-confluence",
+            "name": "CRW Guide",
+            "url": "https://confluence.com",
+            "groups": [],
+            "category": 1,
+            "labels": []
         },
         {
-            "icon": "fa-solid fa-download",
-            "name": "Transmission",
-            "url": "https://transmission.example.internal",
-            "groups": [
-                "internal"
-            ]
+            "icon": "fa-brands fa-confluence",
+            "name": "CRC Guide",
+            "url": "https://confluence.com",
+            "groups": [],
+            "category": 1,
+            "labels": []
         },
         {
-            "icon": "fa-solid fa-bookmark",
-            "name": "Bookmarks",
-            "url": "https://bookmarks.example.internal",
-            "groups": [
-                "internal"
-            ]
-        },
-        {
-            "icon": "fa-solid fa-book",
-            "name": "Calibre",
-            "url": "https://calibre.example.internal",
-            "groups": [
-                "internal"
-            ]
-        },
-        {
-            "icon": "fa-solid fa-comment",
-            "name": "Webchat",
-            "url": "https://chat.example.internal",
-            "groups": []
-        },
-        {
-            "icon": "fa-solid fa-cloud",
-            "name": "Owncloud",
-            "url": "https://owncloud.example.internal",
-            "groups": [
-                "internal",
-                "vpn"
-            ]
+            "icon": "fa-brands fa-confluence",
+            "name": "Helix Guide",
+            "url": "https://confluence.com",
+            "groups": [],
+            "category": 1,
+            "labels": []
         },
         {
             "icon": "fa-brands fa-wikipedia-w",
             "name": "Wiki",
             "url": "https://wiki.example.internal",
-            "groups": [
-                "internal",
-                "vpn"
-            ]
+            "groups": [],
+            "category": 1,
+            "labels": []
+        },
+
+
+        {
+            "icon": "fa-brands fa-jira",
+            "name": "CTI Jira",
+            "url": "https://jira.com",
+            "groups": [],
+            "category": 2,
+            "labels": []
+        },
+        {
+            "icon": "fa-brands fa-jira",
+            "name": "ICG Jira",
+            "url": "https://jira.com",
+            "groups": [],
+            "category": 2,
+            "labels": []
+        },
+        {
+            "icon": "fa-brands fa-jira",
+            "name": "RND Jira",
+            "url": "https://jira.com",
+            "groups": [],
+            "category": 2,
+            "labels": []
+        },
+        {
+            "icon": "fa-brands fa-jira",
+            "name": "CRW Jira",
+            "url": "https://jira.com",
+            "groups": [],
+            "category": 2,
+            "labels": []
+        },
+        {
+            "icon": "fa-brands fa-jira",
+            "name": "Helix Jira",
+            "url": "https://jira.com",
+            "groups": [],
+            "category": 2,
+            "labels": []
+        },
+        {
+            "icon": "fa-brands fa-jira",
+            "name": "CRC Jira",
+            "url": "https://jira.com",
+            "groups": [],
+            "category": 2,
+            "labels": []
+        },
+        {
+            "icon": "fa-brands fa-confluence",
+            "name": "CRW Jira Queue",
+            "url": "https://confluence.com",
+            "groups": [],
+            "category": 2,
+            "labels": []
+        },
+        {
+            "icon": "fa-brands fa-confluence",
+            "name": "CRC Issue Tracker",
+            "url": "https://confluence.com",
+            "groups": [],
+            "category": 2,
+            "labels": []
+        },
+        {
+            "icon": "fa-brands fa-confluence",
+            "name": "Helix Issue Tracker",
+            "url": "https://confluence.com",
+            "groups": [],
+            "category": 2,
+            "labels": []
+        },
+        
+
+        {
+            "icon": "fa-solid fa-chart-line",
+            "name": "CTI Kibana",
+            "url": "https://kibana.com",
+            "groups": [],
+            "category": 8,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-chart-line",
+            "name": "ICG Kibana",
+            "url": "https://kibana.com",
+            "groups": [],
+            "category": 8,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-chart-line",
+            "name": "RND Kibana",
+            "url": "https://kibana.com",
+            "groups": [],
+            "category": 8,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-chart-area",
+            "name": "CTI Prometheus",
+            "url": "https://prometheus.com",
+            "groups": [],
+            "category": 8,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-chart-area",
+            "name": "ICG Prometheus",
+            "url": "https://prometheus.com",
+            "groups": [],
+            "category": 8,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-chart-area",
+            "name": "RND Prometheus",
+            "url": "https://prometheus.com",
+            "groups": [],
+            "category": 8,
+            "labels": []
+        },
+
+
+        {
+            "icon": "fa-solid fa-store",
+            "name": "Marketplace",
+            "url": "https://google.com",
+            "groups": [],
+            "category": 6,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-robot",
+            "name": "CAS",
+            "url": "https://google.com",
+            "groups": [],
+            "category": 6,
+            "labels": []
+        },
+
+
+        {
+            "icon": "fa-solid fa-bars-progress",
+            "name": "CTI ACM",
+            "url": "https://google.com",
+            "groups": [],
+            "category": 9,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-bars-progress",
+            "name": "ICG ACM",
+            "url": "https://google.com",
+            "groups": [],
+            "category": 9,
+            "labels": []
+        },
+        
+
+        {
+            "icon": "fa-solid fa-code",
+            "name": "ICG CRW",
+            "url": "https://google.com",
+            "groups": [],
+            "category": 0,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-code",
+            "name": "RND CRW",
+            "url": "https://google.com",
+            "groups": [],
+            "category": 0,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-cloud",
+            "name": "CRC",
+            "url": "https://google.com",
+            "groups": [],
+            "category": 0,
+            "labels": []
+        },
+
+
+        {
+            "icon": "fa-solid fa-cloud",
+            "name": "OCP 01d",
+            "url": "https://openshift.com",
+            "groups": [],
+            "category": 3,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-cloud",
+            "name": "OCP 02d",
+            "url": "https://openshift.com",
+            "groups": [],
+            "category": 3,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-cloud",
+            "name": "OCP 03d",
+            "url": "https://openshift.com",
+            "groups": [],
+            "category": 3,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-cloud",
+            "name": "OCP 05d",
+            "url": "https://openshift.com",
+            "groups": [],
+            "category": 3,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-cloud",
+            "name": "OCP 06d",
+            "url": "https://openshift.com",
+            "groups": [],
+            "category": 3,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-cloud",
+            "name": "OCP 11d",
+            "url": "https://openshift.com",
+            "groups": [],
+            "category": 3,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-cloud",
+            "name": "OCP 15d",
+            "url": "https://openshift.com",
+            "groups": [],
+            "category": 3,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-cloud",
+            "name": "OCP 45d",
+            "url": "https://openshift.com",
+            "groups": [],
+            "category": 3,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-cloud",
+            "name": "OCP 58d",
+            "url": "https://openshift.com",
+            "groups": [],
+            "category": 3,
+            "labels": []
+        },
+
+
+        {
+            "icon": "fa-solid fa-comment",
+            "name": "Teams",
+            "url": "https://teams.com",
+            "groups": [],
+            "category": 4,
+            "labels": []
+        },
+
+
+        {
+            "icon": "fa-solid fa-box-archive",
+            "name": "Archive",
+            "url": "https://archive.example.internal",
+            "groups": [],
+            "category": 2,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-chart-line",
+            "name": "Kibana",
+            "url": "https://kibana.example.internal",
+            "groups": [],
+            "category": 3,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-bookmark",
+            "name": "Bookmarks",
+            "url": "https://bookmarks.example.internal",
+            "groups": [],
+            "category": 5,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-book",
+            "name": "Calibre",
+            "url": "https://calibre.example.internal",
+            "groups": [],
+            "category": 4,
+            "labels": []
+        },
+        {
+            "icon": "fa-solid fa-comment",
+            "name": "Webchat",
+            "url": "https://chat.example.internal",
+            "groups": [],
+            "category": 2,
+            "labels": []
         },
         {
             "icon": "fa-brands fa-mastodon",
             "name": "Mastodon",
             "url": "https://mastodon.example.internal",
-            "groups": [
-                "internal",
-                "vpn"
-            ]
+            "groups": [],
+            "category": 2,
+            "labels": []
         },
         {
             "icon": "fa-brands fa-google",
             "name": "Google",
             "url": "https://www.google.com",
-            "groups": []
+            "groups": [],
+            "category": 3,
+            "labels": []
         },
         {
             "icon": "fa-brands fa-youtube",
             "name": "Youtube",
             "url": "https://www.youtube.com",
-            "groups": []
+            "groups": [],
+            "category": 4,
+            "labels": []
+        }
+    ],
+    "categories": [
+        {
+            "id": 0,
+            "title": "Development",
+            "description": "Services that are used for development"
         },
         {
-            "icon": "fa-brands fa-stack-overflow",
-            "name": "Stackoverflow",
-            "url": "https://stackoverflow.com",
-            "groups": []
+            "id": 1,
+            "title": "Documentation",
+            "description": "Services that are used for documentation"
+        },
+        {
+            "id": 2,
+            "title": "Ticketing",
+            "description": "Services that are used for ticketing"
+        },
+        {
+            "id": 3,
+            "title": "Clusters",
+            "description": "Services that are used for clusters"
+        },
+        {
+            "id": 4,
+            "title": "Communication",
+            "description": "Services that are used for communication"
+        },
+        {
+            "id": 5,
+            "title": "Repositories",
+            "description": "Services that are used for repositories"
+        },
+        {
+            "id": 6,
+            "title": "Orders",
+            "description": "Services that are used for orders"
+        },
+        {
+            "id": 7,
+            "title": "Hosts",
+            "description": "Services that are used for hosts"
+        },
+        {
+            "id": 8,
+            "title": "Monitoring",
+            "description": "Services that are used for monitoring"
+        },
+        {
+            "id": 9,
+            "title": "Management",
+            "description": "Services that are used for management"
         }
+        
     ],
     "notes": [
         {
             "name": "Simple note",
             "text": "This is a simple note for vpn users",
-            "groups": [
-                "vpn"
-            ]
+            "groups": []
         },
         {
             "name": "Global note",
@@ -167,9 +513,7 @@
         {
             "name": "Another note",
             "text": "Another note for internal network users only",
-            "groups": [
-                "internal"
-            ]
+            "groups": []
         }
     ]
 }
