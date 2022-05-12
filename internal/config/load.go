@@ -26,7 +26,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"io/ioutil"
-	"log"
 	"os"
 
 	"github.com/r7wx/easy-gate/internal/share"
@@ -36,7 +35,6 @@ import (
 func LoadConfig(filePath string) (*Config, string, error) {
 	envCfg := os.Getenv(share.CFGEnv)
 	if envCfg != "" {
-		log.Println("Loading configuration from environment")
 		return loadConfig([]byte(envCfg))
 	}
 
