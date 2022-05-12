@@ -217,8 +217,8 @@ Example of a dark mode theme:
 
 ```yml
 theme:
-  background: #1d1d1d
-  foreground: #ffffff
+  background: "#FFFFFF"
+  foreground: "#000000"
 ```
 
 ### Groups
