@@ -24,6 +24,7 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -131,6 +132,56 @@ func TestService(t *testing.T) {
 		t.Fatal("Expected status code 200, got",
 			res.StatusCode)
 	}
+
+	routine.Lock()
+	routine.Config.BehindProxy = true
+	routine.Unlock()
+
+	req = httptest.NewRequest(http.MethodGet, "/api/data", nil)
+	w = httptest.NewRecorder()
+	service.data(w, req)
+
+	res = w.Result()
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("Expected status code 400, got %d",
+			res.StatusCode)
+	}
+
+	req = httptest.NewRequest(http.MethodGet, "/api/data", nil)
+	req.Header.Set("X-Forwarded-For", "127.0.0.1")
+	w = httptest.NewRecorder()
+	service.data(w, req)
+
+	res = w.Result()
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("Expected status code 200, got %d",
+			res.StatusCode)
+	}
+
+	routine.Lock()
+	routine.Config.BehindProxy = false
+	routine.Error = fmt.Errorf("Test error")
+	routine.Unlock()
+
+	req = httptest.NewRequest(http.MethodGet, "/api/data", nil)
+	w = httptest.NewRecorder()
+	service.data(w, req)
+
+	res = w.Result()
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("Expected status code 200, got %d",
+			res.StatusCode)
+	}
+
+	routine.Lock()
+	routine.Error = nil
+	routine.Unlock()
 }
 
 func TestGetServices(t *testing.T) {
