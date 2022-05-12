@@ -28,16 +28,13 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-)
 
-// EnvName - Configuration environment variable name
-const (
-	EnvName = "EASY_GATE_CONFIG"
+	"github.com/r7wx/easy-gate/internal/share"
 )
 
 // LoadConfig - Load configuration from environment or file
 func LoadConfig(filePath string) (*Config, string, error) {
-	envCfg := os.Getenv(EnvName)
+	envCfg := os.Getenv(share.CFGEnv)
 	if envCfg != "" {
 		log.Println("Loading configuration from environment")
 		return loadConfig([]byte(envCfg))

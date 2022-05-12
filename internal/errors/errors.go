@@ -58,7 +58,7 @@ func NewEasyGateError(errorType ErrorType, element ErrorElement, name string) er
 }
 
 func (e EasyGateError) Error() string {
-	message := fmt.Sprintf("Invalid %s for %s element",
+	message := fmt.Sprintf("Invalid %s for %s",
 		e.ErrorType, e.Element)
 	if e.Name != "" {
 		message = fmt.Sprintf("%s: %s", message, e.Name)

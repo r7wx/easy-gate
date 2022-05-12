@@ -30,6 +30,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/r7wx/easy-gate/internal/share"
 	"gopkg.in/yaml.v3"
 )
 
@@ -109,6 +110,36 @@ func TestMain(m *testing.M) {
 	os.Exit(exitCode)
 }
 
+func TestPath(t *testing.T) {
+	args := []string{"test"}
+	_, err := GetConfigPath(args)
+	if err == nil {
+		t.Fatal("Expected error, got nil")
+	}
+
+	args = []string{"", testJSONPath}
+	cfg, err := GetConfigPath(args)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if cfg != testJSONPath {
+		t.Fatalf("Expected %s, got %s",
+			testJSONPath, cfg)
+	}
+
+	os.Setenv(share.CFGPathEnv, testYAMLPath)
+	cfg, err = GetConfigPath([]string{""})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if cfg != testYAMLPath {
+		t.Fatalf("Expected %s, got %s",
+			testYAMLPath, cfg)
+	}
+
+	os.Unsetenv(share.CFGPathEnv)
+}
+
 func TestJSON(t *testing.T) {
 	routine := NewRoutine(testJSONPath, 1*time.Second)
 	go routine.Start()
@@ -142,7 +173,7 @@ func TestJSONEnv(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	os.Setenv(EnvName, string(TestJSON))
+	os.Setenv(share.CFGEnv, string(TestJSON))
 
 	routine := NewRoutine("", 1*time.Second)
 	go routine.Start()
@@ -156,7 +187,7 @@ func TestJSONEnv(t *testing.T) {
 		t.Fatal("Env configuration not parsed correctly (JSON)")
 	}
 
-	os.Unsetenv(EnvName)
+	os.Unsetenv(share.CFGEnv)
 }
 
 func TestYAMLEnv(t *testing.T) {
@@ -164,7 +195,7 @@ func TestYAMLEnv(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	os.Setenv(EnvName, string(TestYAML))
+	os.Setenv(share.CFGEnv, string(TestYAML))
 
 	routine := NewRoutine("", 1*time.Second)
 	go routine.Start()
@@ -178,7 +209,7 @@ func TestYAMLEnv(t *testing.T) {
 		t.Fatal("Env configuration not parsed correctly (YAML)")
 	}
 
-	os.Unsetenv(EnvName)
+	os.Unsetenv(share.CFGEnv)
 }
 
 func TestInvalidFormat(t *testing.T) {
