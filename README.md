@@ -20,22 +20,22 @@
 <img src="assets/screenshot.png" />
 
 <p align="justify">
-Easy Gate is a simple web application built in Go and React that acts as the home page for your self-hosted infrastructure. Services and notes are parsed from a JSON file in real-time (without restarting the application). Items can also be assigned to one or more groups to show them only to specific users (based on their IP addresses).
+Easy Gate is a simple web application built in Go and React that acts as the home page for your self-hosted infrastructure. Services and notes are parsed from a configuration file in real-time (without restarting the application). Items can also be assigned to one or more groups to show them only to specific users (based on their IP addresses).
 </p>
 
 ### Features
 
-- Service and note parsing from a JSON file in real-time (without restarting the application).
+- Service and note parsing from a configuration file (JSON/YAML) in real-time (without restarting the application).
 - Service and note assignment to one or more groups to show items only to specific users (based on their IP addresses).
 - Customizable theme.
-- Run as dependecy free standalone executable or as a Docker image.
+- Run as dependecy free standalone executable or as a Docker container.
 
 ## Deployment
 
 ### Standalone Executable
 
 <p align="justify">
-In order to run Easy Gate as a standalone binary, you can build it from source code or download a pre-built binary from the latest release.
+In order to run Easy Gate as a standalone executable, you can build it from source code or download a pre-built binary from the latest release.
 </p>
 
 **Build from source:**
@@ -49,17 +49,17 @@ make
 **Run executable:**
 
 ```bash
-easy-gate <path to easy-gate.json>
+easy-gate <path-to-config-file>
 ```
 
 <p align="justify">
-If no command line argument is provided Easy Gate will search the configuration file in current directory.
+Configuration file can be either a JSON or a YAML file.
 </p>
 
 ### Docker
 
 <p align="justify">
-You can deploy an instance of Easy Gate by using docker:
+You can deploy an instance of Easy Gate by using Docker:
 </p>
 
 ```bash
@@ -67,6 +67,19 @@ docker run -d --name=easy-gate \
   -p 8080:8080 \
   -v /path/to/easy-gate.json:/etc/easy-gate/easy-gate.json \
   --restart unless-stopped \
+  r7wx/easy-gate:latest
+```
+
+<p align="justify">
+By default the Easy Gate image will look for a configuration file in /etc/easy-gate/easy-gate.json, but this value can be overridden by using the EASY_GATE_CONFIG_PATH environment variable:
+</p>
+
+```bash
+docker run -d --name=easy-gate \
+  -p 8080:8080 \
+  -v /path/to/easy-gate.yml:/another/path/easy-gate.yml \
+  --restart unless-stopped \
+  -e EASY_GATE_CONFIG_PATH=/another/path/easy-gate.yml \
   r7wx/easy-gate:latest
 ```
 
@@ -89,6 +102,25 @@ services:
 
 ```bash
 docker-compose up
+```
+
+<p align="justify">
+By default the Easy Gate image will look for a configuration file in /etc/easy-gate/easy-gate.json, but this value can be overridden by using the EASY_GATE_CONFIG_PATH environment variable:
+</p>
+
+```yml
+services:
+  easy-gate:
+    image: r7wx/easy-gate:latest
+    build: .
+    container_name: easy-gate
+    restart: unless-stopped
+    environment:
+      - EASY_GATE_CONFIG_PATH=/etc/easy-gate/easy-gate.yml
+    ports:
+      - 8080:8080
+    volumes:
+      - ./easy-gate.yml:/etc/easy-gate/easy-gate.yml
 ```
 
 ### Docker Compose (behind nginx)
@@ -137,7 +169,7 @@ location / {
 [...]
 ```
 
-It is also mandatory to set "behind_proxy" to true in easy-gate.json:
+It is also mandatory to set "behind_proxy" to true in your configuration file:
 
 ```json
 [...]
@@ -145,12 +177,12 @@ It is also mandatory to set "behind_proxy" to true in easy-gate.json:
 [...]
 ```
 
-You can find the complete docker-compose and nginx configuration files in the examples directory. The same logic applies to standalone and docker image deployments.
+You can find the complete docker-compose and nginx configuration files in the examples directory. The same logic applies to standalone and Docker deployments.
 
 ## Configuration
 
 <p align="justify">
-Easy gate can be configured by the easy-gate.json file. An example configuration is provided in the root directory of this repository (easy-gate.json).
+Easy gate can be configured by a JSON or a YAML configuration file. An example configuration is provided in the root directory of this repository (easy-gate.json/easy-gate.yml).
 </p>
 
 ### Options
@@ -172,6 +204,8 @@ Easy Gate theme can be configured by providing colors for background and foregro
 
 Example of a dark mode theme:
 
+#### JSON
+
 ```json
 "theme": {
   "background": "#1d1d1d",
@@ -179,11 +213,21 @@ Example of a dark mode theme:
 }
 ```
 
+#### YAML
+
+```yml
+theme:
+  background: #1d1d1d
+  foreground: #ffffff
+```
+
 ### Groups
 
 <p align="justify">
 Group entries are used to define which users can see which items, by providing the user subnet:
 </p>
+
+#### JSON
 
 ```json
 "groups": [
@@ -198,11 +242,23 @@ Group entries are used to define which users can see which items, by providing t
 ]
 ```
 
+#### YAML
+
+```yml
+groups:
+  - name: internal
+    subnet: 192.168.1.1/24
+  - name: vpn
+    subnet: 10.8.1.1/24
+```
+
 ### Services
 
 <p align="justify">
 A service entry is used to define a service that is available in the infrastructure. Each service has a name, an url, an icon and the groups that can see it (defined in the groups section). If no group is provided the item can be seen by all users:
 </p>
+
+#### JSON
 
 ```json
 {
@@ -221,11 +277,27 @@ A service entry is used to define a service that is available in the infrastruct
 }
 ```
 
+#### YAML
+
+```yml
+- icon: fa-brands fa-git-square
+  name: Git
+  url: https://git.example.vpn
+  groups:
+    - vpn
+- icon: fa-brands fa-docker
+  name: Portainer
+  url: https://portainer.example.internal
+  groups: []
+```
+
 ### Notes
 
 <p align="justify">
 A note entry is used to define a simple text note which has a title and a content. Each note has a name, the note content (text) and the groups that can see it (defined in the groups section). If no group is provided the item can be seen by all users:
 </p>
+
+#### JSON
 
 ```json
 {
@@ -242,41 +314,23 @@ A note entry is used to define a simple text note which has a title and a conten
 }
 ```
 
+#### YAML
+
+```yml
+- name: Simple note
+  text: This is a simple note for vpn users
+  groups:
+    - vpn
+- name: Global note
+  text: This note will be visible to everyone
+  groups: []
+```
+
 ### Icons
 
 Icons are provided by the [Font Awesome](https://fontawesome.com/icons?d=gallery) library. Get the appropriate icon name by using the Font Awesome website (only free icons are available).
 
-### YAML
+### Environment Variables
 
-The configuration file can also be written in YAML format. You can find an example file in the root directory of this repository (easy-gate.yml):
-
-```yml
-addr: 0.0.0.0:8080
-use_tls: false
-cert_file: ""
-key_file: ""
-behind_proxy: false
-title: Easy Gate
-icon: fa-solid fa-cubes
-motd: Welcome to Easy Gate
-theme:
-  background: "#FFFFFF"
-  foreground: "#000000"
-groups:
-  - name: internal
-    subnet: 192.168.1.1/24
-  - name: vpn
-    subnet: 10.8.1.1/24
-services:
-  - icon: fa-brands fa-git-square
-    name: Git
-    url: https://git.example.internal
-    groups:
-      - internal
-  - icon: fa-brands fa-git-square
-    name: Git
-    url: https://git.example.vpn
-    groups:
-      - vpn
-[...]
-```
+- **EASY_GATE_CONFIG_PATH:** Easy Gate configuration file path can be provided by this environment variable. The value will have precedence over the configuration file path provided in the command line.
+- **EASY_GATE_CONFIG:** Insted of providing a configuration file, it is possible to provide the entire configuration as a JSON or YAML string in this environment variable. The content of this variable will have precedence over the configuration file.
