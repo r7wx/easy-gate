@@ -25,6 +25,8 @@ package service
 import (
 	"encoding/json"
 	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 	"time"
@@ -109,6 +111,26 @@ func TestMain(m *testing.M) {
 	exitCode := m.Run()
 	os.Remove(testConfigFilePath)
 	os.Exit(exitCode)
+}
+
+func TestService(t *testing.T) {
+	routine := config.NewRoutine(testConfigFilePath,
+		1*time.Second)
+	go routine.Start()
+
+	service := NewService(routine)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/data", nil)
+	w := httptest.NewRecorder()
+	service.data(w, req)
+
+	res := w.Result()
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		t.Fatal("Expected status code 200, got",
+			res.StatusCode)
+	}
 }
 
 func TestGetServices(t *testing.T) {
