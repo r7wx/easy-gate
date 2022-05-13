@@ -21,7 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ServiceCategory from "./ServiceCategory";
 import * as React from 'react'

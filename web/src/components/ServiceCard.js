@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function Service(props) {
+function ServiceCard(props) {
   const openService = (url) => {
     window.open(url, "_blank");
   };
@@ -16,4 +16,4 @@ function Service(props) {
   );
 }
 
-export default Service;
+export default ServiceCard;

@@ -21,6 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+import { AppData } from "./models/AppData";
+import { Service } from "./models/Service";
+import { Category } from "./models/Category";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -29,34 +32,33 @@ import { fab } from "@fortawesome/free-brands-svg-icons";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
 import Loading from "./components/Loading";
-import ServiceSection from "./components/ServiceSection";
 import Error from "./components/Error";
 import { Helmet } from "react-helmet";
 import Note from "./components/Note";
 import axios from "axios";
+import ServiceSection from "./components/ServiceSection";
 
 library.add(fas, far, fab);
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState({
-    title: "",
-    icon: "",
-    motd: "",
-    services: [],
-    notes: [],
-    theme: {
-      background: "#FFFFFF",
-      foreground: "#000000",
-    },
-  });
+  const [data, setData] = useState(new AppData());
 
   useEffect(() => {
     const fetchData = () => {
       axios
         .get("/api/data")
         .then(async (res) => {
-          setData(res.data);
+          const newAppData = new AppData(
+            res.data.title,
+            res.data.icon,
+            res.data.motd,
+            Service.map(res.data.services),
+            Category.map(res.data.categories),
+            res.data.notes,
+            res.data.theme,
+          );
+          setData(newAppData);
           setLoading(false);
         })
         .catch((_) => {

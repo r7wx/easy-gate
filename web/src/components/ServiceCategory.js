@@ -1,4 +1,4 @@
-import Service from "./Service";
+import ServiceCard from "./ServiceCard";
 import * as React from 'react'
 
 function ServiceCategory(props) {
@@ -25,7 +25,7 @@ function ServiceCategory(props) {
                     return 0;
                   })
                   .map((service) => (
-                    <Service key={service.name} service={service} />
+                    <ServiceCard key={service.name} service={service} />
                   ))}
               </div>
             </td>
