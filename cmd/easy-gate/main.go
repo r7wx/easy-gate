@@ -23,6 +23,7 @@ SOFTWARE.
 package main
 
 import (
+	"log"
 	"os"
 	"time"
 
@@ -31,12 +32,13 @@ import (
 )
 
 func main() {
-	cfgFilePath := "easy-gate.json"
-	args := os.Args[1:]
-	if len(args) >= 1 {
-		cfgFilePath = args[0]
+	cfgFilePath, err := config.GetConfigPath(os.Args)
+	if err != nil {
+		log.Fatal("[Easy Gate] No configuration file provided")
 	}
 
+	log.Println("[Easy Gate] Loading configuration file:",
+		cfgFilePath)
 	cfgRoutine := config.NewRoutine(cfgFilePath,
 		1*time.Second)
 	go cfgRoutine.Start()

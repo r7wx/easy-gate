@@ -26,104 +26,282 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"reflect"
 	"testing"
 	"time"
+
+	"github.com/r7wx/easy-gate/internal/share"
+	"gopkg.in/yaml.v3"
 )
 
+var testCfg Config = Config{
+	Addr:        ":8080",
+	UseTLS:      false,
+	CertFile:    "",
+	KeyFile:     "",
+	BehindProxy: false,
+	Title:       "Test",
+	Icon:        "fa-solid fa-cubes",
+	Motd:        "",
+	Theme: Theme{
+		Background: "#ffffff",
+		Foreground: "#000000",
+	},
+	Groups: []Group{
+		{
+			Name:   "Group 1",
+			Subnet: "127.0.0.1/32",
+		},
+	},
+	Services: []Service{
+		{
+			Name:   "Service 1",
+			Icon:   "fa-solid fa-cube",
+			URL:    "http://test:8080",
+			Groups: []string{},
+		},
+		{
+			Name:   "Service 2",
+			Icon:   "fa-solid fa-cube",
+			URL:    "http://test2:8080",
+			Groups: []string{"Group 1"},
+		},
+	},
+	Notes: []Note{
+		{
+			Name:   "Note 1",
+			Text:   "This is a test note",
+			Groups: []string{},
+		},
+		{
+			Name:   "Note 2",
+			Text:   "This is another test note",
+			Groups: []string{"Group 1"},
+		},
+	},
+}
+
 const (
-	testConfigFilePath = "./test-config.json"
+	testJSONPath = "./test-config.json"
+	testYAMLPath = "./test-config.yml"
 )
 
 func TestMain(m *testing.M) {
-	testCfg := Config{
-		Addr:        ":8080",
-		UseTLS:      false,
-		CertFile:    "",
-		KeyFile:     "",
-		BehindProxy: false,
-		Title:       "Test",
-		Icon:        "fa-solid fa-cubes",
-		Motd:        "",
-		Theme: Theme{
-			Background: "#ffffff",
-			Foreground: "#000000",
-		},
-		Groups:   []Group{},
-		Services: []Service{},
-		Notes:    []Note{},
-	}
-
 	cfgJSON, err := json.Marshal(testCfg)
 	if err != nil {
 		panic(err)
 	}
-	err = ioutil.WriteFile(testConfigFilePath,
+	err = ioutil.WriteFile(testJSONPath,
 		cfgJSON, 0644)
 	if err != nil {
 		panic(err)
 	}
 
+	cfgYAML, err := yaml.Marshal(testCfg)
+	err = ioutil.WriteFile(testYAMLPath,
+		cfgYAML, 0644)
+	if err != nil {
+		panic(err)
+	}
+
 	exitCode := m.Run()
-	os.Remove(testConfigFilePath)
+	os.Remove(testJSONPath)
+	os.Remove(testYAMLPath)
 	os.Exit(exitCode)
 }
 
-func TestConfig(t *testing.T) {
-	routine := NewRoutine(testConfigFilePath,
-		8*time.Millisecond)
+func TestPath(t *testing.T) {
+	args := []string{"test"}
+	_, err := GetConfigPath(args)
+	if err == nil {
+		t.Fatal("Expected error, got nil")
+	}
+
+	args = []string{"", testJSONPath}
+	cfg, err := GetConfigPath(args)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if cfg != testJSONPath {
+		t.Fatalf("Expected %s, got %s",
+			testJSONPath, cfg)
+	}
+
+	os.Setenv(share.CFGPathEnv, testYAMLPath)
+	cfg, err = GetConfigPath([]string{""})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if cfg != testYAMLPath {
+		t.Fatalf("Expected %s, got %s",
+			testYAMLPath, cfg)
+	}
+
+	os.Unsetenv(share.CFGPathEnv)
+}
+
+func TestJSON(t *testing.T) {
+	routine := NewRoutine(testJSONPath, 1*time.Second)
 	go routine.Start()
 
-	counter := 0
-	for {
-		if counter == 150 {
-			break
-		}
+	cfg, err := routine.GetConfiguration()
+	if err != nil {
+		t.Fatal(err)
+	}
 
-		newCfg := Config{
-			Addr:        ":8080",
-			UseTLS:      false,
-			CertFile:    "",
-			KeyFile:     "",
-			BehindProxy: false,
-			Title:       "Test",
-			Icon:        "fa-solid fa-cubes",
-			Motd:        "",
-			Theme: Theme{
-				Background: "#ffffff",
-				Foreground: "#000000",
+	if !reflect.DeepEqual(*cfg, testCfg) {
+		t.Fatal("JSON configuration not parsed correctly")
+	}
+}
+
+func TestYAML(t *testing.T) {
+	routine := NewRoutine(testYAMLPath, 1*time.Second)
+	go routine.Start()
+
+	cfg, err := routine.GetConfiguration()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !reflect.DeepEqual(*cfg, testCfg) {
+		t.Fatal("YAML configuration not parsed correctly")
+	}
+}
+
+func TestJSONEnv(t *testing.T) {
+	TestJSON, err := json.Marshal(testCfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	os.Setenv(share.CFGEnv, string(TestJSON))
+
+	routine := NewRoutine("", 1*time.Second)
+	go routine.Start()
+
+	cfg, err := routine.GetConfiguration()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !reflect.DeepEqual(*cfg, testCfg) {
+		t.Fatal("Env configuration not parsed correctly (JSON)")
+	}
+
+	os.Unsetenv(share.CFGEnv)
+}
+
+func TestYAMLEnv(t *testing.T) {
+	TestYAML, err := yaml.Marshal(testCfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	os.Setenv(share.CFGEnv, string(TestYAML))
+
+	routine := NewRoutine("", 1*time.Second)
+	go routine.Start()
+
+	cfg, err := routine.GetConfiguration()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !reflect.DeepEqual(*cfg, testCfg) {
+		t.Fatal("Env configuration not parsed correctly (YAML)")
+	}
+
+	os.Unsetenv(share.CFGEnv)
+}
+
+func TestInvalidFormat(t *testing.T) {
+	cfgRaw := []byte("invalid")
+	_, err := Unmarshal(cfgRaw)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+}
+
+func TestInvalidLoad(t *testing.T) {
+	_, _, err := LoadConfig("")
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	_, _, err = loadConfig([]byte("invalid"))
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	invalidCfg, _ := json.Marshal(Config{})
+	_, _, err = loadConfig(invalidCfg)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+}
+
+func TestInvalidConfigElements(t *testing.T) {
+	err := validateConfig(&Config{
+		Icon: "xxx",
+	})
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	err = validateConfig(&Config{
+		Icon: "fa-solid fa-cubes",
+		Services: []Service{
+			{
+				Icon: "xxx",
 			},
-			Groups: []Group{},
-			Services: []Service{
-				{
-					Icon: "fa-solid fa-cube",
-					Name: time.Now().String(),
-					URL:  "http://example.com",
-				},
+		},
+	})
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	err = validateConfig(&Config{
+		Icon: "fa-solid fa-cubes",
+		Services: []Service{
+			{
+				Icon: "fa-solid fa-cubes",
+				URL:  "xxx",
 			},
-			Notes: []Note{},
-		}
-		cfgJSON, err := json.Marshal(newCfg)
-		if err != nil {
-			t.Fatal(err)
-		}
-		err = ioutil.WriteFile(testConfigFilePath,
-			cfgJSON, 0644)
-		if err != nil {
-			t.Fatal(err)
-		}
+		},
+	})
+	if err == nil {
+		t.Fatal("Expected error")
+	}
 
-		time.Sleep(10 * time.Millisecond)
-		cfg, err := routine.GetConfiguration()
-		if err != nil {
-			t.Fatal(err)
-		}
+	err = validateConfig(&Config{
+		Icon: "fa-solid fa-cubes",
+		Services: []Service{
+			{
+				Icon: "fa-solid fa-cubes",
+				URL:  "http://test",
+			},
+		},
+		Theme: Theme{
+			Background: "xxx",
+		},
+	})
+	if err == nil {
+		t.Fatal("Expected error")
+	}
 
-		if cfg.Services[0].Name != newCfg.Services[0].Name {
-			t.Fatalf("Expected %v, got %v",
-				cfg.Services[0].Name, newCfg.Services[0].Name)
-		}
-
-		counter++
+	err = validateConfig(&Config{
+		Icon: "fa-solid fa-cubes",
+		Services: []Service{
+			{
+				Icon: "fa-solid fa-cubes",
+				URL:  "http://test",
+			},
+		},
+		Theme: Theme{
+			Background: "#000000",
+			Foreground: "xxx",
+		},
+	})
+	if err == nil {
+		t.Fatal("Expected error")
 	}
 }
 

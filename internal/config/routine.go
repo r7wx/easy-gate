@@ -30,7 +30,7 @@ import (
 
 // Routine - Config routine struct
 type Routine struct {
-	mu           sync.Mutex
+	sync.Mutex
 	Error        error
 	Config       *Config
 	FilePath     string
@@ -40,7 +40,7 @@ type Routine struct {
 
 // NewRoutine - Create new config routine
 func NewRoutine(filePath string, interval time.Duration) *Routine {
-	cfg, checksum, err := LoadConfigFile(filePath)
+	cfg, checksum, err := LoadConfig(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -55,27 +55,29 @@ func NewRoutine(filePath string, interval time.Duration) *Routine {
 
 // GetConfiguration - Get current configuration
 func (r *Routine) GetConfiguration() (*Config, error) {
-	defer r.mu.Unlock()
-	r.mu.Lock()
+	defer r.Unlock()
+	r.Lock()
 	return r.Config, r.Error
 }
 
 // Start - Start config routine
 func (r *Routine) Start() {
 	for {
-		cfg, checksum, err := LoadConfigFile(r.FilePath)
+		cfg, checksum, err := LoadConfig(r.FilePath)
 		if err != nil {
+			r.Lock()
 			r.Error = err
+			r.Unlock()
 			continue
 		}
 
+		r.Lock()
 		r.Error = nil
 		if checksum != r.LastChecksum {
-			r.mu.Lock()
 			r.Config = cfg
-			r.mu.Unlock()
 		}
 		r.LastChecksum = checksum
+		r.Unlock()
 
 		time.Sleep(r.Interval)
 	}

@@ -23,51 +23,22 @@ SOFTWARE.
 package config
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
-	"io/ioutil"
+	"fmt"
 	"os"
 
 	"github.com/r7wx/easy-gate/internal/share"
 )
 
-// LoadConfig - Load configuration from environment or file
-func LoadConfig(filePath string) (*Config, string, error) {
-	envCfg := os.Getenv(share.CFGEnv)
-	if envCfg != "" {
-		return loadConfig([]byte(envCfg))
+// GetConfigPath - Get the path to the configuration file
+func GetConfigPath(args []string) (string, error) {
+	cfgFilePath := os.Getenv(share.CFGPathEnv)
+	if cfgFilePath != "" {
+		return cfgFilePath, nil
 	}
 
-	cfgFile, err := os.Open(filePath)
-	if err != nil {
-		return nil, "", err
-	}
-	defer cfgFile.Close()
-
-	fileData, err := ioutil.ReadAll(cfgFile)
-	if err != nil {
-		return nil, "", err
+	if len(args) <= 1 {
+		return "", fmt.Errorf("no configuration file provided")
 	}
 
-	return loadConfig(fileData)
-}
-
-func loadConfig(cfgData []byte) (*Config, string, error) {
-	checksum := checksum(cfgData)
-	cfg, err := Unmarshal(cfgData)
-	if err != nil {
-		return nil, "", err
-	}
-
-	if err := validateConfig(cfg); err != nil {
-		return nil, "", err
-	}
-
-	return cfg, checksum, nil
-}
-
-func checksum(data []byte) string {
-	hash := sha256.New()
-	hash.Write(data)
-	return hex.EncodeToString(hash.Sum(nil))
+	return args[1], nil
 }

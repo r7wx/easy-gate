@@ -26,26 +26,32 @@ import "testing"
 
 func TestErrors(t *testing.T) {
 	err := NewEasyGateError(InvalidIcon, Root, "")
-	if err.Error() != "Invalid icon for root element" {
-		t.Fatalf("Expected 'Invalid icon for root element', got '%s'",
+	if err.Error() != "Invalid icon for root" {
+		t.Fatalf("Expected 'Invalid icon for root', got '%s'",
 			err.Error())
 	}
 
 	err = NewEasyGateError(InvalidIcon, Service, "service1")
-	if err.Error() != "Invalid icon for service element: service1" {
-		t.Fatalf("Expected 'Invalid icon for service element: service1', got '%s'",
+	if err.Error() != "Invalid icon for service: service1" {
+		t.Fatalf("Expected 'Invalid icon for service: service1', got '%s'",
 			err.Error())
 	}
 
 	err = NewEasyGateError(InvalidURL, Service, "service1")
-	if err.Error() != "Invalid url for service element: service1" {
-		t.Fatalf("Expected 'Invalid url for service element: service1', got '%s'",
+	if err.Error() != "Invalid url for service: service1" {
+		t.Fatalf("Expected 'Invalid url for service: service1', got '%s'",
 			err.Error())
 	}
 
 	err = NewEasyGateError(InvalidColor, Root, "background")
-	if err.Error() != "Invalid color for root element: background" {
-		t.Fatalf("Expected 'Invalid color for root element: background', got '%s'",
+	if err.Error() != "Invalid color for root: background" {
+		t.Fatalf("Expected 'Invalid color for root: background', got '%s'",
+			err.Error())
+	}
+
+	err = NewEasyGateError(InvalidFormat, ConfigurationFile, "")
+	if err.Error() != "Invalid format for configuration file" {
+		t.Fatalf("Expected 'Invalid format for configuration file', got '%s'",
 			err.Error())
 	}
 }

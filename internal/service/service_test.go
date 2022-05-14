@@ -24,7 +24,10 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 	"time"
@@ -113,6 +116,76 @@ func TestMain(m *testing.M) {
 
 func TestService(t *testing.T) {
 	routine := config.NewRoutine(testConfigFilePath,
+		1*time.Second)
+	go routine.Start()
+
+	service := NewService(routine)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/data", nil)
+	w := httptest.NewRecorder()
+	service.data(w, req)
+
+	res := w.Result()
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		t.Fatal("Expected status code 200, got",
+			res.StatusCode)
+	}
+
+	routine.Lock()
+	routine.Config.BehindProxy = true
+	routine.Unlock()
+
+	req = httptest.NewRequest(http.MethodGet, "/api/data", nil)
+	w = httptest.NewRecorder()
+	service.data(w, req)
+
+	res = w.Result()
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("Expected status code 400, got %d",
+			res.StatusCode)
+	}
+
+	req = httptest.NewRequest(http.MethodGet, "/api/data", nil)
+	req.Header.Set("X-Forwarded-For", "127.0.0.1")
+	w = httptest.NewRecorder()
+	service.data(w, req)
+
+	res = w.Result()
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("Expected status code 200, got %d",
+			res.StatusCode)
+	}
+
+	routine.Lock()
+	routine.Config.BehindProxy = false
+	routine.Error = fmt.Errorf("Test error")
+	routine.Unlock()
+
+	req = httptest.NewRequest(http.MethodGet, "/api/data", nil)
+	w = httptest.NewRecorder()
+	service.data(w, req)
+
+	res = w.Result()
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("Expected status code 200, got %d",
+			res.StatusCode)
+	}
+
+	routine.Lock()
+	routine.Error = nil
+	routine.Unlock()
+}
+
+func TestGetServices(t *testing.T) {
+	routine := config.NewRoutine(testConfigFilePath,
 		8*time.Millisecond)
 	go routine.Start()
 
@@ -125,22 +198,10 @@ func TestService(t *testing.T) {
 			t.Fail()
 		}
 	}
-	notes := service.getNotes(cfg, "192.168.1.1")
-	for _, n := range notes {
-		if n.Name != "note1" && n.Name != "note2" {
-			t.Fail()
-		}
-	}
 
 	services = service.getServices(cfg, "10.1.5.1")
 	for _, s := range services {
 		if s.Name != "service1" && s.Name != "service3" {
-			t.Fail()
-		}
-	}
-	notes = service.getNotes(cfg, "10.1.5.1")
-	for _, n := range notes {
-		if n.Name != "note1" && n.Name != "note3" {
 			t.Fail()
 		}
 	}
@@ -151,10 +212,57 @@ func TestService(t *testing.T) {
 			t.Fail()
 		}
 	}
+}
+
+func TestGetNotes(t *testing.T) {
+	routine := config.NewRoutine(testConfigFilePath,
+		8*time.Millisecond)
+	go routine.Start()
+
+	service := NewService(routine)
+	cfg, _ := service.ConfigRoutine.GetConfiguration()
+
+	notes := service.getNotes(cfg, "192.168.1.1")
+	for _, n := range notes {
+		if n.Name != "note1" && n.Name != "note2" {
+			t.Fail()
+		}
+	}
+
+	notes = service.getNotes(cfg, "10.1.5.1")
+	for _, n := range notes {
+		if n.Name != "note1" && n.Name != "note3" {
+			t.Fail()
+		}
+	}
+
 	notes = service.getNotes(cfg, "1.1.1.1")
 	for _, n := range notes {
 		if n.Name != "note1" {
 			t.Fail()
 		}
+	}
+}
+
+func TestIsAllowed(t *testing.T) {
+	if !isAllowed([]config.Group{{
+		Name:   "test",
+		Subnet: "127.0.0.1/32",
+	}}, []string{"test"}, "127.0.0.1") {
+		t.Fail()
+	}
+
+	if isAllowed([]config.Group{{
+		Name:   "test",
+		Subnet: "127.0.0.1/32",
+	}}, []string{"test"}, "xxxxxx") {
+		t.Fail()
+	}
+
+	if isAllowed([]config.Group{{
+		Name:   "test",
+		Subnet: "xxxxxxxxxxx",
+	}}, []string{"test"}, "127.0.0.1") {
+		t.Fail()
 	}
 }

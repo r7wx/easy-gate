@@ -29,9 +29,10 @@ type ErrorType string
 
 // Easy Gate errors enum
 const (
-	InvalidIcon  ErrorType = "icon"
-	InvalidURL   ErrorType = "url"
-	InvalidColor ErrorType = "color"
+	InvalidFormat ErrorType = "format"
+	InvalidIcon   ErrorType = "icon"
+	InvalidURL    ErrorType = "url"
+	InvalidColor  ErrorType = "color"
 )
 
 // ErrorElement - Easy Gate error element
@@ -39,8 +40,9 @@ type ErrorElement string
 
 // Easy Gate error context enum
 const (
-	Root    ErrorElement = "root"
-	Service ErrorElement = "service"
+	Root              ErrorElement = "root"
+	Service           ErrorElement = "service"
+	ConfigurationFile ErrorElement = "configuration file"
 )
 
 // EasyGateError - Easy Gate Error struct
@@ -56,7 +58,7 @@ func NewEasyGateError(errorType ErrorType, element ErrorElement, name string) er
 }
 
 func (e EasyGateError) Error() string {
-	message := fmt.Sprintf("Invalid %s for %s element",
+	message := fmt.Sprintf("Invalid %s for %s",
 		e.ErrorType, e.Element)
 	if e.Name != "" {
 		message = fmt.Sprintf("%s: %s", message, e.Name)

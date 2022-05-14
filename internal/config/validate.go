@@ -39,7 +39,8 @@ func isHexColor(color string) bool {
 
 	for i := 1; i < len(color); i++ {
 		c := color[i]
-		if (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F') {
+		if (c >= '0' && c <= '9') || (c >= 'a' &&
+			c <= 'f') || (c >= 'A' && c <= 'F') {
 			continue
 		}
 		return false
@@ -61,7 +62,7 @@ func isIcon(icon string) bool {
 	return r.MatchString(icon)
 }
 
-func validateConfig(cfg Config) error {
+func validateConfig(cfg *Config) error {
 	if !isIcon(cfg.Icon) {
 		return errors.NewEasyGateError(
 			errors.InvalidIcon,
@@ -76,7 +77,6 @@ func validateConfig(cfg Config) error {
 				service.Name,
 			)
 		}
-
 		if !isURL(service.URL) {
 			return errors.NewEasyGateError(
 				errors.InvalidURL,
