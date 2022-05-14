@@ -7,11 +7,13 @@
 
 <p align="center">
 <img src="https://img.shields.io/github/v/release/r7wx/easy-gate" alt="Release" />
-<img src="https://img.shields.io/docker/pulls/r7wx/easy-gate" alt="Docker Pulls" />
 <a href="https://github.com/r7wx/easy-gate/actions/workflows/build.yml">
 <img src="https://github.com/r7wx/easy-gate/actions/workflows/build.yml/badge.svg"/></a>
 <a href="https://github.com/r7wx/easy-gate/actions/workflows/test.yml">
 <img src="https://github.com/r7wx/easy-gate/actions/workflows/test.yml/badge.svg"/></a>
+<a href="https://codecov.io/gh/r7wx/easy-gate">
+  <img src="https://codecov.io/gh/r7wx/easy-gate/branch/master/graph/badge.svg?token=ZAASRETUWS"/>
+</a>
 <a href="https://www.codefactor.io/repository/github/r7wx/easy-gate"><img src="https://www.codefactor.io/repository/github/r7wx/easy-gate/badge?s=3531cadc71a73618609de429289d9524a38c33cd" alt="CodeFactor" /></a>
 </p>
 
