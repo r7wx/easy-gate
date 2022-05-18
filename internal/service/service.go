@@ -71,6 +71,7 @@ func (s Service) data(w http.ResponseWriter, req *http.Request) {
 	if cfg.BehindProxy {
 		reqIP = req.Header.Get("X-Forwarded-For")
 		if reqIP == "" {
+			log.Println("[Easy Gate] 400 Bad Request: X-Forwarded-For header is missing")
 			http.Error(w, "", http.StatusBadRequest)
 			return
 		}

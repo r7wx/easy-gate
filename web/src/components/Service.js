@@ -32,10 +32,12 @@ function Service(props) {
   return (
     <div
       onClick={() => openService(props.service.url)}
-      className="px-6 py-5 rounded overflow-hidden shadow-lg text-center
-      cursor-pointer hover:shadow-gray-600 mr-3 mb-2">
+      className="p-8 rounded overflow-hidden shadow-lg text-center
+      cursor-pointer hover:shadow-gray-600 mr-3 mb-2 grid place-items-center">
       <FontAwesomeIcon icon={props.service.icon} className="fa-3x" />
-      <h3 className="mt-2">{props.service.name}</h3>
+      <p className="mt-3 text-ellipsis overflow-hidden ...">
+        {props.service.name}
+      </p>
     </div>
   );
 }
