@@ -74,6 +74,7 @@ func (r *Routine) Start() {
 		r.Lock()
 		r.Error = nil
 		if checksum != r.LastChecksum {
+			log.Println("[Easy Gate] Detected configuration change, reloading...")
 			r.Config = cfg
 		}
 		r.LastChecksum = checksum
