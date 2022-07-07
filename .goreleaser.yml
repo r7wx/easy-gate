@@ -2,7 +2,8 @@ project_name: easy-gate
 
 before:
   hooks:
-    - go mod download
+    - yarn --cwd ./web install
+    - yarn --cwd ./web build
 
 env:
   - CGO_ENABLED=0
