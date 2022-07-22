@@ -1,13 +1,12 @@
-name: Build
+name: Release
 
 on:
   push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+    tags:
+      - "v*.*.*"
 
 jobs:
-  build:
+  releaser:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,11 +24,11 @@ jobs:
         with:
           node-version: 17
 
-      - name: Build React
-        run: |
-          yarn --cwd ./web install
-          yarn --cwd ./web build
-
-      - name: Build Go
-        run: |
-          CGO_ENABLED=0 go build -trimpath -ldflags="-w -s" -o build/easy-gate cmd/easy-gate/main.go
+      - name: Go Releaser
+        uses: goreleaser/goreleaser-action@v3
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
