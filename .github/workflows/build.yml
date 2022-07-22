@@ -17,6 +17,8 @@ jobs:
 
       - name: Setup Go
         uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -30,4 +32,4 @@ jobs:
 
       - name: Build Go
         run: |
-          make easy-gate
+          CGO_ENABLED=0 go build -trimpath -ldflags="-w -s" -o build/easy-gate cmd/easy-gate/main.go
