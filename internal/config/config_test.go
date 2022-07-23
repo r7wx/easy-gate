@@ -26,9 +26,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
-	"reflect"
 	"testing"
-	"time"
 
 	"github.com/r7wx/easy-gate/internal/share"
 	"gopkg.in/yaml.v3"
@@ -138,78 +136,6 @@ func TestPath(t *testing.T) {
 	}
 
 	os.Unsetenv(share.CFGPathEnv)
-}
-
-func TestJSON(t *testing.T) {
-	routine := NewRoutine(testJSONPath, 1*time.Second)
-	go routine.Start()
-
-	cfg, err := routine.GetConfiguration()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if !reflect.DeepEqual(*cfg, testCfg) {
-		t.Fatal("JSON configuration not parsed correctly")
-	}
-}
-
-func TestYAML(t *testing.T) {
-	routine := NewRoutine(testYAMLPath, 1*time.Second)
-	go routine.Start()
-
-	cfg, err := routine.GetConfiguration()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if !reflect.DeepEqual(*cfg, testCfg) {
-		t.Fatal("YAML configuration not parsed correctly")
-	}
-}
-
-func TestJSONEnv(t *testing.T) {
-	TestJSON, err := json.Marshal(testCfg)
-	if err != nil {
-		t.Fatal(err)
-	}
-	os.Setenv(share.CFGEnv, string(TestJSON))
-
-	routine := NewRoutine("", 1*time.Second)
-	go routine.Start()
-
-	cfg, err := routine.GetConfiguration()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if !reflect.DeepEqual(*cfg, testCfg) {
-		t.Fatal("Env configuration not parsed correctly (JSON)")
-	}
-
-	os.Unsetenv(share.CFGEnv)
-}
-
-func TestYAMLEnv(t *testing.T) {
-	TestYAML, err := yaml.Marshal(testCfg)
-	if err != nil {
-		t.Fatal(err)
-	}
-	os.Setenv(share.CFGEnv, string(TestYAML))
-
-	routine := NewRoutine("", 1*time.Second)
-	go routine.Start()
-
-	cfg, err := routine.GetConfiguration()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if !reflect.DeepEqual(*cfg, testCfg) {
-		t.Fatal("Env configuration not parsed correctly (YAML)")
-	}
-
-	os.Unsetenv(share.CFGEnv)
 }
 
 func TestInvalidFormat(t *testing.T) {
