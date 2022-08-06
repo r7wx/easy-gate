@@ -9,8 +9,10 @@ in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
+
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,42 +22,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package service
+import React from "react";
 
-import (
-	"log"
-	"net/http"
-
-	"github.com/r7wx/easy-gate/internal/routine"
-	"github.com/r7wx/easy-gate/web"
-)
-
-// Service - Easy Gate service struct
-type Service struct {
-	Routine *routine.Routine
+function Health(props) {
+  const statusDot = () => {
+    switch (props.health) {
+      case 1:
+        return <span className="dot bg-green-500"></span>;
+      case 2:
+        return <span className="dot bg-red-500"></span>;
+      default:
+        return <span className="dot bg-neutral-500"></span>;
+    }
+  };
+  return <React.Fragment>{statusDot()}</React.Fragment>;
 }
 
-// NewService - Create a new service
-func NewService(routine *routine.Routine) *Service {
-	return &Service{routine}
-}
-
-// Serve - Serve application
-func (s Service) Serve() {
-	status, _ := s.Routine.GetStatus()
-
-	http.HandleFunc("/api/data", s.data)
-	http.Handle("/", http.FileServer(web.GetWebFS()))
-
-	if status.UseTLS {
-		log.Println("[Easy Gate] Listening for connections on", status.Addr, "(HTTPS)")
-		if err := http.ListenAndServeTLS(status.Addr, status.CertFile,
-			status.KeyFile, nil); err != nil {
-			log.Fatal(err)
-		}
-	}
-	log.Println("[Easy Gate] Listening for connections on", status.Addr)
-	if err := http.ListenAndServe(status.Addr, nil); err != nil {
-		log.Fatal(err)
-	}
-}
+export default Health;

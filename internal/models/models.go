@@ -20,30 +20,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package service
+package models
 
-type service struct {
-	Icon string `json:"icon"`
-	Name string `json:"name"`
-	URL  string `json:"url"`
+// Health status constants
+const (
+	HealthUndefined = iota
+	HealthOK
+	HealthBAD
+)
+
+// HealthStatus - Health status type
+type HealthStatus int
+
+// Group - Easy Gate group configuration struct
+type Group struct {
+	Name   string `json:"name" yaml:"name"`
+	Subnet string `json:"subnet" yaml:"subnet"`
 }
 
-type note struct {
-	Name string `json:"name"`
-	Text string `json:"text"`
+// Service - Service model
+type Service struct {
+	Icon   string       `json:"icon"`
+	Name   string       `json:"name"`
+	URL    string       `json:"url"`
+	Groups []string     `json:"-"`
+	Health HealthStatus `json:"health"`
 }
 
-type theme struct {
+// Note - Note model
+type Note struct {
+	Name   string   `json:"name"`
+	Text   string   `json:"text"`
+	Groups []string `json:"-"`
+}
+
+// Theme - Theme model
+type Theme struct {
 	Background string `json:"background"`
 	Foreground string `json:"foreground"`
-}
-
-type response struct {
-	Error    string    `json:"error"`
-	Theme    theme     `json:"theme"`
-	Title    string    `json:"title"`
-	Icon     string    `json:"icon"`
-	Motd     string    `json:"motd"`
-	Services []service `json:"services"`
-	Notes    []note    `json:"notes"`
 }

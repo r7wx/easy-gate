@@ -28,6 +28,7 @@ import (
 	"time"
 
 	"github.com/r7wx/easy-gate/internal/config"
+	"github.com/r7wx/easy-gate/internal/routine"
 	"github.com/r7wx/easy-gate/internal/service"
 )
 
@@ -39,7 +40,7 @@ func main() {
 
 	log.Println("[Easy Gate] Loading configuration file:",
 		cfgFilePath)
-	cfgRoutine := config.NewRoutine(cfgFilePath,
+	cfgRoutine := routine.NewRoutine(cfgFilePath,
 		1*time.Second)
 	go cfgRoutine.Start()
 

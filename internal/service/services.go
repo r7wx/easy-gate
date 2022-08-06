@@ -23,17 +23,19 @@ SOFTWARE.
 package service
 
 import (
-	"github.com/r7wx/easy-gate/internal/config"
+	"github.com/r7wx/easy-gate/internal/models"
+	"github.com/r7wx/easy-gate/internal/routine"
 )
 
-func (s *Service) getServices(cfg *config.Config, addr string) []service {
-	services := []service{}
-	for _, cfgService := range cfg.Services {
-		if isAllowed(cfg.Groups, cfgService.Groups, addr) {
-			service := service{
-				Icon: cfgService.Icon,
-				Name: cfgService.Name,
-				URL:  cfgService.URL,
+func (s *Service) getServices(status *routine.Status, addr string) []models.Service {
+	services := []models.Service{}
+	for _, statusService := range status.Services {
+		if isAllowed(status.Groups, statusService.Groups, addr) {
+			service := models.Service{
+				Icon:   statusService.Icon,
+				Name:   statusService.Name,
+				URL:    statusService.URL,
+				Health: statusService.Health,
 			}
 			services = append(services, service)
 		}

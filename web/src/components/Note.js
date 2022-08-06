@@ -22,10 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { faNoteSticky } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 function Note(props) {
   return (
-    <div className="px-6 py-5 rounded overflow-hidden shadow-lg text-left mr-3 mb-2">
-      <h3 className="text-sm font-semibold">{props.note.name}</h3>
+    <div className="p-4 rounded shadow-lg m-1">
+      <div className="flex">
+        <FontAwesomeIcon icon={faNoteSticky} className="mr-2 mt-1 fa-sm" />
+        <h3 className="text-sm font-semibold">{props.note.name}</h3>
+      </div>
       <p className="text-sm">{props.note.text}</p>
     </div>
   );

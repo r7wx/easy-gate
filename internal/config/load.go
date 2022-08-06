@@ -31,8 +31,8 @@ import (
 	"github.com/r7wx/easy-gate/internal/share"
 )
 
-// LoadConfig - Load configuration from environment or file
-func LoadConfig(filePath string) (*Config, string, error) {
+// Load - Load configuration from environment or file
+func Load(filePath string) (*Config, string, error) {
 	envCfg := os.Getenv(share.CFGEnv)
 	if envCfg != "" {
 		return loadConfig([]byte(envCfg))

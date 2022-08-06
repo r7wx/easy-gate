@@ -20,66 +20,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package config
+package routine
 
 import (
-	"regexp"
+	"net/http"
 
-	"github.com/r7wx/easy-gate/internal/errors"
+	"github.com/r7wx/easy-gate/internal/config"
+	"github.com/r7wx/easy-gate/internal/models"
 )
 
-func isHexColor(color string) bool {
-	if len(color) < 4 || len(color) > 7 {
-		return false
+func checkHealth(service config.Service) models.HealthStatus {
+	if !service.HealthCheck {
+		return models.HealthUndefined
 	}
 
-	if color[0] != '#' {
-		return false
+	_, err := http.Head(service.URL)
+	if err != nil {
+		return models.HealthBAD
 	}
 
-	for i := 1; i < len(color); i++ {
-		c := color[i]
-		if (c >= '0' && c <= '9') || (c >= 'a' &&
-			c <= 'f') || (c >= 'A' && c <= 'F') {
-			continue
-		}
-		return false
-	}
-
-	return true
-}
-
-func isURL(url string) bool {
-	r, _ := regexp.Compile(
-		`^(https?|ftp)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]`)
-	return r.MatchString(url)
-}
-
-func validateConfig(cfg *Config) error {
-	for _, service := range cfg.Services {
-		if !isURL(service.URL) {
-			return errors.NewEasyGateError(
-				errors.InvalidURL,
-				errors.Service,
-				service.Name,
-			)
-		}
-	}
-
-	if !isHexColor(cfg.Theme.Background) {
-		return errors.NewEasyGateError(
-			errors.InvalidColor,
-			errors.Root,
-			"background",
-		)
-	}
-	if !isHexColor(cfg.Theme.Foreground) {
-		return errors.NewEasyGateError(
-			errors.InvalidColor,
-			errors.Root,
-			"foreground",
-		)
-	}
-
-	return nil
+	return models.HealthOK
 }

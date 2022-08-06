@@ -22,11 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { far } from "@fortawesome/free-regular-svg-icons";
-import { fab } from "@fortawesome/free-brands-svg-icons";
-import { fas } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
 import Loading from "./components/Loading";
 import Service from "./components/Service";
@@ -35,19 +30,16 @@ import { Helmet } from "react-helmet";
 import Note from "./components/Note";
 import axios from "axios";
 
-library.add(fas, far, fab);
-
 function App() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({
-    title: "",
-    icon: "",
-    motd: "",
+    title: "Easy Gate",
+    error: "",
     services: [],
     notes: [],
     theme: {
-      background: "#FFFFFF",
-      foreground: "#000000",
+      background: "#ffffff",
+      foreground: "#1d1d1d",
     },
   });
 
@@ -79,16 +71,12 @@ function App() {
               </style>
             )}
           </Helmet>
-          <h1 className="text-4xl">
-            <FontAwesomeIcon icon={data.icon} /> {data.title}
-          </h1>
-          <p className="text-base">{data.motd}</p>
           {data.error.length > 0 && <Error error={data.error} />}
           {data.services.length > 0 && (
             <React.Fragment>
               <div
-                className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6
-                           xl:grid-cols-10 mt-4 mb-2">
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7
+                mt-4 mb-2">
                 {data.services.map((service) => (
                   <Service key={service.name} service={service} />
                 ))}
@@ -98,8 +86,8 @@ function App() {
           {data.notes.length > 0 && (
             <React.Fragment>
               <div
-                className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 
-                           xl:grid-cols-4 my-2">
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4
+                mt-2 mb-2">
                 {data.notes.map((note) => (
                   <Note key={note.title} note={note} />
                 ))}

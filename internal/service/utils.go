@@ -25,10 +25,10 @@ package service
 import (
 	"net"
 
-	"github.com/r7wx/easy-gate/internal/config"
+	"github.com/r7wx/easy-gate/internal/models"
 )
 
-func isAllowed(groups []config.Group, allowedGroups []string, addr string) bool {
+func isAllowed(groups []models.Group, allowedGroups []string, addr string) bool {
 	if len(allowedGroups) == 0 {
 		return true
 	}

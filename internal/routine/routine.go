@@ -20,19 +20,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package config
+package routine
 
 import (
 	"log"
 	"sync"
 	"time"
+
+	"github.com/r7wx/easy-gate/internal/config"
 )
 
-// Routine - Config routine struct
+// Routine - Routine struct
 type Routine struct {
 	sync.Mutex
 	Error        error
-	Config       *Config
+	Status       *Status
 	FilePath     string
 	LastChecksum string
 	Interval     time.Duration
@@ -40,30 +42,30 @@ type Routine struct {
 
 // NewRoutine - Create new config routine
 func NewRoutine(filePath string, interval time.Duration) *Routine {
-	cfg, checksum, err := LoadConfig(filePath)
+	cfg, checksum, err := config.Load(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	return &Routine{
 		FilePath:     filePath,
-		Config:       cfg,
+		Status:       toStatus(cfg),
 		Interval:     interval,
 		LastChecksum: checksum,
 	}
 }
 
-// GetConfiguration - Get current configuration
-func (r *Routine) GetConfiguration() (*Config, error) {
+// GetStatus - Get current status
+func (r *Routine) GetStatus() (*Status, error) {
 	defer r.Unlock()
 	r.Lock()
-	return r.Config, r.Error
+	return r.Status, r.Error
 }
 
 // Start - Start config routine
 func (r *Routine) Start() {
 	for {
-		cfg, checksum, err := LoadConfig(r.FilePath)
+		cfg, checksum, err := config.Load(r.FilePath)
 		if err != nil {
 			r.Lock()
 			r.Error = err
@@ -75,7 +77,7 @@ func (r *Routine) Start() {
 		r.Error = nil
 		if checksum != r.LastChecksum {
 			log.Println("[Easy Gate] Detected configuration change, reloading...")
-			r.Config = cfg
+			r.Status = toStatus(cfg)
 		}
 		r.LastChecksum = checksum
 		r.Unlock()

@@ -20,66 +20,47 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package config
+package routine
 
 import (
-	"regexp"
+	"encoding/base64"
+	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+	"path"
 
-	"github.com/r7wx/easy-gate/internal/errors"
+	"github.com/r7wx/easy-gate/internal/config"
 )
 
-func isHexColor(color string) bool {
-	if len(color) < 4 || len(color) > 7 {
-		return false
+func getIconData(service config.Service) string {
+	if service.Icon != "" {
+		return service.Icon
 	}
 
-	if color[0] != '#' {
-		return false
+	u, err := url.Parse(service.URL)
+	if err != nil {
+		return ""
 	}
+	u.Path = path.Join(u.Path, "favicon.ico")
 
-	for i := 1; i < len(color); i++ {
-		c := color[i]
-		if (c >= '0' && c <= '9') || (c >= 'a' &&
-			c <= 'f') || (c >= 'A' && c <= 'F') {
-			continue
-		}
-		return false
-	}
-
-	return true
+	return downloadFavicon(u.String())
 }
 
-func isURL(url string) bool {
-	r, _ := regexp.Compile(
-		`^(https?|ftp)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]`)
-	return r.MatchString(url)
-}
+func downloadFavicon(url string) string {
+	resp, err := http.Get(url)
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close()
 
-func validateConfig(cfg *Config) error {
-	for _, service := range cfg.Services {
-		if !isURL(service.URL) {
-			return errors.NewEasyGateError(
-				errors.InvalidURL,
-				errors.Service,
-				service.Name,
-			)
-		}
+	imageBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return ""
 	}
 
-	if !isHexColor(cfg.Theme.Background) {
-		return errors.NewEasyGateError(
-			errors.InvalidColor,
-			errors.Root,
-			"background",
-		)
-	}
-	if !isHexColor(cfg.Theme.Foreground) {
-		return errors.NewEasyGateError(
-			errors.InvalidColor,
-			errors.Root,
-			"foreground",
-		)
-	}
-
-	return nil
+	return fmt.Sprintf(
+		"data:image/x-icon;base64,%s",
+		base64.StdEncoding.EncodeToString(imageBytes),
+	)
 }
