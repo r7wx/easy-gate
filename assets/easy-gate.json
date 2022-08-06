@@ -5,8 +5,6 @@
     "key_file": "",
     "behind_proxy": false,
     "title": "Easy Gate",
-    "icon": "fa-solid fa-cubes",
-    "motd": "Welcome to Easy Gate",
     "theme": {
         "background": "#FFFFFF",
         "foreground": "#000000"
