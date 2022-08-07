@@ -23,38 +23,16 @@ SOFTWARE.
 package service
 
 import (
-	"log"
 	"net/http"
+	"strings"
 
-	"github.com/r7wx/easy-gate/internal/routine"
+	"github.com/r7wx/easy-gate/web"
 )
 
-// Service - Easy Gate service struct
-type Service struct {
-	Routine *routine.Routine
-}
-
-// NewService - Create a new service
-func NewService(routine *routine.Routine) *Service {
-	return &Service{routine}
-}
-
-// Serve - Serve application
-func (s Service) Serve() {
-	status, _ := s.Routine.GetStatus()
-
-	http.HandleFunc("/api/data", s.data)
-	http.HandleFunc("/", s.handleWeb)
-
-	if status.UseTLS {
-		log.Println("[Easy Gate] Listening for connections on", status.Addr, "(HTTPS)")
-		if err := http.ListenAndServeTLS(status.Addr, status.CertFile,
-			status.KeyFile, nil); err != nil {
-			log.Fatal(err)
-		}
+func (s Service) handleWeb(w http.ResponseWriter, req *http.Request) {
+	webFS := web.GetWebFS()
+	if _, err := webFS.Open(strings.TrimLeft(req.URL.Path, "/")); err != nil {
+		req.URL.Path = "/"
 	}
-	log.Println("[Easy Gate] Listening for connections on", status.Addr)
-	if err := http.ListenAndServe(status.Addr, nil); err != nil {
-		log.Fatal(err)
-	}
+	http.FileServer(webFS).ServeHTTP(w, req)
 }
