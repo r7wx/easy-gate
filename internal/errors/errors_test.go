@@ -25,19 +25,7 @@ package errors
 import "testing"
 
 func TestErrors(t *testing.T) {
-	err := NewEasyGateError(InvalidIcon, Root, "")
-	if err.Error() != "Invalid icon for root" {
-		t.Fatalf("Expected 'Invalid icon for root', got '%s'",
-			err.Error())
-	}
-
-	err = NewEasyGateError(InvalidIcon, Service, "service1")
-	if err.Error() != "Invalid icon for service: service1" {
-		t.Fatalf("Expected 'Invalid icon for service: service1', got '%s'",
-			err.Error())
-	}
-
-	err = NewEasyGateError(InvalidURL, Service, "service1")
+	err := NewEasyGateError(InvalidURL, Service, "service1")
 	if err.Error() != "Invalid url for service: service1" {
 		t.Fatalf("Expected 'Invalid url for service: service1', got '%s'",
 			err.Error())
