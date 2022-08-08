@@ -44,7 +44,7 @@ func (s Service) Serve() {
 	status, _ := s.Routine.GetStatus()
 
 	http.HandleFunc("/api/data", s.data)
-	http.HandleFunc("/", s.handleWeb)
+	http.HandleFunc("/", s.webFS)
 
 	if status.UseTLS {
 		log.Println("[Easy Gate] Listening for connections on", status.Addr, "(HTTPS)")

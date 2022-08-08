@@ -43,6 +43,12 @@ func (s Service) data(w http.ResponseWriter, req *http.Request) {
 	status, cfgError := s.Routine.GetStatus()
 
 	reqIP, _, err := net.SplitHostPort(req.RemoteAddr)
+	if err != nil {
+		log.Println("[Easy Gate] Service error:", err)
+		http.Error(w, "", http.StatusInternalServerError)
+		return
+	}
+
 	if status.BehindProxy {
 		reqIP = req.Header.Get("X-Forwarded-For")
 		if reqIP == "" {
@@ -51,7 +57,7 @@ func (s Service) data(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 	}
-	log.Println("[Easy Gate] Request from", reqIP)
+	log.Printf("[Easy Gate] [%s] %s", reqIP, req.URL.Path)
 
 	response := response{
 		Title:    status.Title,

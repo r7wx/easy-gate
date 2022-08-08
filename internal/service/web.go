@@ -23,16 +23,37 @@ SOFTWARE.
 package service
 
 import (
+	"log"
+	"net"
 	"net/http"
 	"strings"
 
 	"github.com/r7wx/easy-gate/web"
 )
 
-func (s Service) handleWeb(w http.ResponseWriter, req *http.Request) {
+func (s Service) webFS(w http.ResponseWriter, req *http.Request) {
 	webFS := web.GetWebFS()
 	if _, err := webFS.Open(strings.TrimLeft(req.URL.Path, "/")); err != nil {
 		req.URL.Path = "/"
 	}
+
+	reqIP, _, err := net.SplitHostPort(req.RemoteAddr)
+	if err != nil {
+		log.Println("[Easy Gate] WebFS error:", err)
+		http.Error(w, "", http.StatusInternalServerError)
+		return
+	}
+
+	status, _ := s.Routine.GetStatus()
+	if status.BehindProxy {
+		reqIP = req.Header.Get("X-Forwarded-For")
+		if reqIP == "" {
+			log.Println("[Easy Gate] 400 Bad Request: X-Forwarded-For header is missing")
+			http.Error(w, "", http.StatusBadRequest)
+			return
+		}
+	}
+
+	log.Printf("[Easy Gate] [%s] %s", reqIP, req.URL.Path)
 	http.FileServer(webFS).ServeHTTP(w, req)
 }
