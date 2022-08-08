@@ -24,19 +24,6 @@ services:
     health_check: true
     groups:
       - internal
-    icon: >-
-      data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48IS0tISBGb250IEF3ZXNvbWUgUHJvIDYuMS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlIChDb21tZXJjaWFsIExpY2Vuc2UpIENvcHlyaWdodCAyMDIyIEZvbnRpY29ucywgSW5jLiAtLT48cGF0aCBkPSJNMTQ3LjggMTkySDQ4MFYxNDRDNDgwIDExNy41IDQ1OC41IDk2IDQzMiA5NmgtMTYwbC02NC02NGgtMTYwQzIxLjQ5IDMyIDAgNTMuNDkgMCA4MHYzMjguNGw5MC41NC0xODEuMUMxMDEuNCAyMDUuNiAxMjMuNCAxOTIgMTQ3LjggMTkyek01NDMuMSAyMjRIMTQ3LjhDMTM1LjcgMjI0IDEyNC42IDIzMC44IDExOS4yIDI0MS43TDAgNDgwaDQ0Ny4xYzEyLjEyIDAgMjMuMi02Ljg1MiAyOC42Mi0xNy42OWw5Ni0xOTJDNTgzLjIgMjQ5IDU2Ny43IDIyNCA1NDMuMSAyMjR6Ii8+PC9zdmc+
-  - name: Archive
-    url: https://archive.example.internal
-    health_check: true
-    groups:
-      - internal
-  - name: Calibre
-    url: https://calibre.example.internal
-    health_check: false
-    groups:
-      - internal
-    icon: https://calibre-ebook.com/favicon.ico
   - name: Google
     url: https://www.google.com
     health_check: true
@@ -51,6 +38,6 @@ notes:
     groups:
       - vpn
   - name: Another note
-    text: Another note for internal network users only
+    text: Another note for internal users only
     groups:
       - internal
