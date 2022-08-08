@@ -44,11 +44,7 @@ func Load(filePath string) (*Config, string, error) {
 	}
 	defer cfgFile.Close()
 
-	fileData, err := ioutil.ReadAll(cfgFile)
-	if err != nil {
-		return nil, "", err
-	}
-
+	fileData, _ := ioutil.ReadAll(cfgFile)
 	return loadConfig(fileData)
 }
 
