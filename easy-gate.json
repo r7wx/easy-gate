@@ -7,7 +7,10 @@
     "title": "Easy Gate",
     "theme": {
         "background": "#FFFFFF",
-        "foreground": "#000000"
+        "foreground": "#000000",
+        "health_ok": "#22c55e",
+        "health_bad": "#ef4444",
+        "health_inactive": "#d1d5db"
     },
     "groups": [
         {

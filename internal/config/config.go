@@ -46,15 +46,9 @@ type Note struct {
 	Groups []string `json:"groups" yaml:"groups"`
 }
 
-// Theme - Easy Gate theme configuration struct
-type Theme struct {
-	Background string `json:"background" yaml:"background"`
-	Foreground string `json:"foreground" yaml:"foreground"`
-}
-
 // Config - Easy Gate configuration struct
 type Config struct {
-	Theme       Theme          `json:"theme" yaml:"theme"`
+	Theme       models.Theme   `json:"theme" yaml:"theme"`
 	Addr        string         `json:"addr" yaml:"addr"`
 	Title       string         `json:"title" yaml:"title"`
 	CertFile    string         `json:"cert_file" yaml:"cert_file"`

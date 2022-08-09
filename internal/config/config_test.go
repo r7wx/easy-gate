@@ -39,7 +39,10 @@ var sampleJSONConfig string = `{
 "title": "Easy Gate",
 "theme": {
 	"background": "#FFFFFF",
-	"foreground": "#000000"
+	"foreground": "#000000",
+	"health_ok": "#FFFFFF",
+	"health_bad": "#000000",
+	"health_inactive": "#FFFFFF",
 },
 "groups": [],
 "services": [],
@@ -55,6 +58,9 @@ title: Easy Gate
 theme:
   background: '#FFFFFF'
   foreground: '#000000'
+  health_ok: '#FFFFFF'
+  health_bad: '#000000'
+  health_inactive: '#FFFFFF'
 groups: []
 services: []
 notes: []`
@@ -180,6 +186,24 @@ func TestValidate(t *testing.T) {
 	}
 
 	cfg.Theme.Foreground = "#FFF"
+	err = validateConfig(&cfg)
+	if err == nil {
+		t.Fatal()
+	}
+
+	cfg.Theme.HealthOK = "#FFF"
+	err = validateConfig(&cfg)
+	if err == nil {
+		t.Fatal()
+	}
+
+	cfg.Theme.HealthBAD = "#FFF"
+	err = validateConfig(&cfg)
+	if err == nil {
+		t.Fatal()
+	}
+
+	cfg.Theme.HealthInactive = "#FFF"
 	cfg.Services = []Service{
 		{URL: "javascript:alert(1)"},
 	}

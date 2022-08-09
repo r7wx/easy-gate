@@ -48,9 +48,12 @@ func TestMain(m *testing.M) {
 		KeyFile:     "",
 		BehindProxy: false,
 		Title:       "Test",
-		Theme: config.Theme{
-			Background: "#ffffff",
-			Foreground: "#000000",
+		Theme: models.Theme{
+			Background:     "#ffffff",
+			Foreground:     "#000000",
+			HealthOK:       "#ffffff",
+			HealthBAD:      "#ffffff",
+			HealthInactive: "#ffffff",
 		},
 		Groups: []models.Group{
 			{

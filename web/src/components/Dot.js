@@ -22,20 +22,55 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-function Health(props) {
+function Dot(props) {
+  const [colors, setColors] = useState({
+    health_ok: "",
+    health_bad: "",
+    health_inactive: "",
+  });
+
+  useEffect(() => {
+    setColors({
+      health_ok: props.theme.health_ok,
+      health_bad: props.theme.health_bad,
+      health_inactive: props.theme.health_inactive,
+    });
+  }, [props.theme]);
+
   const statusDot = () => {
     switch (props.health) {
       case 1:
-        return <span className="dot bg-green-500"></span>;
+        return (
+          <span
+            className="dot"
+            style={{
+              backgroundColor: colors.health_ok,
+            }}
+          />
+        );
       case 2:
-        return <span className="dot bg-red-500"></span>;
+        return (
+          <span
+            className="dot"
+            style={{
+              backgroundColor: colors.health_bad,
+            }}
+          />
+        );
       default:
-        return <span className="dot bg-neutral-500"></span>;
+        return (
+          <span
+            className="dot"
+            style={{
+              backgroundColor: colors.health_inactive,
+            }}></span>
+        );
     }
   };
+
   return <React.Fragment>{statusDot()}</React.Fragment>;
 }
 
-export default Health;
+export default Dot;

@@ -59,15 +59,36 @@ func validateConfig(cfg *Config) error {
 	if !isHexColor(cfg.Theme.Background) {
 		return errors.NewEasyGateError(
 			errors.InvalidColor,
-			errors.Root,
+			errors.Theme,
 			"background",
 		)
 	}
 	if !isHexColor(cfg.Theme.Foreground) {
 		return errors.NewEasyGateError(
 			errors.InvalidColor,
-			errors.Root,
+			errors.Theme,
 			"foreground",
+		)
+	}
+	if !isHexColor(cfg.Theme.HealthOK) {
+		return errors.NewEasyGateError(
+			errors.InvalidColor,
+			errors.Theme,
+			"health_ok",
+		)
+	}
+	if !isHexColor(cfg.Theme.HealthBAD) {
+		return errors.NewEasyGateError(
+			errors.InvalidColor,
+			errors.Theme,
+			"health_bad",
+		)
+	}
+	if !isHexColor(cfg.Theme.HealthInactive) {
+		return errors.NewEasyGateError(
+			errors.InvalidColor,
+			errors.Theme,
+			"health_inactive",
 		)
 	}
 

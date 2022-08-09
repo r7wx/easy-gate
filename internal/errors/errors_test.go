@@ -30,8 +30,8 @@ func TestErrors(t *testing.T) {
 		t.Fatal()
 	}
 
-	err = NewEasyGateError(InvalidColor, Root, "background")
-	if err.Error() != "Invalid color for root: background" {
+	err = NewEasyGateError(InvalidColor, Theme, "background")
+	if err.Error() != "Invalid color for theme: background" {
 		t.Fatal()
 	}
 

@@ -54,8 +54,11 @@ type Note struct {
 	Groups []string `json:"-"`
 }
 
-// Theme - Theme model
+// Theme - Easy Gate theme model
 type Theme struct {
-	Background string `json:"background"`
-	Foreground string `json:"foreground"`
+	Background     string `json:"background" yaml:"background"`
+	Foreground     string `json:"foreground" yaml:"foreground"`
+	HealthOK       string `json:"health_ok" yaml:"health_ok"`
+	HealthBAD      string `json:"health_bad" yaml:"health_bad"`
+	HealthInactive string `json:"health_inactive" yaml:"health_inactive"`
 }

@@ -43,7 +43,7 @@ type Status struct {
 
 func toStatus(cfg *config.Config) *Status {
 	return &Status{
-		Theme:       models.Theme(cfg.Theme),
+		Theme:       cfg.Theme,
 		Addr:        cfg.Addr,
 		Title:       cfg.Title,
 		CertFile:    cfg.CertFile,

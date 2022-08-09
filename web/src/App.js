@@ -40,6 +40,9 @@ function App() {
     theme: {
       background: "#ffffff",
       foreground: "#1d1d1d",
+      health_ok: "#22c55e",
+      health_bad: "#ef4444",
+      health_inactive: "#d1d5db",
     },
   });
 
@@ -78,7 +81,11 @@ function App() {
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7
                 mt-4 mb-2">
                 {data.services.map((service) => (
-                  <Service key={service.name} service={service} />
+                  <Service
+                    key={service.name}
+                    service={service}
+                    theme={data.theme}
+                  />
                 ))}
               </div>
             </React.Fragment>

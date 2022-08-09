@@ -39,7 +39,7 @@ type ErrorElement string
 
 // Easy Gate error context enum
 const (
-	Root              ErrorElement = "root"
+	Theme             ErrorElement = "theme"
 	Service           ErrorElement = "service"
 	ConfigurationFile ErrorElement = "configuration file"
 )

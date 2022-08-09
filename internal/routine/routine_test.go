@@ -45,7 +45,10 @@ func TestMain(m *testing.M) {
 "title": "Easy Gate",
 "theme": {
 	"background": "#FFFFFF",
-	"foreground": "#000000"
+	"foreground": "#000000",
+	"health_ok": "#FFFFFF",
+	"health_bad": "#000000",
+	"health_inactive": "#FFFFFF",
 },
 "groups": [],
 "services": [],
