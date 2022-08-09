@@ -17,7 +17,7 @@
 
 ---
 
-<img src="assets/demo.jpg" />
+<img src="assets/demo.png" />
 
 <p align="justify">
 Easy Gate is a simple web application built in Go and React that acts as the home page for your self-hosted infrastructure. Services and notes are parsed from a configuration file in real-time (without restarting the application). Items can also be assigned to one or more groups to show them only to specific users (based on their IP addresses).
