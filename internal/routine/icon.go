@@ -28,17 +28,13 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"regexp"
 	"strings"
 
 	"github.com/r7wx/easy-gate/internal/config"
 )
 
 func getIconData(service config.Service) string {
-	dataURIRegex := `data:[a-z\-]+\/[a-z\-\+]+(;[a-z\-]+\=[a-z\-]+)*?;base64?,`
-	dataURIRegex += `[a-z0-9\!\$\&\'\,\(\)\*\+\,\;\=\-\.\_\~\:\@\/\?\%\s]*\s*$`
-	dataURI, _ := regexp.MatchString(dataURIRegex, service.Icon)
-	if dataURI {
+	if strings.HasPrefix(service.Icon, "data:") {
 		return service.Icon
 	}
 
