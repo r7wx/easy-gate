@@ -229,7 +229,8 @@ theme:
 ### Groups
 
 <p align="justify">
-Group entries are used to define which users can see which items, by providing the user subnet:
+Group entries are used to define which users can see which items, by providing the user subnet. Group functionality is useful when dealing with both internal network and VPN users.
+
 </p>
 
 #### JSON
@@ -262,7 +263,7 @@ groups:
 <p align="justify">
 A service entry is used to define a service that is available in the infrastructure. Each service has the following configurable parameters:
 
-- **name:** the name of the service (ex. Github, Jenkins, ...)
+- **name:** the name of the service (ex. Internal Git, Jenkins, ...)
 - **url:** the service url (must be a valid url starting with http(s)://)
 - **health_check:** if true Easy Gate will try to perform an HEAD HTTP request to the service url and show the result on a dot (see theme section to configure dot colors), if false Easy Gate will always show the dot in the health_inactive colour.
 - **groups:** list of groups associated to this service (defined in the groups section). If no group is provided the item can be seen by all users:
