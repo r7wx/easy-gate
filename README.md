@@ -193,13 +193,12 @@ Easy gate can be configured by a JSON or a YAML configuration file. An example c
 - **key_file:** Path to the SSL key file (if TLS is enabled)
 - **behind_proxy:** If true, the application will use the X-Forwarded-For header to determine the IP address of the client
 - **title:** Title of the application
-- **icon:** Font-awesome icon to use as the application icon
-- **motd:** Message to display on home page
 
 ### Theme
 
 <p align="justify">
-Easy Gate theme can be configured by providing colors for background and foreground. Theme changes will be applied immediately.
+Easy Gate theme can be configured by providing colors for background, foreground and health dot colors (ok, bad, inactive).
+Theme changes will be applied immediately.
 </p>
 
 Example of a dark mode theme:
@@ -209,7 +208,10 @@ Example of a dark mode theme:
 ```json
 "theme": {
   "background": "#1d1d1d",
-  "foreground": "#ffffff"
+  "foreground": "#ffffff",
+  "health_ok": "#22c55e",
+  "health_bad": "#ef4444",
+  "health_inactive": "#d1d5db"
 }
 ```
 
@@ -219,6 +221,9 @@ Example of a dark mode theme:
 theme:
   background: "#FFFFFF"
   foreground: "#000000"
+  health_ok: "#22c55e"
+  health_bad: "#ef4444"
+  health_inactive: "#d1d5db"
 ```
 
 ### Groups
@@ -255,24 +260,32 @@ groups:
 ### Services
 
 <p align="justify">
-A service entry is used to define a service that is available in the infrastructure. Each service has a name, an url, an icon and the groups that can see it (defined in the groups section). If no group is provided the item can be seen by all users:
+A service entry is used to define a service that is available in the infrastructure. Each service has the following configurable parameters:
+
+- **name:** the name of the service (ex. Github, Jenkins, ...)
+- **url:** the service url (must be a valid url starting with http(s)://)
+- **health_check:** if true Easy Gate will try to perform an HEAD HTTP request to the service url and show the result on a dot (see theme section to configure dot colors), if false Easy Gate will always show the dot in the health_inactive colour.
+- **groups:** list of groups associated to this service (defined in the groups section). If no group is provided the item can be seen by all users:
+- **icon (optional):** the icon parameter accepts image URLs or data URI. If the icon parameter is not provided or empty, Easy Gate will try to fetch the service favicon and display it or fallback to a default icon.
+
 </p>
 
 #### JSON
 
 ```json
 {
-  "icon": "fa-brands fa-git-square",
   "name": "Git",
-  "url": "https://git.example.vpn",
+  "url": "https://git.example.internal",
+  "health_check": true,
   "groups": [
       "vpn"
   ]
 },
 {
-  "icon": "fa-brands fa-docker",
   "name": "Portainer",
-  "url": "https://portainer.example.internal",
+  "url": "https://portainer.example.all",
+  "health_check": true,
+  "icon": "data:image/png;base64,[...]",
   "groups": []
 }
 ```
@@ -280,14 +293,15 @@ A service entry is used to define a service that is available in the infrastruct
 #### YAML
 
 ```yml
-- icon: fa-brands fa-git-square
-  name: Git
-  url: https://git.example.vpn
+- name: Git
+  url: https://git.example.internal
+  health_check: true
   groups:
     - vpn
-- icon: fa-brands fa-docker
-  name: Portainer
-  url: https://portainer.example.internal
+- name: Portainer
+  url: https://portainer.example.all
+  health_check: true
+  icon: data:image/png;base64,[...]
   groups: []
 ```
 
@@ -325,10 +339,6 @@ A note entry is used to define a simple text note which has a title and a conten
   text: This note will be visible to everyone
   groups: []
 ```
-
-### Icons
-
-Icons are provided by the [Font Awesome](https://fontawesome.com/icons?d=gallery) library. Get the appropriate icon name by using the Font Awesome website (only free icons are available).
 
 ### Environment Variables
 
