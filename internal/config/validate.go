@@ -23,7 +23,6 @@ SOFTWARE.
 package config
 
 import (
-	"fmt"
 	"regexp"
 
 	"github.com/r7wx/easy-gate/internal/errors"
@@ -42,7 +41,6 @@ func isHexColor(color string) bool {
 		c := color[i]
 		if (c >= '0' && c <= '9') || (c >= 'a' &&
 			c <= 'f') || (c >= 'A' && c <= 'F') {
-			fmt.Println(color)
 			continue
 		}
 		return false

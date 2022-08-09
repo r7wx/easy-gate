@@ -27,19 +27,16 @@ import "testing"
 func TestErrors(t *testing.T) {
 	err := NewEasyGateError(InvalidURL, Service, "service1")
 	if err.Error() != "Invalid url for service: service1" {
-		t.Fatalf("Expected 'Invalid url for service: service1', got '%s'",
-			err.Error())
+		t.Fatal()
 	}
 
 	err = NewEasyGateError(InvalidColor, Root, "background")
 	if err.Error() != "Invalid color for root: background" {
-		t.Fatalf("Expected 'Invalid color for root: background', got '%s'",
-			err.Error())
+		t.Fatal()
 	}
 
 	err = NewEasyGateError(InvalidFormat, ConfigurationFile, "")
 	if err.Error() != "Invalid format for configuration file" {
-		t.Fatalf("Expected 'Invalid format for configuration file', got '%s'",
-			err.Error())
+		t.Fatal()
 	}
 }

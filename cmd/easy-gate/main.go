@@ -38,10 +38,11 @@ func main() {
 		log.Fatal("[Easy Gate] No configuration file provided")
 	}
 
-	log.Println("[Easy Gate] Loading configuration file:",
-		cfgFilePath)
-	cfgRoutine := routine.NewRoutine(cfgFilePath,
-		1*time.Second)
+	log.Println("[Easy Gate] Loading configuration file:", cfgFilePath)
+	cfgRoutine, err := routine.NewRoutine(cfgFilePath, 1*time.Second)
+	if err != nil {
+		log.Fatal(err)
+	}
 	go cfgRoutine.Start()
 
 	service := service.NewService(cfgRoutine)

@@ -41,10 +41,10 @@ type Routine struct {
 }
 
 // NewRoutine - Create new config routine
-func NewRoutine(filePath string, interval time.Duration) *Routine {
+func NewRoutine(filePath string, interval time.Duration) (*Routine, error) {
 	cfg, checksum, err := config.Load(filePath)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	return &Routine{
@@ -52,7 +52,7 @@ func NewRoutine(filePath string, interval time.Duration) *Routine {
 		Status:       toStatus(cfg),
 		Interval:     interval,
 		LastChecksum: checksum,
-	}
+	}, nil
 }
 
 // GetStatus - Get current status

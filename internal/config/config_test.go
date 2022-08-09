@@ -84,7 +84,7 @@ func TestLoadEnv(t *testing.T) {
 }
 
 func TestLoadFile(t *testing.T) {
-	cfgFile, err := ioutil.TempFile(".", "egt")
+	cfgFile, err := ioutil.TempFile(".", "easy_gate_test_")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -111,20 +111,20 @@ func TestLoadFile(t *testing.T) {
 		t.Fatal(err)
 	}
 	wrongConfig := `{
-		"addr": "0.0.0.0:8080",
-		"use_tls": false,
-		"cert_file": "",
-		"key_file": "",
-		"behind_proxy": false,
-		"title": "Easy Gate",
-		"theme": {
-			"background": "TEST123",
-			"foreground": "TEST"
-		},
-		"groups": [],
-		"services": [],
-		"notes": []
-		}`
+"addr": "0.0.0.0:8080",
+"use_tls": false,
+"cert_file": "",
+"key_file": "",
+"behind_proxy": false,
+"title": "Easy Gate",
+"theme": {
+	"background": "TEST123",
+	"foreground": "TEST"
+},
+"groups": [],
+"services": [],
+"notes": []
+}`
 	cfgFile.WriteString(wrongConfig)
 	_, _, err = Load(cfgFile.Name())
 	if err == nil {
