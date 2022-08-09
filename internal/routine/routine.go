@@ -23,7 +23,9 @@ SOFTWARE.
 package routine
 
 import (
+	"crypto/tls"
 	"log"
+	"net/http"
 	"sync"
 	"time"
 
@@ -35,6 +37,7 @@ type Routine struct {
 	sync.Mutex
 	Error        error
 	Status       *Status
+	Client       *http.Client
 	FilePath     string
 	LastChecksum string
 	Interval     time.Duration
@@ -42,17 +45,26 @@ type Routine struct {
 
 // NewRoutine - Create new config routine
 func NewRoutine(filePath string, interval time.Duration) (*Routine, error) {
+	routine := Routine{
+		FilePath: filePath,
+		Client: &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{
+					InsecureSkipVerify: true,
+				},
+			},
+		},
+		Interval: interval,
+	}
+
 	cfg, checksum, err := config.Load(filePath)
 	if err != nil {
 		return nil, err
 	}
+	routine.Status = routine.toStatus(cfg)
+	routine.LastChecksum = checksum
 
-	return &Routine{
-		FilePath:     filePath,
-		Status:       toStatus(cfg),
-		Interval:     interval,
-		LastChecksum: checksum,
-	}, nil
+	return &routine, nil
 }
 
 // GetStatus - Get current status
@@ -77,7 +89,7 @@ func (r *Routine) Start() {
 		r.Error = nil
 		if checksum != r.LastChecksum {
 			log.Println("[Easy Gate] Detected configuration change, reloading...")
-			r.Status = toStatus(cfg)
+			r.Status = r.toStatus(cfg)
 		}
 		r.LastChecksum = checksum
 		r.Unlock()

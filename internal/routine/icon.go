@@ -33,26 +33,26 @@ import (
 	"github.com/r7wx/easy-gate/internal/config"
 )
 
-func getIconData(service config.Service) string {
+func (r *Routine) getIconData(service config.Service) string {
 	if strings.HasPrefix(service.Icon, "data:") {
 		return service.Icon
 	}
 
 	u, err := url.Parse(service.Icon)
 	if err == nil && u.IsAbs() {
-		return downloadIconFromURL(service.Icon)
+		return r.downloadIconFromURL(service.Icon)
 	}
 
 	u, err = url.Parse(service.URL)
 	if err != nil {
 		return ""
 	}
-	return downloadFavicon(fmt.Sprintf("%s://%s/%s", u.Scheme,
+	return r.downloadFavicon(fmt.Sprintf("%s://%s/%s", u.Scheme,
 		u.Host, "favicon.ico"))
 }
 
-func downloadIconFromURL(url string) string {
-	resp, err := http.Get(url)
+func (r *Routine) downloadIconFromURL(url string) string {
+	resp, err := r.Client.Get(url)
 	if err != nil {
 		return ""
 	}
@@ -76,8 +76,8 @@ func downloadIconFromURL(url string) string {
 	)
 }
 
-func downloadFavicon(url string) string {
-	resp, err := http.Get(url)
+func (r *Routine) downloadFavicon(url string) string {
+	resp, err := r.Client.Get(url)
 	if err != nil {
 		return ""
 	}

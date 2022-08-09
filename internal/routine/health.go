@@ -23,18 +23,16 @@ SOFTWARE.
 package routine
 
 import (
-	"net/http"
-
 	"github.com/r7wx/easy-gate/internal/config"
 	"github.com/r7wx/easy-gate/internal/models"
 )
 
-func checkHealth(service config.Service) models.HealthStatus {
+func (r *Routine) checkHealth(service config.Service) models.HealthStatus {
 	if !service.HealthCheck {
 		return models.HealthUndefined
 	}
 
-	_, err := http.Head(service.URL)
+	_, err := r.Client.Head(service.URL)
 	if err != nil {
 		return models.HealthBAD
 	}

@@ -41,7 +41,7 @@ type Status struct {
 	UseTLS      bool
 }
 
-func toStatus(cfg *config.Config) *Status {
+func (r *Routine) toStatus(cfg *config.Config) *Status {
 	return &Status{
 		Theme:       cfg.Theme,
 		Addr:        cfg.Addr,
@@ -49,37 +49,43 @@ func toStatus(cfg *config.Config) *Status {
 		CertFile:    cfg.CertFile,
 		KeyFile:     cfg.KeyFile,
 		Groups:      cfg.Groups,
-		Services:    getServices(cfg),
-		Notes:       getNotes(cfg),
+		Services:    r.getServices(cfg),
+		Notes:       r.getNotes(cfg),
 		BehindProxy: cfg.BehindProxy,
 		UseTLS:      cfg.UseTLS,
 	}
 }
 
-func getServices(cfg *config.Config) []models.Service {
+func (r *Routine) getServices(cfg *config.Config) []models.Service {
 	serviceChan := make(chan models.Service)
 	for _, cfgService := range cfg.Services {
 		go func(cfgService config.Service) {
 			serviceChan <- models.Service{
-				Icon:   getIconData(cfgService),
+				Icon:   r.getIconData(cfgService),
 				Name:   cfgService.Name,
 				URL:    cfgService.URL,
 				Groups: cfgService.Groups,
-				Health: checkHealth(cfgService),
+				Health: r.checkHealth(cfgService),
 			}
 		}(cfgService)
 	}
 
-	services := []models.Service{}
+	processedServices := map[string]models.Service{}
 	for i := 1; i <= len(cfg.Services); i++ {
 		service := <-serviceChan
-		services = append(services, service)
+		processedServices[service.Name] = service
+	}
+
+	services := []models.Service{}
+	for _, cfgService := range cfg.Services {
+		services = append(services,
+			processedServices[cfgService.Name])
 	}
 
 	return services
 }
 
-func getNotes(cfg *config.Config) []models.Note {
+func (r *Routine) getNotes(cfg *config.Config) []models.Note {
 	notes := []models.Note{}
 	for _, cfgNote := range cfg.Notes {
 		notes = append(notes, models.Note{

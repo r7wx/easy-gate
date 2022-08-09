@@ -25,6 +25,7 @@ package routine
 import (
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"testing"
 	"time"
@@ -85,11 +86,15 @@ func TestRoutine(t *testing.T) {
 }
 
 func TestHealth(t *testing.T) {
+	testRoutine := Routine{
+		Client: http.DefaultClient,
+	}
+
 	service := config.Service{
 		URL:         "https://www.google.com",
 		HealthCheck: true,
 	}
-	status := checkHealth(service)
+	status := testRoutine.checkHealth(service)
 	if status == models.HealthUndefined {
 		t.Fatal()
 	}
@@ -98,13 +103,17 @@ func TestHealth(t *testing.T) {
 		URL:         "https://www.google.com",
 		HealthCheck: false,
 	}
-	status = checkHealth(service)
+	status = testRoutine.checkHealth(service)
 	if status != models.HealthUndefined {
 		t.Fatal()
 	}
 }
 
 func TestGetServices(t *testing.T) {
+	testRoutine := Routine{
+		Client: http.DefaultClient,
+	}
+
 	cfg := config.Config{
 		Services: []config.Service{
 			{
@@ -116,13 +125,17 @@ func TestGetServices(t *testing.T) {
 		},
 	}
 
-	services := getServices(&cfg)
+	services := testRoutine.getServices(&cfg)
 	if services[0].Name != "Test 1" {
 		t.Fatal()
 	}
 }
 
 func TestGetNotes(t *testing.T) {
+	testRoutine := Routine{
+		Client: http.DefaultClient,
+	}
+
 	cfg := config.Config{
 		Notes: []config.Note{
 			{
@@ -132,7 +145,7 @@ func TestGetNotes(t *testing.T) {
 		},
 	}
 
-	notes := getNotes(&cfg)
+	notes := testRoutine.getNotes(&cfg)
 	if notes[0].Name != "Test 1" {
 		t.Fatal()
 	}
