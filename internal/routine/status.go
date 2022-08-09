@@ -57,16 +57,25 @@ func toStatus(cfg *config.Config) *Status {
 }
 
 func getServices(cfg *config.Config) []models.Service {
-	services := []models.Service{}
+	serviceChan := make(chan models.Service)
 	for _, cfgService := range cfg.Services {
-		services = append(services, models.Service{
-			Icon:   getIconData(cfgService),
-			Name:   cfgService.Name,
-			URL:    cfgService.URL,
-			Groups: cfgService.Groups,
-			Health: checkHealth(cfgService),
-		})
+		go func(cfgService config.Service) {
+			serviceChan <- models.Service{
+				Icon:   getIconData(cfgService),
+				Name:   cfgService.Name,
+				URL:    cfgService.URL,
+				Groups: cfgService.Groups,
+				Health: checkHealth(cfgService),
+			}
+		}(cfgService)
 	}
+
+	services := []models.Service{}
+	for i := 1; i <= len(cfg.Services); i++ {
+		service := <-serviceChan
+		services = append(services, service)
+	}
+
 	return services
 }
 

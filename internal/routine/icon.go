@@ -28,23 +28,56 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"path"
+	"regexp"
+	"strings"
 
 	"github.com/r7wx/easy-gate/internal/config"
 )
 
 func getIconData(service config.Service) string {
-	if service.Icon != "" {
+	dataURIRegex := `data:[a-z\-]+\/[a-z\-\+]+(;[a-z\-]+\=[a-z\-]+)*?;base64?,`
+	dataURIRegex += `[a-z0-9\!\$\&\'\,\(\)\*\+\,\;\=\-\.\_\~\:\@\/\?\%\s]*\s*$`
+	dataURI, _ := regexp.MatchString(dataURIRegex, service.Icon)
+	if dataURI {
 		return service.Icon
 	}
 
-	u, err := url.Parse(service.URL)
+	u, err := url.Parse(service.Icon)
+	if err == nil && u.IsAbs() {
+		return downloadIconFromURL(service.Icon)
+	}
+
+	u, err = url.Parse(service.URL)
 	if err != nil {
 		return ""
 	}
-	u.Path = path.Join(u.Path, "favicon.ico")
+	return downloadFavicon(fmt.Sprintf("%s://%s/%s", u.Scheme,
+		u.Host, "favicon.ico"))
+}
 
-	return downloadFavicon(u.String())
+func downloadIconFromURL(url string) string {
+	resp, err := http.Get(url)
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return ""
+	}
+
+	respBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return ""
+	}
+	mimeType := http.DetectContentType(respBytes)
+	if !strings.HasPrefix(mimeType, "image/") {
+		return ""
+	}
+
+	return fmt.Sprintf(
+		"data:%s;base64,%s", mimeType,
+		base64.StdEncoding.EncodeToString(respBytes),
+	)
 }
 
 func downloadFavicon(url string) string {
@@ -53,14 +86,21 @@ func downloadFavicon(url string) string {
 		return ""
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return ""
+	}
 
-	imageBytes, err := io.ReadAll(resp.Body)
+	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
+		return ""
+	}
+	mimeType := http.DetectContentType(respBytes)
+	if mimeType != "image/x-icon" {
 		return ""
 	}
 
 	return fmt.Sprintf(
 		"data:image/x-icon;base64,%s",
-		base64.StdEncoding.EncodeToString(imageBytes),
+		base64.StdEncoding.EncodeToString(respBytes),
 	)
 }

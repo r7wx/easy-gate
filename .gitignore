@@ -24,3 +24,4 @@ yarn-debug.log*
 yarn-error.log*
 easy_gate_test_*
 .vscode/
+example.json
