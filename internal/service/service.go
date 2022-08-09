@@ -47,13 +47,13 @@ func (s Service) Serve() {
 	http.HandleFunc("/", s.webFS)
 
 	if status.UseTLS {
-		log.Println("[Easy Gate] Listening for connections on", status.Addr, "(HTTPS)")
+		log.Println("Listening for connections on", status.Addr, "(HTTPS)")
 		if err := http.ListenAndServeTLS(status.Addr, status.CertFile,
 			status.KeyFile, nil); err != nil {
 			log.Fatal(err)
 		}
 	}
-	log.Println("[Easy Gate] Listening for connections on", status.Addr)
+	log.Println("Listening for connections on", status.Addr)
 	if err := http.ListenAndServe(status.Addr, nil); err != nil {
 		log.Fatal(err)
 	}

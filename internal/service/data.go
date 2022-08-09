@@ -44,7 +44,7 @@ func (s Service) data(w http.ResponseWriter, req *http.Request) {
 
 	reqIP, _, err := net.SplitHostPort(req.RemoteAddr)
 	if err != nil {
-		log.Println("[Easy Gate] Service error:", err)
+		log.Println("Service error:", err)
 		http.Error(w, "", http.StatusInternalServerError)
 		return
 	}
@@ -52,12 +52,12 @@ func (s Service) data(w http.ResponseWriter, req *http.Request) {
 	if status.BehindProxy {
 		reqIP = req.Header.Get("X-Forwarded-For")
 		if reqIP == "" {
-			log.Println("[Easy Gate] 400 Bad Request: X-Forwarded-For header is missing")
+			log.Println("400 Bad Request: X-Forwarded-For header is missing")
 			http.Error(w, "", http.StatusBadRequest)
 			return
 		}
 	}
-	log.Printf("[Easy Gate] [%s] %s", reqIP, req.URL.Path)
+	log.Printf("[%s] %s", reqIP, req.URL.Path)
 
 	response := response{
 		Title:    status.Title,
@@ -72,7 +72,7 @@ func (s Service) data(w http.ResponseWriter, req *http.Request) {
 
 	res, err := json.Marshal(response)
 	if err != nil {
-		log.Println("[Easy Gate] Service error:", err)
+		log.Println("Service error:", err)
 		http.Error(w, "", http.StatusInternalServerError)
 		return
 	}

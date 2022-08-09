@@ -36,7 +36,7 @@ var webFS embed.FS
 func GetWebFS() http.FileSystem {
 	fs, err := fs.Sub(webFS, "build")
 	if err != nil {
-		log.Fatal("[Easy Gate] Error loading embedded filesystem:", err)
+		log.Fatal("Error loading embedded filesystem:", err)
 	}
 	return http.FS(fs)
 }

@@ -39,7 +39,7 @@ func (s Service) webFS(w http.ResponseWriter, req *http.Request) {
 
 	reqIP, _, err := net.SplitHostPort(req.RemoteAddr)
 	if err != nil {
-		log.Println("[Easy Gate] WebFS error:", err)
+		log.Println("WebFS error:", err)
 		http.Error(w, "", http.StatusInternalServerError)
 		return
 	}
@@ -48,12 +48,12 @@ func (s Service) webFS(w http.ResponseWriter, req *http.Request) {
 	if status.BehindProxy {
 		reqIP = req.Header.Get("X-Forwarded-For")
 		if reqIP == "" {
-			log.Println("[Easy Gate] 400 Bad Request: X-Forwarded-For header is missing")
+			log.Println("400 Bad Request: X-Forwarded-For header is missing")
 			http.Error(w, "", http.StatusBadRequest)
 			return
 		}
 	}
 
-	log.Printf("[Easy Gate] [%s] %s", reqIP, req.URL.Path)
+	log.Printf("[%s] %s", reqIP, req.URL.Path)
 	http.FileServer(webFS).ServeHTTP(w, req)
 }

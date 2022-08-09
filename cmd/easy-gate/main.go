@@ -33,12 +33,14 @@ import (
 )
 
 func main() {
+	log.SetPrefix("[Easy Gate] ")
+
 	cfgFilePath, err := config.GetConfigPath(os.Args)
 	if err != nil {
-		log.Fatal("[Easy Gate] No configuration file provided")
+		log.Fatal("No configuration file provided")
 	}
 
-	log.Println("[Easy Gate] Loading configuration file:", cfgFilePath)
+	log.Println("Loading configuration file:", cfgFilePath)
 	cfgRoutine, err := routine.NewRoutine(cfgFilePath, 1*time.Second)
 	if err != nil {
 		log.Fatal(err)
