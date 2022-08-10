@@ -65,19 +65,16 @@ func TestMain(m *testing.M) {
 		Services: []config.Service{
 			{
 				Name:   "service1",
-				Icon:   "fa-solid fa-cubes",
 				URL:    "http://example.com/service1",
 				Groups: []string{},
 			},
 			{
 				Name:   "service2",
-				Icon:   "fa-solid fa-cubes",
 				URL:    "http://example.com/service2",
 				Groups: []string{"test"},
 			},
 			{
 				Name:   "service3",
-				Icon:   "fa-solid fa-cubes",
 				URL:    "http://example.com/service3",
 				Groups: []string{"test2"},
 			},
