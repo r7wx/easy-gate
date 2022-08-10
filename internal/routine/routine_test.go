@@ -91,7 +91,7 @@ func TestGetServices(t *testing.T) {
 			{
 				Icon: "",
 				Name: "Test 1",
-				URL:  "https://test.test",
+				URL:  "https://xxxxxxxx.xxxxxx",
 			},
 		},
 	}
@@ -119,5 +119,42 @@ func TestGetNotes(t *testing.T) {
 	notes := testRoutine.getNotes(&cfg)
 	if notes[0].Name != "Test 1" {
 		t.Fatal()
+	}
+}
+
+func TestIcon(t *testing.T) {
+	testRoutine := Routine{
+		Client: http.DefaultClient,
+	}
+
+	service := config.Service{
+		Icon: "data:image/png;base64,TEST",
+	}
+	icon := testRoutine.getIconData(service)
+	if icon != "data:image/png;base64,TEST" {
+		t.Fail()
+	}
+
+	service = config.Service{
+		Icon: "data:XXXXX",
+	}
+	icon = testRoutine.getIconData(service)
+	if icon != "" {
+		t.Fail()
+	}
+
+	service = config.Service{
+		Icon: "https://xxxxxxxx.xxxxxx",
+	}
+	icon = testRoutine.getIconData(service)
+	if icon != "" {
+		t.Fail()
+	}
+	service = config.Service{
+		URL: "https://xxxxxxxx.xxxxxx",
+	}
+	icon = testRoutine.getIconData(service)
+	if icon != "" {
+		t.Fail()
 	}
 }

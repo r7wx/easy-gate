@@ -34,7 +34,7 @@ import (
 )
 
 func (r *Routine) getIconData(service config.Service) string {
-	if strings.HasPrefix(service.Icon, "data:") {
+	if strings.HasPrefix(service.Icon, "data:image") {
 		return service.Icon
 	}
 
