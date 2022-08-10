@@ -32,10 +32,9 @@ func (s *Service) getServices(status *routine.Status, addr string) []models.Serv
 	for _, statusService := range status.Services {
 		if isAllowed(status.Groups, statusService.Groups, addr) {
 			service := models.Service{
-				Icon:   statusService.Icon,
-				Name:   statusService.Name,
-				URL:    statusService.URL,
-				Health: statusService.Health,
+				Icon: statusService.Icon,
+				Name: statusService.Name,
+				URL:  statusService.URL,
 			}
 			services = append(services, service)
 		}

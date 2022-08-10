@@ -22,16 +22,6 @@ SOFTWARE.
 
 package models
 
-// Health status constants
-const (
-	HealthUndefined = iota
-	HealthOK
-	HealthBAD
-)
-
-// HealthStatus - Health status type
-type HealthStatus int
-
 // Group - Easy Gate group configuration struct
 type Group struct {
 	Name   string `json:"name" yaml:"name"`
@@ -40,11 +30,10 @@ type Group struct {
 
 // Service - Service model
 type Service struct {
-	Icon   string       `json:"icon"`
-	Name   string       `json:"name"`
-	URL    string       `json:"url"`
-	Groups []string     `json:"-"`
-	Health HealthStatus `json:"health"`
+	Icon   string   `json:"icon"`
+	Name   string   `json:"name"`
+	URL    string   `json:"url"`
+	Groups []string `json:"-"`
 }
 
 // Note - Note model
@@ -56,9 +45,6 @@ type Note struct {
 
 // Theme - Easy Gate theme model
 type Theme struct {
-	Background     string `json:"background" yaml:"background"`
-	Foreground     string `json:"foreground" yaml:"foreground"`
-	HealthOK       string `json:"health_ok" yaml:"health_ok"`
-	HealthBAD      string `json:"health_bad" yaml:"health_bad"`
-	HealthInactive string `json:"health_inactive" yaml:"health_inactive"`
+	Background string `json:"background" yaml:"background"`
+	Foreground string `json:"foreground" yaml:"foreground"`
 }

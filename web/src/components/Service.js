@@ -25,7 +25,6 @@ SOFTWARE.
 import { faCircleNodes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import Dot from "./Dot";
 
 function Service(props) {
   const openService = (url) => {
@@ -54,7 +53,6 @@ function Service(props) {
           )}
         </React.Fragment>
         <p className="whitespace-nowrap overflow-hidden text-ellipsis font-semibold w-5/6">
-          <Dot health={props.service.health} theme={props.theme} />
           {props.service.name}
         </p>
       </div>

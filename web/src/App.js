@@ -40,9 +40,6 @@ function App() {
     theme: {
       background: "#ffffff",
       foreground: "#1d1d1d",
-      health_ok: "#22c55e",
-      health_bad: "#ef4444",
-      health_inactive: "#d1d5db",
     },
   });
 

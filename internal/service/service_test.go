@@ -49,11 +49,8 @@ func TestMain(m *testing.M) {
 		BehindProxy: false,
 		Title:       "Test",
 		Theme: models.Theme{
-			Background:     "#ffffff",
-			Foreground:     "#000000",
-			HealthOK:       "#ffffff",
-			HealthBAD:      "#ffffff",
-			HealthInactive: "#ffffff",
+			Background: "#ffffff",
+			Foreground: "#000000",
 		},
 		Groups: []models.Group{
 			{

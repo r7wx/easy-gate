@@ -41,6 +41,11 @@ type Status struct {
 	UseTLS      bool
 }
 
+type serviceWrapper struct {
+	service models.Service
+	index   int
+}
+
 func (r *Routine) toStatus(cfg *config.Config) *Status {
 	return &Status{
 		Theme:       cfg.Theme,
@@ -57,29 +62,31 @@ func (r *Routine) toStatus(cfg *config.Config) *Status {
 }
 
 func (r *Routine) getServices(cfg *config.Config) []models.Service {
-	serviceChan := make(chan models.Service)
-	for _, cfgService := range cfg.Services {
-		go func(cfgService config.Service) {
-			serviceChan <- models.Service{
-				Icon:   r.getIconData(cfgService),
-				Name:   cfgService.Name,
-				URL:    cfgService.URL,
-				Groups: cfgService.Groups,
-				Health: r.checkHealth(cfgService),
+	servicePChan := make(chan serviceWrapper)
+	for index, cfgService := range cfg.Services {
+		go func(index int, cfgService config.Service) {
+			servicePChan <- serviceWrapper{
+				service: models.Service{
+					Icon:   r.getIconData(cfgService),
+					Name:   cfgService.Name,
+					URL:    cfgService.URL,
+					Groups: cfgService.Groups,
+				},
+				index: index,
 			}
-		}(cfgService)
+		}(index, cfgService)
 	}
 
-	processedServices := map[string]models.Service{}
+	processedServices := map[int]models.Service{}
 	for i := 1; i <= len(cfg.Services); i++ {
-		service := <-serviceChan
-		processedServices[service.Name] = service
+		processedService := <-servicePChan
+		processedServices[processedService.index] = processedService.service
 	}
 
 	services := []models.Service{}
-	for _, cfgService := range cfg.Services {
+	for index := range cfg.Services {
 		services = append(services,
-			processedServices[cfgService.Name])
+			processedServices[index])
 	}
 
 	return services

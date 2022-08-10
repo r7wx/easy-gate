@@ -31,7 +31,6 @@ import (
 	"time"
 
 	"github.com/r7wx/easy-gate/internal/config"
-	"github.com/r7wx/easy-gate/internal/models"
 )
 
 var cfgFilePath string
@@ -46,10 +45,7 @@ func TestMain(m *testing.M) {
 "title": "Easy Gate",
 "theme": {
 	"background": "#FFFFFF",
-	"foreground": "#000000",
-	"health_ok": "#FFFFFF",
-	"health_bad": "#000000",
-	"health_inactive": "#FFFFFF",
+	"foreground": "#000000",	
 },
 "groups": [],
 "services": [],
@@ -85,30 +81,6 @@ func TestRoutine(t *testing.T) {
 	}
 }
 
-func TestHealth(t *testing.T) {
-	testRoutine := Routine{
-		Client: http.DefaultClient,
-	}
-
-	service := config.Service{
-		URL:         "https://www.google.com",
-		HealthCheck: true,
-	}
-	status := testRoutine.checkHealth(service)
-	if status == models.HealthUndefined {
-		t.Fatal()
-	}
-
-	service = config.Service{
-		URL:         "https://www.google.com",
-		HealthCheck: false,
-	}
-	status = testRoutine.checkHealth(service)
-	if status != models.HealthUndefined {
-		t.Fatal()
-	}
-}
-
 func TestGetServices(t *testing.T) {
 	testRoutine := Routine{
 		Client: http.DefaultClient,
@@ -117,10 +89,9 @@ func TestGetServices(t *testing.T) {
 	cfg := config.Config{
 		Services: []config.Service{
 			{
-				Icon:        "",
-				Name:        "Test 1",
-				URL:         "https://test.test",
-				HealthCheck: true,
+				Icon: "",
+				Name: "Test 1",
+				URL:  "https://test.test",
 			},
 		},
 	}

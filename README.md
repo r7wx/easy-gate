@@ -27,7 +27,7 @@ Easy Gate is a simple web application built in Go and React that acts as the hom
 
 - Service and note parsing from a configuration file (JSON/YAML) in real-time (without restarting the application).
 - Service and note assignment to one or more groups to show items only to specific users (based on their IP addresses).
-- Customizable theme.
+- Customizable theme and icons.
 - Run as dependecy free standalone executable or as a Docker container.
 
 ## Deployment
@@ -197,8 +197,7 @@ Easy gate can be configured by a JSON or a YAML configuration file. An example c
 ### Theme
 
 <p align="justify">
-Easy Gate theme can be configured by providing colors for background, foreground and health dot colors (ok, bad, inactive).
-Theme changes will be applied immediately.
+Easy Gate theme can be configured by providing colors for background and foreground. Theme changes will be applied immediately.
 </p>
 
 Example of a dark mode theme:
@@ -209,9 +208,6 @@ Example of a dark mode theme:
 "theme": {
   "background": "#1d1d1d",
   "foreground": "#ffffff",
-  "health_ok": "#22c55e",
-  "health_bad": "#ef4444",
-  "health_inactive": "#d1d5db"
 }
 ```
 
@@ -221,9 +217,6 @@ Example of a dark mode theme:
 theme:
   background: "#FFFFFF"
   foreground: "#000000"
-  health_ok: "#22c55e"
-  health_bad: "#ef4444"
-  health_inactive: "#d1d5db"
 ```
 
 ### Groups
@@ -265,7 +258,6 @@ A service entry is used to define a service that is available in the infrastruct
 
 - **name:** the name of the service (ex. Internal Git, Jenkins, ...)
 - **url:** the service url (must be a valid url starting with http(s)://)
-- **health_check:** if true Easy Gate will try to perform an HEAD HTTP request to the service url and show the result on a dot (see theme section to configure dot colors), if false Easy Gate will always show the dot in the health_inactive colour.
 - **groups:** list of groups associated to this service (defined in the groups section). If no group is provided the item can be seen by all users:
 - **icon (optional):** the icon parameter accepts image URLs or data URI. If the icon parameter is not provided or empty, Easy Gate will try to fetch the service favicon and display it or fallback to a default icon.
 
@@ -277,7 +269,6 @@ A service entry is used to define a service that is available in the infrastruct
 {
   "name": "Git",
   "url": "https://git.example.internal",
-  "health_check": true,
   "groups": [
       "vpn"
   ]
@@ -285,7 +276,6 @@ A service entry is used to define a service that is available in the infrastruct
 {
   "name": "Portainer",
   "url": "https://portainer.example.all",
-  "health_check": true,
   "icon": "data:image/png;base64,[...]",
   "groups": []
 }
@@ -296,12 +286,10 @@ A service entry is used to define a service that is available in the infrastruct
 ```yml
 - name: Git
   url: https://git.example.internal
-  health_check: true
   groups:
     - vpn
 - name: Portainer
   url: https://portainer.example.all
-  health_check: true
   icon: data:image/png;base64,[...]
   groups: []
 ```

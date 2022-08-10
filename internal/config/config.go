@@ -32,11 +32,10 @@ import (
 
 // Service - Easy Gate service configuration struct
 type Service struct {
-	Icon        string   `json:"icon" yaml:"icon"`
-	Name        string   `json:"name" yaml:"name"`
-	URL         string   `json:"url" yaml:"url"`
-	Groups      []string `json:"groups" yaml:"groups"`
-	HealthCheck bool     `json:"health_check" yaml:"health_check"`
+	Icon   string   `json:"icon" yaml:"icon"`
+	Name   string   `json:"name" yaml:"name"`
+	URL    string   `json:"url" yaml:"url"`
+	Groups []string `json:"groups" yaml:"groups"`
 }
 
 // Note - Easy Gate note configuration struct

@@ -70,27 +70,6 @@ func validateConfig(cfg *Config) error {
 			"foreground",
 		)
 	}
-	if !isHexColor(cfg.Theme.HealthOK) {
-		return errors.NewEasyGateError(
-			errors.InvalidColor,
-			errors.Theme,
-			"health_ok",
-		)
-	}
-	if !isHexColor(cfg.Theme.HealthBAD) {
-		return errors.NewEasyGateError(
-			errors.InvalidColor,
-			errors.Theme,
-			"health_bad",
-		)
-	}
-	if !isHexColor(cfg.Theme.HealthInactive) {
-		return errors.NewEasyGateError(
-			errors.InvalidColor,
-			errors.Theme,
-			"health_inactive",
-		)
-	}
 
 	for _, service := range cfg.Services {
 		if !isURL(service.URL) {

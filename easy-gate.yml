@@ -7,9 +7,6 @@ title: Easy Gate
 theme:
   background: "#FFFFFF"
   foreground: "#000000"
-  health_ok: "#22c55e"
-  health_bad: "#ef4444"
-  health_inactive: "#d1d5db"
 groups:
   - name: internal
     subnet: 192.168.1.1/24
@@ -18,22 +15,18 @@ groups:
 services:
   - name: Git
     url: https://git.example.internal
-    health_check: false
     groups:
       - internal
       - vpn
   - name: Files
     url: https://files.example.internal
-    health_check: true
     groups:
       - internal
   - name: Google
     url: https://www.google.com
-    health_check: true
     groups: []
   - name: Youtube
     url: https://www.youtube.com
-    health_check: true
     groups: []
 notes:
   - name: Simple note
