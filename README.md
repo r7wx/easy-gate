@@ -17,7 +17,7 @@
 
 ---
 
-<img src="assets/screenshot.png" />
+<img src="assets/demo.png" />
 
 <p align="justify">
 Easy Gate is a simple web application built in Go and React that acts as the home page for your self-hosted infrastructure. Services and notes are parsed from a configuration file in real-time (without restarting the application). Items can also be assigned to one or more groups to show them only to specific users (based on their IP addresses).
@@ -27,7 +27,7 @@ Easy Gate is a simple web application built in Go and React that acts as the hom
 
 - Service and note parsing from a configuration file (JSON/YAML) in real-time (without restarting the application).
 - Service and note assignment to one or more groups to show items only to specific users (based on their IP addresses).
-- Customizable theme.
+- Customizable theme and icons.
 - Run as dependecy free standalone executable or as a Docker container.
 
 ## Deployment
@@ -193,8 +193,6 @@ Easy gate can be configured by a JSON or a YAML configuration file. An example c
 - **key_file:** Path to the SSL key file (if TLS is enabled)
 - **behind_proxy:** If true, the application will use the X-Forwarded-For header to determine the IP address of the client
 - **title:** Title of the application
-- **icon:** Font-awesome icon to use as the application icon
-- **motd:** Message to display on home page
 
 ### Theme
 
@@ -209,7 +207,7 @@ Example of a dark mode theme:
 ```json
 "theme": {
   "background": "#1d1d1d",
-  "foreground": "#ffffff"
+  "foreground": "#ffffff",
 }
 ```
 
@@ -224,7 +222,8 @@ theme:
 ### Groups
 
 <p align="justify">
-Group entries are used to define which users can see which items, by providing the user subnet:
+Group entries are used to define which users can see which items, by providing the user subnet. Group functionality is useful when dealing with both internal network and VPN users.
+
 </p>
 
 #### JSON
@@ -255,24 +254,29 @@ groups:
 ### Services
 
 <p align="justify">
-A service entry is used to define a service that is available in the infrastructure. Each service has a name, an url, an icon and the groups that can see it (defined in the groups section). If no group is provided the item can be seen by all users:
+A service entry is used to define a service that is available in the infrastructure. Each service has the following configurable parameters:
+
+- **name:** the name of the service (ex. Internal Git, Jenkins, ...)
+- **url:** the service url (must be a valid url starting with http(s)://)
+- **groups:** list of groups associated to this service (defined in the groups section). If no group is provided the item can be seen by all users:
+- **icon (optional):** the icon parameter accepts image URLs or data URI. If the icon parameter is not provided or empty, Easy Gate will try to fetch the service favicon and display it or fallback to a default icon.
+
 </p>
 
 #### JSON
 
 ```json
 {
-  "icon": "fa-brands fa-git-square",
   "name": "Git",
-  "url": "https://git.example.vpn",
+  "url": "https://git.example.internal",
   "groups": [
       "vpn"
   ]
 },
 {
-  "icon": "fa-brands fa-docker",
   "name": "Portainer",
-  "url": "https://portainer.example.internal",
+  "url": "https://portainer.example.all",
+  "icon": "data:image/png;base64,[...]",
   "groups": []
 }
 ```
@@ -280,14 +284,13 @@ A service entry is used to define a service that is available in the infrastruct
 #### YAML
 
 ```yml
-- icon: fa-brands fa-git-square
-  name: Git
-  url: https://git.example.vpn
+- name: Git
+  url: https://git.example.internal
   groups:
     - vpn
-- icon: fa-brands fa-docker
-  name: Portainer
-  url: https://portainer.example.internal
+- name: Portainer
+  url: https://portainer.example.all
+  icon: data:image/png;base64,[...]
   groups: []
 ```
 
@@ -325,10 +328,6 @@ A note entry is used to define a simple text note which has a title and a conten
   text: This note will be visible to everyone
   groups: []
 ```
-
-### Icons
-
-Icons are provided by the [Font Awesome](https://fontawesome.com/icons?d=gallery) library. Get the appropriate icon name by using the Font Awesome website (only free icons are available).
 
 ### Environment Variables
 

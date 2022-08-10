@@ -22,15 +22,18 @@ SOFTWARE.
 
 package service
 
-import "github.com/r7wx/easy-gate/internal/config"
+import (
+	"github.com/r7wx/easy-gate/internal/models"
+	"github.com/r7wx/easy-gate/internal/routine"
+)
 
-func (s *Service) getNotes(cfg *config.Config, addr string) []note {
-	notes := []note{}
-	for _, cfgNote := range cfg.Notes {
-		if isAllowed(cfg.Groups, cfgNote.Groups, addr) {
-			note := note{
-				Name: cfgNote.Name,
-				Text: cfgNote.Text,
+func (s *Service) getNotes(status *routine.Status, addr string) []models.Note {
+	notes := []models.Note{}
+	for _, statusNote := range status.Notes {
+		if isAllowed(status.Groups, statusNote.Groups, addr) {
+			note := models.Note{
+				Name: statusNote.Name,
+				Text: statusNote.Text,
 			}
 			notes = append(notes, note)
 		}

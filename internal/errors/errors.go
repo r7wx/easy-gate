@@ -30,7 +30,6 @@ type ErrorType string
 // Easy Gate errors enum
 const (
 	InvalidFormat ErrorType = "format"
-	InvalidIcon   ErrorType = "icon"
 	InvalidURL    ErrorType = "url"
 	InvalidColor  ErrorType = "color"
 )
@@ -40,7 +39,7 @@ type ErrorElement string
 
 // Easy Gate error context enum
 const (
-	Root              ErrorElement = "root"
+	Theme             ErrorElement = "theme"
 	Service           ErrorElement = "service"
 	ConfigurationFile ErrorElement = "configuration file"
 )

@@ -9,7 +9,7 @@ COPY . .
 COPY --from=web-builder ./easy-gate-web/build ./web/build
 RUN make easy-gate
 
-FROM scratch AS easy-gate
+FROM alpine:3.16 AS easy-gate
 ENV EASY_GATE_CONFIG_PATH="/etc/easy-gate/easy-gate.json"
 WORKDIR /etc/easy-gate
 COPY ./assets/easy-gate.json .

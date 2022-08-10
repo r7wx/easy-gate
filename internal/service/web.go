@@ -23,21 +23,37 @@ SOFTWARE.
 package service
 
 import (
-	"github.com/r7wx/easy-gate/internal/models"
-	"github.com/r7wx/easy-gate/internal/routine"
+	"log"
+	"net"
+	"net/http"
+	"strings"
+
+	"github.com/r7wx/easy-gate/web"
 )
 
-func (s *Service) getServices(status *routine.Status, addr string) []models.Service {
-	services := []models.Service{}
-	for _, statusService := range status.Services {
-		if isAllowed(status.Groups, statusService.Groups, addr) {
-			service := models.Service{
-				Icon: statusService.Icon,
-				Name: statusService.Name,
-				URL:  statusService.URL,
-			}
-			services = append(services, service)
+func (s Service) webFS(w http.ResponseWriter, req *http.Request) {
+	webFS := web.GetWebFS()
+	if _, err := webFS.Open(strings.TrimLeft(req.URL.Path, "/")); err != nil {
+		req.URL.Path = "/"
+	}
+
+	reqIP, _, err := net.SplitHostPort(req.RemoteAddr)
+	if err != nil {
+		log.Println("WebFS error:", err)
+		http.Error(w, "", http.StatusInternalServerError)
+		return
+	}
+
+	status, _ := s.Routine.GetStatus()
+	if status.BehindProxy {
+		reqIP = req.Header.Get("X-Forwarded-For")
+		if reqIP == "" {
+			log.Println("400 Bad Request: X-Forwarded-For header is missing")
+			http.Error(w, "", http.StatusBadRequest)
+			return
 		}
 	}
-	return services
+
+	log.Printf("[%s] %s", reqIP, req.URL.Path)
+	http.FileServer(webFS).ServeHTTP(w, req)
 }

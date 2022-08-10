@@ -22,6 +22,6 @@ web/build/*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-test-config.json
-test-config.yml
+easy_gate_test_*
 .vscode/
+example.json

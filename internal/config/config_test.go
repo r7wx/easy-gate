@@ -23,297 +23,176 @@ SOFTWARE.
 package config
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"os"
 	"testing"
 
 	"github.com/r7wx/easy-gate/internal/share"
-	"gopkg.in/yaml.v3"
 )
 
-var testCfg Config = Config{
-	Addr:        ":8080",
-	UseTLS:      false,
-	CertFile:    "",
-	KeyFile:     "",
-	BehindProxy: false,
-	Title:       "Test",
-	Icon:        "fa-solid fa-cubes",
-	Motd:        "",
-	Theme: Theme{
-		Background: "#ffffff",
-		Foreground: "#000000",
-	},
-	Groups: []Group{
-		{
-			Name:   "Group 1",
-			Subnet: "127.0.0.1/32",
-		},
-	},
-	Services: []Service{
-		{
-			Name:   "Service 1",
-			Icon:   "fa-solid fa-cube",
-			URL:    "http://test:8080",
-			Groups: []string{},
-		},
-		{
-			Name:   "Service 2",
-			Icon:   "fa-solid fa-cube",
-			URL:    "http://test2:8080",
-			Groups: []string{"Group 1"},
-		},
-	},
-	Notes: []Note{
-		{
-			Name:   "Note 1",
-			Text:   "This is a test note",
-			Groups: []string{},
-		},
-		{
-			Name:   "Note 2",
-			Text:   "This is another test note",
-			Groups: []string{"Group 1"},
-		},
-	},
-}
+var sampleJSONConfig string = `{
+"addr": "0.0.0.0:8080",
+"use_tls": false,
+"cert_file": "",
+"key_file": "",
+"behind_proxy": false,
+"title": "Easy Gate",
+"theme": {
+	"background": "#FFFFFF",
+	"foreground": "#000000"	
+},
+"groups": [],
+"services": [],
+"notes": []
+}`
 
-const (
-	testJSONPath = "./test-config.json"
-	testYAMLPath = "./test-config.yml"
-)
+var sampleYMLConfig string = `addr: 0.0.0.0:8080
+use_tls: false
+cert_file: ''
+key_file: ''
+behind_proxy: false
+title: Easy Gate
+theme:
+  background: '#FFFFFF'
+  foreground: '#000000'
+groups: []
+services: []
+notes: []`
 
-func TestMain(m *testing.M) {
-	cfgJSON, err := json.Marshal(testCfg)
+func TestUnmarshal(t *testing.T) {
+	_, err := Unmarshal([]byte(sampleJSONConfig))
 	if err != nil {
-		panic(err)
+		t.Fatal(err)
 	}
-	err = ioutil.WriteFile(testJSONPath,
-		cfgJSON, 0644)
+	_, err = Unmarshal([]byte(sampleYMLConfig))
 	if err != nil {
-		panic(err)
+		t.Fatal(err)
 	}
-
-	cfgYAML, err := yaml.Marshal(testCfg)
-	err = ioutil.WriteFile(testYAMLPath,
-		cfgYAML, 0644)
-	if err != nil {
-		panic(err)
-	}
-
-	exitCode := m.Run()
-	os.Remove(testJSONPath)
-	os.Remove(testYAMLPath)
-	os.Exit(exitCode)
-}
-
-func TestPath(t *testing.T) {
-	args := []string{"test"}
-	_, err := GetConfigPath(args)
+	_, err = Unmarshal([]byte("X"))
 	if err == nil {
-		t.Fatal("Expected error, got nil")
+		t.Fatal()
 	}
+}
 
-	args = []string{"", testJSONPath}
-	cfg, err := GetConfigPath(args)
+func TestLoadEnv(t *testing.T) {
+	os.Setenv(share.CFGEnv, sampleJSONConfig)
+	_, _, err := Load("")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if cfg != testJSONPath {
-		t.Fatalf("Expected %s, got %s",
-			testJSONPath, cfg)
-	}
+	os.Unsetenv(share.CFGEnv)
+}
 
-	os.Setenv(share.CFGPathEnv, testYAMLPath)
-	cfg, err = GetConfigPath([]string{""})
+func TestLoadFile(t *testing.T) {
+	cfgFile, err := ioutil.TempFile(".", "easy_gate_test_")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if cfg != testYAMLPath {
-		t.Fatalf("Expected %s, got %s",
-			testYAMLPath, cfg)
+	cfgFile.WriteString(sampleJSONConfig)
+	_, _, err = Load(cfgFile.Name())
+	if err != nil {
+		t.Fatal(err)
 	}
+	defer os.Remove(cfgFile.Name())
 
+	cfgFile, err = ioutil.TempFile(".", "easy_gate_test_")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cfgFile.WriteString("XXXX")
+	_, _, err = Load(cfgFile.Name())
+	if err == nil {
+		t.Fatal()
+	}
+	defer os.Remove(cfgFile.Name())
+
+	cfgFile, err = ioutil.TempFile(".", "easy_gate_test_")
+	if err != nil {
+		t.Fatal(err)
+	}
+	wrongConfig := `{
+"addr": "0.0.0.0:8080",
+"use_tls": false,
+"cert_file": "",
+"key_file": "",
+"behind_proxy": false,
+"title": "Easy Gate",
+"theme": {
+	"background": "TEST123",
+	"foreground": "TEST"
+},
+"groups": [],
+"services": [],
+"notes": []
+}`
+	cfgFile.WriteString(wrongConfig)
+	_, _, err = Load(cfgFile.Name())
+	if err == nil {
+		t.Fatal()
+	}
+	defer os.Remove(cfgFile.Name())
+
+	_, _, err = Load("H()2NOTEXISTENT.NOT")
+	if err == nil {
+		t.Fatal()
+	}
+}
+
+func TestGetPath(t *testing.T) {
+	os.Setenv(share.CFGPathEnv, "test.json")
+	_, err := GetConfigPath([]string{})
+	if err != nil {
+		t.Fatal(err)
+	}
 	os.Unsetenv(share.CFGPathEnv)
-}
 
-func TestInvalidFormat(t *testing.T) {
-	cfgRaw := []byte("invalid")
-	_, err := Unmarshal(cfgRaw)
+	_, err = GetConfigPath([]string{})
 	if err == nil {
-		t.Fatal("Expected error")
-	}
-}
-
-func TestInvalidLoad(t *testing.T) {
-	_, _, err := LoadConfig("")
-	if err == nil {
-		t.Fatal("Expected error")
+		t.Fatal()
 	}
 
-	_, _, err = loadConfig([]byte("invalid"))
-	if err == nil {
-		t.Fatal("Expected error")
+	path, err := GetConfigPath([]string{"", "test.json"})
+	if err != nil {
+		t.Fatal()
 	}
-
-	invalidCfg, _ := json.Marshal(Config{})
-	_, _, err = loadConfig(invalidCfg)
-	if err == nil {
-		t.Fatal("Expected error")
+	if path != "test.json" {
+		t.Fatal()
 	}
 }
 
-func TestInvalidConfigElements(t *testing.T) {
-	err := validateConfig(&Config{
-		Icon: "xxx",
-	})
+func TestValidate(t *testing.T) {
+	cfg := Config{}
+	err := validateConfig(&cfg)
 	if err == nil {
-		t.Fatal("Expected error")
+		t.Fatal()
 	}
 
-	err = validateConfig(&Config{
-		Icon: "fa-solid fa-cubes",
-		Services: []Service{
-			{
-				Icon: "xxx",
-			},
-		},
-	})
+	cfg.Theme.Background = "#FFF"
+	err = validateConfig(&cfg)
 	if err == nil {
-		t.Fatal("Expected error")
+		t.Fatal()
 	}
 
-	err = validateConfig(&Config{
-		Icon: "fa-solid fa-cubes",
-		Services: []Service{
-			{
-				Icon: "fa-solid fa-cubes",
-				URL:  "xxx",
-			},
-		},
-	})
+	cfg.Theme.Foreground = "#____"
+	err = validateConfig(&cfg)
 	if err == nil {
-		t.Fatal("Expected error")
+		t.Fatal()
 	}
 
-	err = validateConfig(&Config{
-		Icon: "fa-solid fa-cubes",
-		Services: []Service{
-			{
-				Icon: "fa-solid fa-cubes",
-				URL:  "http://test",
-			},
-		},
-		Theme: Theme{
-			Background: "xxx",
-		},
-	})
+	cfg.Theme.Foreground = "#FFF"
+	cfg.Services = []Service{
+		{URL: "XXX"},
+	}
+	err = validateConfig(&cfg)
 	if err == nil {
-		t.Fatal("Expected error")
+		t.Fatal()
 	}
 
-	err = validateConfig(&Config{
-		Icon: "fa-solid fa-cubes",
-		Services: []Service{
-			{
-				Icon: "fa-solid fa-cubes",
-				URL:  "http://test",
-			},
-		},
-		Theme: Theme{
-			Background: "#000000",
-			Foreground: "xxx",
-		},
-	})
-	if err == nil {
-		t.Fatal("Expected error")
+	cfg.Services = []Service{
+		{URL: "https://www.google.com"},
 	}
-}
-
-func TestHexColors(t *testing.T) {
-	if !isHexColor("#ff0000") {
-		t.Fatal("Expected true, got false")
-	}
-	if !isHexColor("#f00") {
-		t.Fatal("Expected true, got false")
-	}
-	if !isHexColor("#ffff") {
-		t.Fatal("Expected true, got false")
-	}
-	if isHexColor("FFFFFF") {
-		t.Fatal("Expected false, got true")
-	}
-	if isHexColor("#FFFFFFF") {
-		t.Fatal("Expected false, got true")
-	}
-	if isHexColor("#") {
-		t.Fatal("Expected false, got true")
-	}
-	if isHexColor("#FFG") {
-		t.Fatal("Expected false, got true")
-	}
-	if isHexColor("32984327493827@@@AA") {
-		t.Fatal("Expected false, got true")
-	}
-}
-
-func TestURLs(t *testing.T) {
-	if !isURL("http://example.com") {
-		t.Fatal("Expected true, got false")
-	}
-	if !isURL("https://example.com") {
-		t.Fatal("Expected true, got false")
-	}
-	if !isURL("https://example.com/test/test.xy") {
-		t.Fatal("Expected true, got false")
-	}
-	if !isURL("https://example.com/test/test.xy?test=test") {
-		t.Fatal("Expected true, got false")
-	}
-	if !isURL("https://example.com/test/test.xy?test=test#test") {
-		t.Fatal("Expected true, got false")
-	}
-	if !isURL("ftp://example.com") {
-		t.Fatal("Expected true, got false")
-	}
-	if isURL("example.internal.priv") {
-		t.Fatal("Expected false, got true")
-	}
-	if isURL("test.test") {
-		t.Fatal("Expected false, got true")
-	}
-	if isURL("example") {
-		t.Fatal("Expected false, got true")
-	}
-	if isURL("javascript:void(0)") {
-		t.Fatal("Expected false, got true")
-	}
-	if isURL("javascript:alert(1)") {
-		t.Fatal("Expected false, got true")
-	}
-	if isURL("javascript: alert(1)") {
-		t.Fatal("Expected false, got true")
-	}
-}
-
-func TestIcons(t *testing.T) {
-	if !isIcon("fa-brands fa-github") {
-		t.Fatal("Expected true, got false")
-	}
-	if !isIcon("fa-regular fa-cube") {
-		t.Fatal("Expected true, got false")
-	}
-	if !isIcon("fa-solid fa-flask-vial") {
-		t.Fatal("Expected true, got false")
-	}
-	if isIcon("") {
-		t.Fatal("Expected false, got true")
-	}
-	if isIcon("bg-white text-red") {
-		t.Fatal("Expected false, got true")
-	}
-	if isIcon("fa-brands fa-github fa-brands fa-github") {
-		t.Fatal("Expected false, got true")
+	err = validateConfig(&cfg)
+	if err != nil {
+		t.Fatal()
 	}
 }

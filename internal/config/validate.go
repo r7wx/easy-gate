@@ -55,28 +55,23 @@ func isURL(url string) bool {
 	return r.MatchString(url)
 }
 
-func isIcon(icon string) bool {
-	r, _ := regexp.Compile(
-		`^(fa-(solid|regular|brands) (fa-[A-Za-z0-9--]+))$`,
-	)
-	return r.MatchString(icon)
-}
-
 func validateConfig(cfg *Config) error {
-	if !isIcon(cfg.Icon) {
+	if !isHexColor(cfg.Theme.Background) {
 		return errors.NewEasyGateError(
-			errors.InvalidIcon,
-			errors.Root, "")
+			errors.InvalidColor,
+			errors.Theme,
+			"background",
+		)
+	}
+	if !isHexColor(cfg.Theme.Foreground) {
+		return errors.NewEasyGateError(
+			errors.InvalidColor,
+			errors.Theme,
+			"foreground",
+		)
 	}
 
 	for _, service := range cfg.Services {
-		if !isIcon(service.Icon) {
-			return errors.NewEasyGateError(
-				errors.InvalidIcon,
-				errors.Service,
-				service.Name,
-			)
-		}
 		if !isURL(service.URL) {
 			return errors.NewEasyGateError(
 				errors.InvalidURL,
@@ -84,21 +79,6 @@ func validateConfig(cfg *Config) error {
 				service.Name,
 			)
 		}
-	}
-
-	if !isHexColor(cfg.Theme.Background) {
-		return errors.NewEasyGateError(
-			errors.InvalidColor,
-			errors.Root,
-			"background",
-		)
-	}
-	if !isHexColor(cfg.Theme.Foreground) {
-		return errors.NewEasyGateError(
-			errors.InvalidColor,
-			errors.Root,
-			"foreground",
-		)
 	}
 
 	return nil

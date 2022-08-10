@@ -26,6 +26,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -33,27 +34,25 @@ import (
 	"time"
 
 	"github.com/r7wx/easy-gate/internal/config"
+	"github.com/r7wx/easy-gate/internal/models"
+	"github.com/r7wx/easy-gate/internal/routine"
 )
 
-const (
-	testConfigFilePath = "./test-config.json"
-)
+var testConfigFilePath string
 
 func TestMain(m *testing.M) {
 	testCfg := config.Config{
-		Addr:        ":8080",
+		Addr:        "127.0.0.1:8080",
 		UseTLS:      false,
 		CertFile:    "",
 		KeyFile:     "",
 		BehindProxy: false,
 		Title:       "Test",
-		Icon:        "fa-solid fa-cubes",
-		Motd:        "",
-		Theme: config.Theme{
+		Theme: models.Theme{
 			Background: "#ffffff",
 			Foreground: "#000000",
 		},
-		Groups: []config.Group{
+		Groups: []models.Group{
 			{
 				Name:   "test",
 				Subnet: "192.168.1.1/24",
@@ -101,82 +100,95 @@ func TestMain(m *testing.M) {
 
 	cfgJSON, err := json.Marshal(testCfg)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-	err = ioutil.WriteFile(testConfigFilePath,
-		cfgJSON, 0644)
+	cfgFile, err := ioutil.TempFile(".", "easy_gate_test_")
 	if err != nil {
-		panic(err)
+		log.Fatal("Unable to write tmp files for test")
+	}
+	if err != nil {
+		log.Fatal(err)
 	}
 
+	testConfigFilePath = cfgFile.Name()
+	cfgFile.Write(cfgJSON)
+
 	exitCode := m.Run()
+
 	os.Remove(testConfigFilePath)
 	os.Exit(exitCode)
 }
 
 func TestService(t *testing.T) {
-	routine := config.NewRoutine(testConfigFilePath,
-		1*time.Second)
+	routine, err := routine.NewRoutine(testConfigFilePath, 1*time.Second)
+	if err != nil {
+		t.Fatal(err)
+	}
 	go routine.Start()
-
 	service := NewService(routine)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/data", nil)
 	w := httptest.NewRecorder()
 	service.data(w, req)
-
 	res := w.Result()
 	defer res.Body.Close()
-
 	if res.StatusCode != http.StatusOK {
-		t.Fatal("Expected status code 200, got",
-			res.StatusCode)
+		t.Fatal()
+	}
+	service.webFS(w, req)
+	res = w.Result()
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatal()
 	}
 
 	routine.Lock()
-	routine.Config.BehindProxy = true
+	routine.Status.BehindProxy = true
 	routine.Unlock()
 
 	req = httptest.NewRequest(http.MethodGet, "/api/data", nil)
 	w = httptest.NewRecorder()
 	service.data(w, req)
-
 	res = w.Result()
 	defer res.Body.Close()
-
 	if res.StatusCode != http.StatusBadRequest {
-		t.Fatalf("Expected status code 400, got %d",
-			res.StatusCode)
+		t.Fatal()
+	}
+	service.webFS(w, req)
+	res = w.Result()
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatal()
 	}
 
 	req = httptest.NewRequest(http.MethodGet, "/api/data", nil)
 	req.Header.Set("X-Forwarded-For", "127.0.0.1")
 	w = httptest.NewRecorder()
 	service.data(w, req)
-
 	res = w.Result()
 	defer res.Body.Close()
-
 	if res.StatusCode != http.StatusOK {
-		t.Fatalf("Expected status code 200, got %d",
-			res.StatusCode)
+		t.Fatal()
+	}
+	service.webFS(w, req)
+	res = w.Result()
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatal()
 	}
 
 	routine.Lock()
-	routine.Config.BehindProxy = false
+	routine.Status.BehindProxy = false
 	routine.Error = fmt.Errorf("Test error")
 	routine.Unlock()
 
 	req = httptest.NewRequest(http.MethodGet, "/api/data", nil)
 	w = httptest.NewRecorder()
 	service.data(w, req)
-
 	res = w.Result()
 	defer res.Body.Close()
-
 	if res.StatusCode != http.StatusOK {
-		t.Fatalf("Expected status code 200, got %d",
-			res.StatusCode)
+		t.Fatal()
 	}
 
 	routine.Lock()
@@ -185,12 +197,15 @@ func TestService(t *testing.T) {
 }
 
 func TestGetServices(t *testing.T) {
-	routine := config.NewRoutine(testConfigFilePath,
+	routine, err := routine.NewRoutine(testConfigFilePath,
 		8*time.Millisecond)
+	if err != nil {
+		t.Fatal(err)
+	}
 	go routine.Start()
 
 	service := NewService(routine)
-	cfg, _ := service.ConfigRoutine.GetConfiguration()
+	cfg, _ := service.Routine.GetStatus()
 
 	services := service.getServices(cfg, "192.168.1.1")
 	for _, s := range services {
@@ -215,12 +230,15 @@ func TestGetServices(t *testing.T) {
 }
 
 func TestGetNotes(t *testing.T) {
-	routine := config.NewRoutine(testConfigFilePath,
+	routine, err := routine.NewRoutine(testConfigFilePath,
 		8*time.Millisecond)
+	if err != nil {
+		t.Fatal(err)
+	}
 	go routine.Start()
 
 	service := NewService(routine)
-	cfg, _ := service.ConfigRoutine.GetConfiguration()
+	cfg, _ := service.Routine.GetStatus()
 
 	notes := service.getNotes(cfg, "192.168.1.1")
 	for _, n := range notes {
@@ -245,21 +263,21 @@ func TestGetNotes(t *testing.T) {
 }
 
 func TestIsAllowed(t *testing.T) {
-	if !isAllowed([]config.Group{{
+	if !isAllowed([]models.Group{{
 		Name:   "test",
 		Subnet: "127.0.0.1/32",
 	}}, []string{"test"}, "127.0.0.1") {
 		t.Fail()
 	}
 
-	if isAllowed([]config.Group{{
+	if isAllowed([]models.Group{{
 		Name:   "test",
 		Subnet: "127.0.0.1/32",
 	}}, []string{"test"}, "xxxxxx") {
 		t.Fail()
 	}
 
-	if isAllowed([]config.Group{{
+	if isAllowed([]models.Group{{
 		Name:   "test",
 		Subnet: "xxxxxxxxxxx",
 	}}, []string{"test"}, "127.0.0.1") {

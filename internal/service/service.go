@@ -23,81 +23,38 @@ SOFTWARE.
 package service
 
 import (
-	"encoding/json"
 	"log"
-	"net"
 	"net/http"
 
-	"github.com/r7wx/easy-gate/internal/config"
-	"github.com/r7wx/easy-gate/web"
+	"github.com/r7wx/easy-gate/internal/routine"
 )
 
 // Service - Easy Gate service struct
 type Service struct {
-	ConfigRoutine *config.Routine
+	Routine *routine.Routine
 }
 
 // NewService - Create a new service
-func NewService(cfgRoutine *config.Routine) *Service {
-	return &Service{
-		ConfigRoutine: cfgRoutine,
-	}
+func NewService(routine *routine.Routine) *Service {
+	return &Service{routine}
 }
 
 // Serve - Serve application
 func (s Service) Serve() {
-	cfg, _ := s.ConfigRoutine.GetConfiguration()
+	status, _ := s.Routine.GetStatus()
 
 	http.HandleFunc("/api/data", s.data)
-	http.Handle("/", http.FileServer(web.GetWebFS()))
+	http.HandleFunc("/", s.webFS)
 
-	if cfg.UseTLS {
-		log.Println("[Easy Gate] Listening for connections on", cfg.Addr, "(HTTPS)")
-		if err := http.ListenAndServeTLS(cfg.Addr, cfg.CertFile,
-			cfg.KeyFile, nil); err != nil {
+	if status.UseTLS {
+		log.Println("Listening for connections on", status.Addr, "(HTTPS)")
+		if err := http.ListenAndServeTLS(status.Addr, status.CertFile,
+			status.KeyFile, nil); err != nil {
 			log.Fatal(err)
 		}
 	}
-	log.Println("[Easy Gate] Listening for connections on", cfg.Addr)
-	if err := http.ListenAndServe(cfg.Addr, nil); err != nil {
+	log.Println("Listening for connections on", status.Addr)
+	if err := http.ListenAndServe(status.Addr, nil); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func (s Service) data(w http.ResponseWriter, req *http.Request) {
-	cfg, cfgError := s.ConfigRoutine.GetConfiguration()
-
-	reqIP, _, err := net.SplitHostPort(req.RemoteAddr)
-	if cfg.BehindProxy {
-		reqIP = req.Header.Get("X-Forwarded-For")
-		if reqIP == "" {
-			log.Println("[Easy Gate] 400 Bad Request: X-Forwarded-For header is missing")
-			http.Error(w, "", http.StatusBadRequest)
-			return
-		}
-	}
-	log.Println("[Easy Gate] Request from", reqIP)
-
-	response := response{
-		Title:    cfg.Title,
-		Icon:     cfg.Icon,
-		Motd:     cfg.Motd,
-		Services: s.getServices(cfg, reqIP),
-		Notes:    s.getNotes(cfg, reqIP),
-		Theme:    theme(cfg.Theme),
-		Error:    "",
-	}
-	if cfgError != nil {
-		response.Error = cfgError.Error()
-	}
-
-	res, err := json.Marshal(response)
-	if err != nil {
-		log.Println("[Easy Gate] Service error:", err)
-		http.Error(w, "", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(res)
 }

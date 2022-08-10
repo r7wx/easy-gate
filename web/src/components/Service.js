@@ -22,7 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { faCircleNodes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
 
 function Service(props) {
   const openService = (url) => {
@@ -32,12 +34,28 @@ function Service(props) {
   return (
     <div
       onClick={() => openService(props.service.url)}
-      className="p-8 rounded overflow-hidden shadow-lg text-center
-      cursor-pointer hover:shadow-gray-600 mr-3 mb-2 grid place-items-center">
-      <FontAwesomeIcon icon={props.service.icon} className="fa-3x" />
-      <p className="mt-3 text-ellipsis overflow-hidden ...">
-        {props.service.name}
-      </p>
+      className="p-4 rounded shadow-lg cursor-pointer hover:shadow-gray-600 m-1">
+      <div className="flex">
+        <React.Fragment>
+          {props.service.icon.length === 0 ? (
+            <FontAwesomeIcon
+              icon={faCircleNodes}
+              className="mr-2 mt-0.5 fa-lg"
+            />
+          ) : (
+            <img
+              alt="service_icon"
+              className="mr-2"
+              width="25px"
+              height="20px"
+              src={props.service.icon}
+            />
+          )}
+        </React.Fragment>
+        <p className="whitespace-nowrap overflow-hidden text-ellipsis font-semibold w-5/6">
+          {props.service.name}
+        </p>
+      </div>
     </div>
   );
 }

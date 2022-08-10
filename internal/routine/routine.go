@@ -20,50 +20,64 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package config
+package routine
 
 import (
+	"crypto/tls"
 	"log"
+	"net/http"
 	"sync"
 	"time"
+
+	"github.com/r7wx/easy-gate/internal/config"
 )
 
-// Routine - Config routine struct
+// Routine - Routine struct
 type Routine struct {
 	sync.Mutex
 	Error        error
-	Config       *Config
+	Status       *Status
+	Client       *http.Client
 	FilePath     string
 	LastChecksum string
 	Interval     time.Duration
 }
 
 // NewRoutine - Create new config routine
-func NewRoutine(filePath string, interval time.Duration) *Routine {
-	cfg, checksum, err := LoadConfig(filePath)
-	if err != nil {
-		log.Fatal(err)
+func NewRoutine(filePath string, interval time.Duration) (*Routine, error) {
+	routine := Routine{
+		FilePath: filePath,
+		Client: &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{
+					InsecureSkipVerify: true,
+				},
+			},
+		},
+		Interval: interval,
 	}
 
-	return &Routine{
-		FilePath:     filePath,
-		Config:       cfg,
-		Interval:     interval,
-		LastChecksum: checksum,
+	cfg, checksum, err := config.Load(filePath)
+	if err != nil {
+		return nil, err
 	}
+	routine.Status = routine.toStatus(cfg)
+	routine.LastChecksum = checksum
+
+	return &routine, nil
 }
 
-// GetConfiguration - Get current configuration
-func (r *Routine) GetConfiguration() (*Config, error) {
+// GetStatus - Get current status
+func (r *Routine) GetStatus() (*Status, error) {
 	defer r.Unlock()
 	r.Lock()
-	return r.Config, r.Error
+	return r.Status, r.Error
 }
 
 // Start - Start config routine
 func (r *Routine) Start() {
 	for {
-		cfg, checksum, err := LoadConfig(r.FilePath)
+		cfg, checksum, err := config.Load(r.FilePath)
 		if err != nil {
 			r.Lock()
 			r.Error = err
@@ -74,8 +88,8 @@ func (r *Routine) Start() {
 		r.Lock()
 		r.Error = nil
 		if checksum != r.LastChecksum {
-			log.Println("[Easy Gate] Detected configuration change, reloading...")
-			r.Config = cfg
+			log.Println("Detected configuration change, reloading...")
+			r.Status = r.toStatus(cfg)
 		}
 		r.LastChecksum = checksum
 		r.Unlock()

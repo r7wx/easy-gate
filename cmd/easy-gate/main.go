@@ -28,19 +28,23 @@ import (
 	"time"
 
 	"github.com/r7wx/easy-gate/internal/config"
+	"github.com/r7wx/easy-gate/internal/routine"
 	"github.com/r7wx/easy-gate/internal/service"
 )
 
 func main() {
+	log.SetPrefix("[Easy Gate] ")
+
 	cfgFilePath, err := config.GetConfigPath(os.Args)
 	if err != nil {
-		log.Fatal("[Easy Gate] No configuration file provided")
+		log.Fatal("No configuration file provided")
 	}
 
-	log.Println("[Easy Gate] Loading configuration file:",
-		cfgFilePath)
-	cfgRoutine := config.NewRoutine(cfgFilePath,
-		1*time.Second)
+	log.Println("Loading configuration file:", cfgFilePath)
+	cfgRoutine, err := routine.NewRoutine(cfgFilePath, 1*time.Second)
+	if err != nil {
+		log.Fatal(err)
+	}
 	go cfgRoutine.Start()
 
 	service := service.NewService(cfgRoutine)
