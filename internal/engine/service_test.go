@@ -80,7 +80,6 @@ func TestMain(m *testing.M) {
 			},
 			{
 				Name:   "service3",
-				Icon:   "fa-solid fa-cubes",
 				URL:    "http://example.com/service3",
 				Groups: []string{"test2"},
 			},
