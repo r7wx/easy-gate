@@ -20,36 +20,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package service
+package routine
 
 import (
-	"net"
-
-	"github.com/r7wx/easy-gate/internal/models"
+	"github.com/r7wx/easy-gate/internal/config"
+	"github.com/r7wx/easy-gate/internal/note"
 )
 
-func isAllowed(groups []models.Group, allowedGroups []string, addr string) bool {
-	if len(allowedGroups) == 0 {
-		return true
+func (r *Routine) getNotes(cfg *config.Config) []note.Note {
+	notes := []note.Note{}
+	for _, cfgNote := range cfg.Notes {
+		notes = append(notes, note.Note{
+			Name:     cfgNote.Name,
+			Text:     cfgNote.Text,
+			Category: cfgNote.Category,
+			Groups:   cfgNote.Groups,
+		})
 	}
 
-	for _, allowedGroup := range allowedGroups {
-		for _, group := range groups {
-			if group.Name != allowedGroup {
-				continue
-			}
-
-			_, groupNet, err := net.ParseCIDR(group.Subnet)
-			if err != nil {
-				continue
-			}
-
-			ipAddr := net.ParseIP(addr)
-			if groupNet.Contains(ipAddr) {
-				return true
-			}
-		}
-	}
-
-	return false
+	return notes
 }

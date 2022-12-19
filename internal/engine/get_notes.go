@@ -20,31 +20,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package models
+package engine
 
-// Group - Easy Gate group configuration struct
-type Group struct {
-	Name   string `json:"name" yaml:"name"`
-	Subnet string `json:"subnet" yaml:"subnet"`
-}
+import (
+	"github.com/r7wx/easy-gate/internal/group"
+	"github.com/r7wx/easy-gate/internal/note"
+	"github.com/r7wx/easy-gate/internal/routine"
+)
 
-// Service - Service model
-type Service struct {
-	Icon   string   `json:"icon"`
-	Name   string   `json:"name"`
-	URL    string   `json:"url"`
-	Groups []string `json:"-"`
-}
+func getNotes(status *routine.Status, addr string) []note.Note {
+	notes := []note.Note{}
+	for _, statusNote := range status.Notes {
+		if group.IsAllowed(status.Groups, statusNote.Groups, addr) {
+			note := note.Note{
+				Name:     statusNote.Name,
+				Text:     statusNote.Text,
+				Category: statusNote.Category,
+			}
+			notes = append(notes, note)
+		}
+	}
 
-// Note - Note model
-type Note struct {
-	Name   string   `json:"name"`
-	Text   string   `json:"text"`
-	Groups []string `json:"-"`
-}
-
-// Theme - Easy Gate theme model
-type Theme struct {
-	Background string `json:"background" yaml:"background"`
-	Foreground string `json:"foreground" yaml:"foreground"`
+	return notes
 }

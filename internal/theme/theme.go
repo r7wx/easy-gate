@@ -20,47 +20,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package errors
+package theme
 
-import "fmt"
-
-// ErrorType - Easy Gate error type
-type ErrorType string
-
-// Easy Gate errors enum
-const (
-	InvalidFormat ErrorType = "format"
-	InvalidURL    ErrorType = "url"
-	InvalidColor  ErrorType = "color"
-)
-
-// ErrorElement - Easy Gate error element
-type ErrorElement string
-
-// Easy Gate error context enum
-const (
-	Theme             ErrorElement = "theme"
-	Service           ErrorElement = "service"
-	ConfigurationFile ErrorElement = "configuration file"
-)
-
-// EasyGateError - Easy Gate Error struct
-type EasyGateError struct {
-	ErrorType ErrorType
-	Element   ErrorElement
-	Name      string
-}
-
-// NewEasyGateError - Create a new Easy Gate error
-func NewEasyGateError(errorType ErrorType, element ErrorElement, name string) error {
-	return EasyGateError{errorType, element, name}
-}
-
-func (e EasyGateError) Error() string {
-	message := fmt.Sprintf("Invalid %s for %s",
-		e.ErrorType, e.Element)
-	if e.Name != "" {
-		message = fmt.Sprintf("%s: %s", message, e.Name)
-	}
-	return message
+// Theme - Easy Gate theme model
+type Theme struct {
+	Background string `json:"background" yaml:"background"`
+	Foreground string `json:"foreground" yaml:"foreground"`
 }

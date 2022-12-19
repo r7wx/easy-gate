@@ -20,23 +20,40 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package errors
+package engine
 
-import "testing"
+import (
+	"log"
+	"net"
+	"net/http"
+	"strings"
 
-func TestErrors(t *testing.T) {
-	err := NewEasyGateError(InvalidURL, Service, "service1")
-	if err.Error() != "Invalid url for service: service1" {
-		t.Fatal()
+	"github.com/r7wx/easy-gate/web"
+)
+
+func (s Engine) webFS(w http.ResponseWriter, req *http.Request) {
+	webFS := web.GetWebFS()
+	if _, err := webFS.Open(strings.TrimLeft(req.URL.Path, "/")); err != nil {
+		req.URL.Path = "/"
 	}
 
-	err = NewEasyGateError(InvalidColor, Theme, "background")
-	if err.Error() != "Invalid color for theme: background" {
-		t.Fatal()
+	reqIP, _, err := net.SplitHostPort(req.RemoteAddr)
+	if err != nil {
+		log.Println("WebFS error:", err)
+		http.Error(w, "", http.StatusInternalServerError)
+		return
 	}
 
-	err = NewEasyGateError(InvalidFormat, ConfigurationFile, "")
-	if err.Error() != "Invalid format for configuration file" {
-		t.Fatal()
+	status, _ := s.Routine.GetStatus()
+	if status.BehindProxy {
+		reqIP = req.Header.Get("X-Forwarded-For")
+		if reqIP == "" {
+			log.Println("400 Bad Request: X-Forwarded-For header is missing")
+			http.Error(w, "", http.StatusBadRequest)
+			return
+		}
 	}
+
+	log.Printf("[%s] %s", reqIP, req.URL.Path)
+	http.FileServer(webFS).ServeHTTP(w, req)
 }

@@ -22,39 +22,11 @@ SOFTWARE.
 
 package service
 
-import (
-	"log"
-	"net/http"
-
-	"github.com/r7wx/easy-gate/internal/routine"
-)
-
-// Service - Easy Gate service struct
+// Service - Service model
 type Service struct {
-	Routine *routine.Routine
-}
-
-// NewService - Create a new service
-func NewService(routine *routine.Routine) *Service {
-	return &Service{routine}
-}
-
-// Serve - Serve application
-func (s Service) Serve() {
-	status, _ := s.Routine.GetStatus()
-
-	http.HandleFunc("/api/data", s.data)
-	http.HandleFunc("/", s.webFS)
-
-	if status.UseTLS {
-		log.Println("Listening for connections on", status.Addr, "(HTTPS)")
-		if err := http.ListenAndServeTLS(status.Addr, status.CertFile,
-			status.KeyFile, nil); err != nil {
-			log.Fatal(err)
-		}
-	}
-	log.Println("Listening for connections on", status.Addr)
-	if err := http.ListenAndServe(status.Addr, nil); err != nil {
-		log.Fatal(err)
-	}
+	Icon     string   `json:"icon"`
+	Name     string   `json:"name"`
+	URL      string   `json:"url"`
+	Category string   `json:"category"`
+	Groups   []string `json:"-"`
 }

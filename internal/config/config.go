@@ -24,39 +24,42 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 
-	"github.com/r7wx/easy-gate/internal/errors"
-	"github.com/r7wx/easy-gate/internal/models"
+	"github.com/r7wx/easy-gate/internal/group"
+	"github.com/r7wx/easy-gate/internal/theme"
 	"gopkg.in/yaml.v3"
 )
 
 // Service - Easy Gate service configuration struct
 type Service struct {
-	Icon   string   `json:"icon" yaml:"icon"`
-	Name   string   `json:"name" yaml:"name"`
-	URL    string   `json:"url" yaml:"url"`
-	Groups []string `json:"groups" yaml:"groups"`
+	Icon     string   `json:"icon" yaml:"icon"`
+	Name     string   `json:"name" yaml:"name"`
+	URL      string   `json:"url" yaml:"url"`
+	Category string   `json:"category" yaml:"category"`
+	Groups   []string `json:"groups" yaml:"groups"`
 }
 
 // Note - Easy Gate note configuration struct
 type Note struct {
-	Name   string   `json:"name" yaml:"name"`
-	Text   string   `json:"text" yaml:"text"`
-	Groups []string `json:"groups" yaml:"groups"`
+	Name     string   `json:"name" yaml:"name"`
+	Text     string   `json:"text" yaml:"text"`
+	Category string   `json:"category" yaml:"category"`
+	Groups   []string `json:"groups" yaml:"groups"`
 }
 
 // Config - Easy Gate configuration struct
 type Config struct {
-	Theme       models.Theme   `json:"theme" yaml:"theme"`
-	Addr        string         `json:"addr" yaml:"addr"`
-	Title       string         `json:"title" yaml:"title"`
-	CertFile    string         `json:"cert_file" yaml:"cert_file"`
-	KeyFile     string         `json:"key_file" yaml:"key_file"`
-	Groups      []models.Group `json:"groups" yaml:"groups"`
-	Services    []Service      `json:"services" yaml:"services"`
-	Notes       []Note         `json:"notes" yaml:"notes"`
-	BehindProxy bool           `json:"behind_proxy" yaml:"behind_proxy"`
-	UseTLS      bool           `json:"use_tls" yaml:"use_tls"`
+	Theme       theme.Theme   `json:"theme" yaml:"theme"`
+	Addr        string        `json:"addr" yaml:"addr"`
+	Title       string        `json:"title" yaml:"title"`
+	CertFile    string        `json:"cert_file" yaml:"cert_file"`
+	KeyFile     string        `json:"key_file" yaml:"key_file"`
+	Groups      []group.Group `json:"groups" yaml:"groups"`
+	Services    []Service     `json:"services" yaml:"services"`
+	Notes       []Note        `json:"notes" yaml:"notes"`
+	BehindProxy bool          `json:"behind_proxy" yaml:"behind_proxy"`
+	UseTLS      bool          `json:"use_tls" yaml:"use_tls"`
 }
 
 type format int
@@ -86,8 +89,5 @@ func Unmarshal(configBytes []byte) (*Config, error) {
 		}
 	}
 
-	return nil, errors.NewEasyGateError(
-		errors.InvalidFormat,
-		errors.ConfigurationFile, "",
-	)
+	return nil, fmt.Errorf("Invalid configuration file format")
 }

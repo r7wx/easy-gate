@@ -24,29 +24,27 @@ package routine
 
 import (
 	"github.com/r7wx/easy-gate/internal/config"
-	"github.com/r7wx/easy-gate/internal/models"
+	"github.com/r7wx/easy-gate/internal/group"
+	"github.com/r7wx/easy-gate/internal/note"
+	"github.com/r7wx/easy-gate/internal/service"
+	"github.com/r7wx/easy-gate/internal/theme"
 )
 
 // Status - Status struct
 type Status struct {
-	Theme       models.Theme
+	Theme       theme.Theme
 	Addr        string
 	Title       string
 	CertFile    string
 	KeyFile     string
-	Groups      []models.Group
-	Services    []models.Service
-	Notes       []models.Note
+	Groups      []group.Group
+	Services    []service.Service
+	Notes       []note.Note
 	BehindProxy bool
 	UseTLS      bool
 }
 
-type serviceWrapper struct {
-	service models.Service
-	index   int
-}
-
-func (r *Routine) toStatus(cfg *config.Config) *Status {
+func (r *Routine) updateStatus(cfg *config.Config) *Status {
 	return &Status{
 		Theme:       cfg.Theme,
 		Addr:        cfg.Addr,
@@ -59,47 +57,4 @@ func (r *Routine) toStatus(cfg *config.Config) *Status {
 		BehindProxy: cfg.BehindProxy,
 		UseTLS:      cfg.UseTLS,
 	}
-}
-
-func (r *Routine) getServices(cfg *config.Config) []models.Service {
-	servicePChan := make(chan serviceWrapper)
-	for index, cfgService := range cfg.Services {
-		go func(index int, cfgService config.Service) {
-			servicePChan <- serviceWrapper{
-				service: models.Service{
-					Icon:   r.getIconData(cfgService),
-					Name:   cfgService.Name,
-					URL:    cfgService.URL,
-					Groups: cfgService.Groups,
-				},
-				index: index,
-			}
-		}(index, cfgService)
-	}
-
-	processedServices := map[int]models.Service{}
-	for i := 1; i <= len(cfg.Services); i++ {
-		processedService := <-servicePChan
-		processedServices[processedService.index] = processedService.service
-	}
-
-	services := []models.Service{}
-	for index := range cfg.Services {
-		services = append(services,
-			processedServices[index])
-	}
-
-	return services
-}
-
-func (r *Routine) getNotes(cfg *config.Config) []models.Note {
-	notes := []models.Note{}
-	for _, cfgNote := range cfg.Notes {
-		notes = append(notes, models.Note{
-			Name:   cfgNote.Name,
-			Text:   cfgNote.Text,
-			Groups: cfgNote.Groups,
-		})
-	}
-	return notes
 }

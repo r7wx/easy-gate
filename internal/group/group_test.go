@@ -20,53 +20,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package config
+package group
 
-import (
-	"fmt"
-	"regexp"
-)
+import "testing"
 
-func isHexColor(color string) bool {
-	if len(color) < 4 || len(color) > 7 {
-		return false
+func TestIsAllowed(t *testing.T) {
+	if !IsAllowed([]Group{{
+		Name:   "test",
+		Subnet: "127.0.0.1/32",
+	}}, []string{"test"}, "127.0.0.1") {
+		t.Fail()
 	}
 
-	if color[0] != '#' {
-		return false
+	if IsAllowed([]Group{{
+		Name:   "test",
+		Subnet: "127.0.0.1/32",
+	}}, []string{"test"}, "xxxxxx") {
+		t.Fail()
 	}
 
-	for i := 1; i < len(color); i++ {
-		c := color[i]
-		if (c >= '0' && c <= '9') || (c >= 'a' &&
-			c <= 'f') || (c >= 'A' && c <= 'F') {
-			continue
-		}
-		return false
+	if IsAllowed([]Group{{
+		Name:   "test",
+		Subnet: "xxxxxxxxxxx",
+	}}, []string{"test"}, "127.0.0.1") {
+		t.Fail()
 	}
-
-	return true
-}
-
-func isURL(url string) bool {
-	r, _ := regexp.Compile(
-		`^(https?|ftp)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]`)
-	return r.MatchString(url)
-}
-
-func validateConfig(cfg *Config) error {
-	if !isHexColor(cfg.Theme.Background) {
-		return fmt.Errorf("Invalid background color")
-	}
-	if !isHexColor(cfg.Theme.Foreground) {
-		return fmt.Errorf("Invalid foreground color")
-	}
-
-	for _, service := range cfg.Services {
-		if !isURL(service.URL) {
-			return fmt.Errorf("Invalid URL for service %s", service.Name)
-		}
-	}
-
-	return nil
 }

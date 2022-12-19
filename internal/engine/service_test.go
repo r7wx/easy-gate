@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package service
+package engine
 
 import (
 	"encoding/json"
@@ -34,8 +34,9 @@ import (
 	"time"
 
 	"github.com/r7wx/easy-gate/internal/config"
-	"github.com/r7wx/easy-gate/internal/models"
+	"github.com/r7wx/easy-gate/internal/group"
 	"github.com/r7wx/easy-gate/internal/routine"
+	"github.com/r7wx/easy-gate/internal/theme"
 )
 
 var testConfigFilePath string
@@ -48,11 +49,11 @@ func TestMain(m *testing.M) {
 		KeyFile:     "",
 		BehindProxy: false,
 		Title:       "Test",
-		Theme: models.Theme{
+		Theme: theme.Theme{
 			Background: "#ffffff",
 			Foreground: "#000000",
 		},
-		Groups: []models.Group{
+		Groups: []group.Group{
 			{
 				Name:   "test",
 				Subnet: "192.168.1.1/24",
@@ -64,16 +65,18 @@ func TestMain(m *testing.M) {
 		},
 		Services: []config.Service{
 			{
-				Name:   "service1",
-				Icon:   "fa-solid fa-cubes",
-				URL:    "http://example.com/service1",
-				Groups: []string{},
+				Name:     "service1",
+				Icon:     "fa-solid fa-cubes",
+				URL:      "http://example.com/service1",
+				Category: "One",
+				Groups:   []string{},
 			},
 			{
-				Name:   "service2",
-				Icon:   "fa-solid fa-cubes",
-				URL:    "http://example.com/service2",
-				Groups: []string{"test"},
+				Name:     "service2",
+				Icon:     "fa-solid fa-cubes",
+				URL:      "http://example.com/service2",
+				Category: "One",
+				Groups:   []string{"test"},
 			},
 			{
 				Name:   "service3",
@@ -84,8 +87,9 @@ func TestMain(m *testing.M) {
 		},
 		Notes: []config.Note{
 			{
-				Name:   "note1",
-				Groups: []string{},
+				Name:     "note1",
+				Groups:   []string{},
+				Category: "Two",
 			},
 			{
 				Name:   "note2",
@@ -125,7 +129,7 @@ func TestService(t *testing.T) {
 		t.Fatal(err)
 	}
 	go routine.Start()
-	service := NewService(routine)
+	service := NewEngine(routine)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/data", nil)
 	w := httptest.NewRecorder()
@@ -204,24 +208,24 @@ func TestGetServices(t *testing.T) {
 	}
 	go routine.Start()
 
-	service := NewService(routine)
-	cfg, _ := service.Routine.GetStatus()
+	service := NewEngine(routine)
+	status, _ := service.Routine.GetStatus()
 
-	services := service.getServices(cfg, "192.168.1.1")
+	services := getServices(status, "192.168.1.1")
 	for _, s := range services {
 		if s.Name != "service1" && s.Name != "service2" {
 			t.Fail()
 		}
 	}
 
-	services = service.getServices(cfg, "10.1.5.1")
+	services = getServices(status, "10.1.5.1")
 	for _, s := range services {
 		if s.Name != "service1" && s.Name != "service3" {
 			t.Fail()
 		}
 	}
 
-	services = service.getServices(cfg, "1.1.1.1")
+	services = getServices(status, "1.1.1.1")
 	for _, s := range services {
 		if s.Name != "service1" {
 			t.Fail()
@@ -237,50 +241,27 @@ func TestGetNotes(t *testing.T) {
 	}
 	go routine.Start()
 
-	service := NewService(routine)
-	cfg, _ := service.Routine.GetStatus()
+	service := NewEngine(routine)
+	status, _ := service.Routine.GetStatus()
 
-	notes := service.getNotes(cfg, "192.168.1.1")
+	notes := getNotes(status, "192.168.1.1")
 	for _, n := range notes {
 		if n.Name != "note1" && n.Name != "note2" {
 			t.Fail()
 		}
 	}
 
-	notes = service.getNotes(cfg, "10.1.5.1")
+	notes = getNotes(status, "10.1.5.1")
 	for _, n := range notes {
 		if n.Name != "note1" && n.Name != "note3" {
 			t.Fail()
 		}
 	}
 
-	notes = service.getNotes(cfg, "1.1.1.1")
+	notes = getNotes(status, "1.1.1.1")
 	for _, n := range notes {
 		if n.Name != "note1" {
 			t.Fail()
 		}
-	}
-}
-
-func TestIsAllowed(t *testing.T) {
-	if !isAllowed([]models.Group{{
-		Name:   "test",
-		Subnet: "127.0.0.1/32",
-	}}, []string{"test"}, "127.0.0.1") {
-		t.Fail()
-	}
-
-	if isAllowed([]models.Group{{
-		Name:   "test",
-		Subnet: "127.0.0.1/32",
-	}}, []string{"test"}, "xxxxxx") {
-		t.Fail()
-	}
-
-	if isAllowed([]models.Group{{
-		Name:   "test",
-		Subnet: "xxxxxxxxxxx",
-	}}, []string{"test"}, "127.0.0.1") {
-		t.Fail()
 	}
 }

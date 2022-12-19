@@ -20,53 +20,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package config
+package routine
 
 import (
-	"fmt"
-	"regexp"
+	"github.com/r7wx/easy-gate/internal/config"
+	"github.com/r7wx/easy-gate/internal/service"
 )
 
-func isHexColor(color string) bool {
-	if len(color) < 4 || len(color) > 7 {
-		return false
+func (r *Routine) getServices(cfg *config.Config) []service.Service {
+	type serviceWrapper struct {
+		service service.Service
+		index   int
 	}
 
-	if color[0] != '#' {
-		return false
+	servicePChan := make(chan serviceWrapper)
+	for index, cfgService := range cfg.Services {
+		go func(index int, cfgService config.Service) {
+			servicePChan <- serviceWrapper{
+				service: service.Service{
+					Icon:     r.getIconData(cfgService),
+					Name:     cfgService.Name,
+					URL:      cfgService.URL,
+					Category: cfgService.Category,
+					Groups:   cfgService.Groups,
+				},
+				index: index,
+			}
+		}(index, cfgService)
 	}
 
-	for i := 1; i < len(color); i++ {
-		c := color[i]
-		if (c >= '0' && c <= '9') || (c >= 'a' &&
-			c <= 'f') || (c >= 'A' && c <= 'F') {
-			continue
-		}
-		return false
+	processedServices := map[int]service.Service{}
+	for i := 1; i <= len(cfg.Services); i++ {
+		processedService := <-servicePChan
+		processedServices[processedService.index] = processedService.service
 	}
 
-	return true
-}
-
-func isURL(url string) bool {
-	r, _ := regexp.Compile(
-		`^(https?|ftp)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]`)
-	return r.MatchString(url)
-}
-
-func validateConfig(cfg *Config) error {
-	if !isHexColor(cfg.Theme.Background) {
-		return fmt.Errorf("Invalid background color")
-	}
-	if !isHexColor(cfg.Theme.Foreground) {
-		return fmt.Errorf("Invalid foreground color")
+	services := []service.Service{}
+	for index := range cfg.Services {
+		services = append(services,
+			processedServices[index])
 	}
 
-	for _, service := range cfg.Services {
-		if !isURL(service.URL) {
-			return fmt.Errorf("Invalid URL for service %s", service.Name)
-		}
-	}
-
-	return nil
+	return services
 }

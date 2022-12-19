@@ -20,31 +20,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package service
+package engine
 
 import (
+	"encoding/json"
 	"log"
 	"net"
 	"net/http"
-	"strings"
 
-	"github.com/r7wx/easy-gate/web"
+	"github.com/r7wx/easy-gate/internal/note"
+	"github.com/r7wx/easy-gate/internal/service"
+	"github.com/r7wx/easy-gate/internal/theme"
 )
 
-func (s Service) webFS(w http.ResponseWriter, req *http.Request) {
-	webFS := web.GetWebFS()
-	if _, err := webFS.Open(strings.TrimLeft(req.URL.Path, "/")); err != nil {
-		req.URL.Path = "/"
-	}
+type response struct {
+	Error      string            `json:"error"`
+	Theme      theme.Theme       `json:"theme"`
+	Title      string            `json:"title"`
+	Categories []string          `json:"categories"`
+	Services   []service.Service `json:"services"`
+	Notes      []note.Note       `json:"notes"`
+}
+
+func (e Engine) data(w http.ResponseWriter, req *http.Request) {
+	status, cfgError := e.Routine.GetStatus()
 
 	reqIP, _, err := net.SplitHostPort(req.RemoteAddr)
 	if err != nil {
-		log.Println("WebFS error:", err)
+		log.Println("Engine error:", err)
 		http.Error(w, "", http.StatusInternalServerError)
 		return
 	}
 
-	status, _ := s.Routine.GetStatus()
 	if status.BehindProxy {
 		reqIP = req.Header.Get("X-Forwarded-For")
 		if reqIP == "" {
@@ -53,7 +60,31 @@ func (s Service) webFS(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 	}
-
 	log.Printf("[%s] %s", reqIP, req.URL.Path)
-	http.FileServer(webFS).ServeHTTP(w, req)
+
+	services := getServices(status, reqIP)
+	notes := getNotes(status, reqIP)
+	categories := getCategories(services, notes)
+
+	response := response{
+		Title:      status.Title,
+		Services:   services,
+		Notes:      notes,
+		Categories: categories,
+		Theme:      status.Theme,
+		Error:      "",
+	}
+	if cfgError != nil {
+		response.Error = cfgError.Error()
+	}
+
+	res, err := json.Marshal(response)
+	if err != nil {
+		log.Println("Engine error:", err)
+		http.Error(w, "", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(res)
 }

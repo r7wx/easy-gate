@@ -61,7 +61,7 @@ func NewRoutine(filePath string, interval time.Duration) (*Routine, error) {
 	if err != nil {
 		return nil, err
 	}
-	routine.Status = routine.toStatus(cfg)
+	routine.Status = routine.updateStatus(cfg)
 	routine.LastChecksum = checksum
 
 	return &routine, nil
@@ -89,7 +89,7 @@ func (r *Routine) Start() {
 		r.Error = nil
 		if checksum != r.LastChecksum {
 			log.Println("Detected configuration change, reloading...")
-			r.Status = r.toStatus(cfg)
+			r.Status = r.updateStatus(cfg)
 		}
 		r.LastChecksum = checksum
 		r.Unlock()

@@ -28,8 +28,8 @@ import (
 	"time"
 
 	"github.com/r7wx/easy-gate/internal/config"
+	"github.com/r7wx/easy-gate/internal/engine"
 	"github.com/r7wx/easy-gate/internal/routine"
-	"github.com/r7wx/easy-gate/internal/service"
 )
 
 func main() {
@@ -47,6 +47,6 @@ func main() {
 	}
 	go cfgRoutine.Start()
 
-	service := service.NewService(cfgRoutine)
-	service.Serve()
+	engine := engine.NewEngine(cfgRoutine)
+	engine.Serve()
 }

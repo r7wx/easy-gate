@@ -37,6 +37,7 @@
         },
         {
             "name": "Google",
+            "category": "Test",
             "url": "https://www.google.com",
             "groups": []
         },

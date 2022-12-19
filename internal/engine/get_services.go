@@ -20,23 +20,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package service
+package engine
 
 import (
-	"github.com/r7wx/easy-gate/internal/models"
+	"github.com/r7wx/easy-gate/internal/group"
 	"github.com/r7wx/easy-gate/internal/routine"
+	"github.com/r7wx/easy-gate/internal/service"
 )
 
-func (s *Service) getNotes(status *routine.Status, addr string) []models.Note {
-	notes := []models.Note{}
-	for _, statusNote := range status.Notes {
-		if isAllowed(status.Groups, statusNote.Groups, addr) {
-			note := models.Note{
-				Name: statusNote.Name,
-				Text: statusNote.Text,
+func getServices(status *routine.Status, addr string) []service.Service {
+	services := []service.Service{}
+	for _, statusService := range status.Services {
+		if group.IsAllowed(status.Groups, statusService.Groups, addr) {
+			service := service.Service{
+				Icon:     statusService.Icon,
+				Name:     statusService.Name,
+				URL:      statusService.URL,
+				Category: statusService.Category,
 			}
-			notes = append(notes, note)
+			services = append(services, service)
 		}
 	}
-	return notes
+
+	return services
 }
