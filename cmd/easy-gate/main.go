@@ -47,6 +47,5 @@ func main() {
 	}
 	go cfgRoutine.Start()
 
-	engine := engine.NewEngine(cfgRoutine)
-	engine.Serve()
+	engine.NewEngine(cfgRoutine).Serve()
 }
