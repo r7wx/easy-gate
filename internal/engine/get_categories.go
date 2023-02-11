@@ -13,12 +13,6 @@ func getCategories(services []service.Service, notes []note.Note) []string {
 		}
 	}
 
-	for _, note := range notes {
-		if note.Category != "" {
-			categoryMap[note.Category] = 1
-		}
-	}
-
 	categories := []string{}
 	for key := range categoryMap {
 		categories = append(categories, key)
