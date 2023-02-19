@@ -33,4 +33,5 @@ jobs:
 
       - name: Build Go
         run: |
+          go mod tidy
           CGO_ENABLED=0 go build -trimpath -ldflags="-w -s" -o build/easy-gate cmd/easy-gate/main.go
