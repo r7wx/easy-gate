@@ -1,7 +1,8 @@
 FROM node:19 AS web-builder
 WORKDIR /easy-gate-web
 COPY ./web .
-RUN yarn install && yarn build
+RUN yarn config set network-timeout 300000 && yarn install \
+    && yarn build
 
 FROM golang:1.20 AS go-builder
 WORKDIR /easy-gate
