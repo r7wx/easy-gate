@@ -1,9 +1,9 @@
-FROM node:17 AS web-builder
+FROM node:19 AS web-builder
 WORKDIR /easy-gate-web
 COPY ./web .
 RUN yarn install && yarn build
 
-FROM golang:1.18 AS go-builder
+FROM golang:1.20 AS go-builder
 WORKDIR /easy-gate
 COPY . .
 COPY --from=web-builder ./easy-gate-web/build ./web/build

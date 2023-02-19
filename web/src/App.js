@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Loading from "./components/Loading";
-import Service from "./components/Service";
 import Error from "./components/Error";
 import { Helmet } from "react-helmet";
 import Note from "./components/Note";
 import axios from "axios";
+import Category from "./components/Category";
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({
     title: "Easy Gate",
     error: "",
+    categories: [],
     services: [],
     notes: [],
     theme: {
@@ -47,22 +48,13 @@ function App() {
               </style>
             )}
           </Helmet>
+
           {data.error.length > 0 && <Error error={data.error} />}
-          {data.services.length > 0 && (
-            <React.Fragment>
-              <div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7
-                mt-4 mb-2">
-                {data.services.map((service) => (
-                  <Service
-                    key={service.name}
-                    service={service}
-                    theme={data.theme}
-                  />
-                ))}
-              </div>
-            </React.Fragment>
-          )}
+
+          <Category category={""} services={data.services} />
+          {data.categories.map((category) => {
+            return <Category category={category} services={data.services} />;
+          })}
           {data.notes.length > 0 && (
             <React.Fragment>
               <div

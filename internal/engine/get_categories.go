@@ -1,6 +1,8 @@
 package engine
 
 import (
+	"sort"
+
 	"github.com/r7wx/easy-gate/internal/note"
 	"github.com/r7wx/easy-gate/internal/service"
 )
@@ -17,6 +19,7 @@ func getCategories(services []service.Service, notes []note.Note) []string {
 	for key := range categoryMap {
 		categories = append(categories, key)
 	}
+	sort.Strings(categories)
 
 	return categories
 }

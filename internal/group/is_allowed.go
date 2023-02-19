@@ -2,7 +2,7 @@ package group
 
 import "net"
 
-// IsAllowed -
+// IsAllowed - Return true if incoming addr is allowed in one of the groups
 func IsAllowed(groups []Group, allowedGroups []string, addr string) bool {
 	if len(allowedGroups) == 0 {
 		return true

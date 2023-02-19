@@ -22,6 +22,7 @@
     "services": [
         {
             "name": "Git",
+            "category": "",
             "url": "https://git.example.internal",
             "groups": [
                 "internal",
@@ -30,6 +31,7 @@
         },
         {
             "name": "Files",
+            "category": "",
             "url": "https://files.example.internal",
             "groups": [
                 "internal"
@@ -37,12 +39,13 @@
         },
         {
             "name": "Google",
-            "category": "Test",
+            "category": "",
             "url": "https://www.google.com",
             "groups": []
         },
         {
             "name": "Youtube",
+            "category": "",
             "url": "https://www.youtube.com",
             "groups": []
         }
