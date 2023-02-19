@@ -14,18 +14,22 @@ groups:
     subnet: 10.8.1.1/24
 services:
   - name: Git
+    category: ""
     url: https://git.example.internal
     groups:
       - internal
       - vpn
   - name: Files
+    category: ""
     url: https://files.example.internal
     groups:
       - internal
   - name: Google
+    category: ""
     url: https://www.google.com
     groups: []
   - name: Youtube
+    category: ""
     url: https://www.youtube.com
     groups: []
 notes:

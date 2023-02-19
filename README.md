@@ -258,6 +258,7 @@ A service entry is used to define a service that is available in the infrastruct
 
 - **name:** the name of the service (ex. Internal Git, Jenkins, ...)
 - **url:** the service url (must be a valid url starting with http(s)://)
+- **category:** service category (each service will appear under its own category).
 - **groups:** list of groups associated to this service (defined in the groups section). If no group is provided the item can be seen by all users:
 - **icon (optional):** the icon parameter accepts image URLs or data URI. If the icon parameter is not provided or empty, Easy Gate will try to fetch the service favicon and display it or fallback to a default icon.
 
@@ -276,6 +277,7 @@ A service entry is used to define a service that is available in the infrastruct
 {
   "name": "Portainer",
   "url": "https://portainer.example.all",
+  "category": "Test",
   "icon": "data:image/png;base64,[...]",
   "groups": []
 }
@@ -290,6 +292,7 @@ A service entry is used to define a service that is available in the infrastruct
     - vpn
 - name: Portainer
   url: https://portainer.example.all
+  category: "Test"
   icon: data:image/png;base64,[...]
   groups: []
 ```
