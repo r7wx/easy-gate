@@ -28,7 +28,7 @@ Easy Gate is a simple web application designed to serve as the central hub for y
 - Flexible assignment of services and notes to one or more user groups, ensuring items are displayed exclusively to specific users based on their IP addresses.
 - Organization of services into categories.
 - Customizable theme and icons.
-- Versatile deployment options with the choice to run Easy Gate as a standalone executable, free from external dependencies, or as a Docker container for enhanced portability and scalability.
+- Versatile deployment options with the choice to run Easy Gate as a standalone executable, free from external dependencies, or as a Docker container.
 
 ## Deployment
 
