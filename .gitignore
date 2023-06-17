@@ -7,6 +7,7 @@
 *.out
 coverage/
 build/
+dist/
 test.json
 .vscode/
 .DS_Store
