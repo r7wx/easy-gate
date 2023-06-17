@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{.Title}}</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <style>
@@ -39,25 +40,7 @@
       grid-template-columns: repeat(1, minmax(0, 1fr));
       margin-top: 0.5rem;
       margin-bottom: 0.5rem;
-    }
-
-    @media (min-width: 768px) {
-      .category-block {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .category-block {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
-    }
-
-    @media (min-width: 1280px) {
-      .category-block {
-        grid-template-columns: repeat(7, minmax(0, 1fr));
-      }
-    }
+    }   
 
     .service-block {
       padding: 0.3rem;
@@ -92,24 +75,6 @@
       grid-template-columns: repeat(1, minmax(0, 1fr));
     }
 
-    @media (min-width: 768px) {
-      .notes-block {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .notes-block {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (min-width: 1280px) {
-      .notes-block {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
-    }
-
     .note-block {
       padding: 1rem;
       border-radius: 0.25rem;
@@ -133,6 +98,36 @@
     .flex-center {
       align-items: center;
       display: flex;
+    }
+
+    @media (min-width: 768px) {
+      .category-block {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+       .notes-block {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .category-block {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .notes-block {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .category-block {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+      }
+
+      .notes-block {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
     }
   </style>
 </head>
