@@ -5,13 +5,11 @@ import (
 	"encoding/hex"
 	"io/ioutil"
 	"os"
-
-	"github.com/r7wx/easy-gate/internal/share"
 )
 
 // Load - Load configuration from environment or file
 func Load(filePath string) (*Config, string, error) {
-	envCfg := os.Getenv(share.CFGEnv)
+	envCfg := os.Getenv(cfgEnv)
 	if envCfg != "" {
 		return loadConfig([]byte(envCfg))
 	}

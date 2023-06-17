@@ -3,6 +3,7 @@ package routine
 import (
 	"encoding/base64"
 	"fmt"
+	"html/template"
 	"io"
 	"net/http"
 	"net/url"
@@ -11,9 +12,9 @@ import (
 	"github.com/r7wx/easy-gate/internal/config"
 )
 
-func (r *Routine) getIconData(service config.Service) string {
+func (r *Routine) getIconData(service config.Service) template.URL {
 	if strings.HasPrefix(service.Icon, "data:image") {
-		return service.Icon
+		return template.URL(service.Icon)
 	}
 
 	u, err := url.Parse(service.Icon)
@@ -29,7 +30,7 @@ func (r *Routine) getIconData(service config.Service) string {
 		u.Host, "favicon.ico"))
 }
 
-func (r *Routine) downloadIconFromURL(url string) string {
+func (r *Routine) downloadIconFromURL(url string) template.URL {
 	resp, err := r.Client.Get(url)
 	if err != nil {
 		return ""
@@ -48,13 +49,15 @@ func (r *Routine) downloadIconFromURL(url string) string {
 		return ""
 	}
 
-	return fmt.Sprintf(
-		"data:%s;base64,%s", mimeType,
-		base64.StdEncoding.EncodeToString(respBytes),
+	return template.URL(
+		fmt.Sprintf(
+			"data:%s;base64,%s", mimeType,
+			base64.StdEncoding.EncodeToString(respBytes),
+		),
 	)
 }
 
-func (r *Routine) downloadFavicon(url string) string {
+func (r *Routine) downloadFavicon(url string) template.URL {
 	resp, err := r.Client.Get(url)
 	if err != nil {
 		return ""
@@ -73,8 +76,10 @@ func (r *Routine) downloadFavicon(url string) string {
 		return ""
 	}
 
-	return fmt.Sprintf(
-		"data:image/x-icon;base64,%s",
-		base64.StdEncoding.EncodeToString(respBytes),
+	return template.URL(
+		fmt.Sprintf(
+			"data:image/x-icon;base64,%s",
+			base64.StdEncoding.EncodeToString(respBytes),
+		),
 	)
 }

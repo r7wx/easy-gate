@@ -4,8 +4,6 @@ import (
 	"io/ioutil"
 	"os"
 	"testing"
-
-	"github.com/r7wx/easy-gate/internal/share"
 )
 
 var sampleJSONConfig string = `{
@@ -53,12 +51,12 @@ func TestUnmarshal(t *testing.T) {
 }
 
 func TestLoadEnv(t *testing.T) {
-	os.Setenv(share.CFGEnv, sampleJSONConfig)
+	os.Setenv(cfgEnv, sampleJSONConfig)
 	_, _, err := Load("")
 	if err != nil {
 		t.Fatal(err)
 	}
-	os.Unsetenv(share.CFGEnv)
+	os.Unsetenv(cfgEnv)
 }
 
 func TestLoadFile(t *testing.T) {
@@ -117,12 +115,12 @@ func TestLoadFile(t *testing.T) {
 }
 
 func TestGetPath(t *testing.T) {
-	os.Setenv(share.CFGPathEnv, "test.json")
+	os.Setenv(cfgPathEnv, "test.json")
 	_, err := GetConfigPath([]string{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	os.Unsetenv(share.CFGPathEnv)
+	os.Unsetenv(cfgPathEnv)
 
 	_, err = GetConfigPath([]string{})
 	if err == nil {

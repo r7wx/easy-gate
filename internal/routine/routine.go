@@ -12,13 +12,13 @@ import (
 
 // Routine - Routine struct
 type Routine struct {
-	sync.Mutex
 	Error        error
 	Status       *Status
 	Client       *http.Client
 	FilePath     string
 	LastChecksum string
 	Interval     time.Duration
+	sync.Mutex
 }
 
 // NewRoutine - Create new config routine
