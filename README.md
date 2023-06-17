@@ -26,6 +26,7 @@ Easy Gate is a simple web application that acts as the home page for your self-h
 
 - Service and note parsing from a configuration file (JSON/YAML) in real-time (without restarting the application).
 - Service and note assignment to one or more groups to show items only to specific users (based on their IP addresses).
+- Services can be organized by category.
 - Customizable theme and icons.
 - Run as dependecy free standalone executable or as a Docker container.
 
