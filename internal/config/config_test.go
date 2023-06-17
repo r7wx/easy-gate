@@ -1,11 +1,8 @@
 package config
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
-
-	"github.com/r7wx/easy-gate/internal/share"
 )
 
 var sampleJSONConfig string = `{
@@ -53,16 +50,16 @@ func TestUnmarshal(t *testing.T) {
 }
 
 func TestLoadEnv(t *testing.T) {
-	os.Setenv(share.CFGEnv, sampleJSONConfig)
+	os.Setenv(cfgEnv, sampleJSONConfig)
 	_, _, err := Load("")
 	if err != nil {
 		t.Fatal(err)
 	}
-	os.Unsetenv(share.CFGEnv)
+	os.Unsetenv(cfgEnv)
 }
 
 func TestLoadFile(t *testing.T) {
-	cfgFile, err := ioutil.TempFile(".", "easy_gate_test_")
+	cfgFile, err := os.CreateTemp(".", "easy_gate_test_")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -73,7 +70,7 @@ func TestLoadFile(t *testing.T) {
 	}
 	defer os.Remove(cfgFile.Name())
 
-	cfgFile, err = ioutil.TempFile(".", "easy_gate_test_")
+	cfgFile, err = os.CreateTemp(".", "easy_gate_test_")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -84,7 +81,7 @@ func TestLoadFile(t *testing.T) {
 	}
 	defer os.Remove(cfgFile.Name())
 
-	cfgFile, err = ioutil.TempFile(".", "easy_gate_test_")
+	cfgFile, err = os.CreateTemp(".", "easy_gate_test_")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -117,12 +114,12 @@ func TestLoadFile(t *testing.T) {
 }
 
 func TestGetPath(t *testing.T) {
-	os.Setenv(share.CFGPathEnv, "test.json")
+	os.Setenv(cfgPathEnv, "test.json")
 	_, err := GetConfigPath([]string{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	os.Unsetenv(share.CFGPathEnv)
+	os.Unsetenv(cfgPathEnv)
 
 	_, err = GetConfigPath([]string{})
 	if err == nil {

@@ -11,8 +11,6 @@ import (
 )
 
 func main() {
-	log.SetPrefix("[Easy Gate] ")
-
 	cfgFilePath, err := config.GetConfigPath(os.Args)
 	if err != nil {
 		log.Fatal("No configuration file provided")

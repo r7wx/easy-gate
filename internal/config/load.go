@@ -3,15 +3,13 @@ package config
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"io/ioutil"
+	"io"
 	"os"
-
-	"github.com/r7wx/easy-gate/internal/share"
 )
 
 // Load - Load configuration from environment or file
 func Load(filePath string) (*Config, string, error) {
-	envCfg := os.Getenv(share.CFGEnv)
+	envCfg := os.Getenv(cfgEnv)
 	if envCfg != "" {
 		return loadConfig([]byte(envCfg))
 	}
@@ -22,7 +20,7 @@ func Load(filePath string) (*Config, string, error) {
 	}
 	defer cfgFile.Close()
 
-	fileData, _ := ioutil.ReadAll(cfgFile)
+	fileData, _ := io.ReadAll(cfgFile)
 	return loadConfig(fileData)
 }
 

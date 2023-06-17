@@ -3,13 +3,11 @@ package config
 import (
 	"fmt"
 	"os"
-
-	"github.com/r7wx/easy-gate/internal/share"
 )
 
 // GetConfigPath - Get the path to the configuration file
 func GetConfigPath(args []string) (string, error) {
-	cfgFilePath := os.Getenv(share.CFGPathEnv)
+	cfgFilePath := os.Getenv(cfgPathEnv)
 	if cfgFilePath != "" {
 		return cfgFilePath, nil
 	}

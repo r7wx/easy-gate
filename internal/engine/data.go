@@ -1,68 +1,57 @@
 package engine
 
 import (
-	"encoding/json"
-	"log"
-	"net"
-	"net/http"
-
+	"github.com/r7wx/easy-gate/internal/group"
 	"github.com/r7wx/easy-gate/internal/note"
+	"github.com/r7wx/easy-gate/internal/routine"
 	"github.com/r7wx/easy-gate/internal/service"
-	"github.com/r7wx/easy-gate/internal/theme"
 )
 
-type response struct {
-	Error      string            `json:"error"`
-	Theme      theme.Theme       `json:"theme"`
-	Title      string            `json:"title"`
-	Categories []string          `json:"categories"`
-	Services   []service.Service `json:"services"`
-	Notes      []note.Note       `json:"notes"`
+type data struct {
+	Services map[string][]service.Service
+	Notes    []note.Note
 }
 
-func (e Engine) data(w http.ResponseWriter, req *http.Request) {
-	status, cfgError := e.Routine.GetStatus()
-
-	reqIP, _, err := net.SplitHostPort(req.RemoteAddr)
-	if err != nil {
-		log.Println("Engine error:", err)
-		http.Error(w, "", http.StatusInternalServerError)
-		return
+func getData(status *routine.Status, addr string) data {
+	return data{
+		Services: getServices(status, addr),
+		Notes:    getNotes(status, addr),
 	}
+}
 
-	if status.BehindProxy {
-		reqIP = req.Header.Get("X-Forwarded-For")
-		if reqIP == "" {
-			log.Println("400 Bad Request: X-Forwarded-For header is missing")
-			http.Error(w, "", http.StatusBadRequest)
-			return
+func getServices(status *routine.Status, addr string) map[string][]service.Service {
+	services := map[string][]service.Service{}
+
+	for _, statusService := range status.Services {
+		if group.IsAllowed(status.Groups, statusService.Groups, addr) {
+			service := service.Service{
+				Icon:     statusService.Icon,
+				Name:     statusService.Name,
+				URL:      statusService.URL,
+				Category: statusService.Category,
+			}
+
+			services[statusService.Category] = append(
+				services[statusService.Category],
+				service,
+			)
 		}
 	}
-	log.Printf("[%s] %s", reqIP, req.URL.Path)
 
-	services := getServices(status, reqIP)
-	notes := getNotes(status, reqIP)
-	categories := getCategories(services, notes)
+	return services
+}
 
-	response := response{
-		Title:      status.Title,
-		Services:   services,
-		Notes:      notes,
-		Categories: categories,
-		Theme:      status.Theme,
-		Error:      "",
-	}
-	if cfgError != nil {
-		response.Error = cfgError.Error()
+func getNotes(status *routine.Status, addr string) []note.Note {
+	notes := []note.Note{}
+	for _, statusNote := range status.Notes {
+		if group.IsAllowed(status.Groups, statusNote.Groups, addr) {
+			note := note.Note{
+				Name: statusNote.Name,
+				Text: statusNote.Text,
+			}
+			notes = append(notes, note)
+		}
 	}
 
-	res, err := json.Marshal(response)
-	if err != nil {
-		log.Println("Engine error:", err)
-		http.Error(w, "", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(res)
+	return notes
 }

@@ -1,6 +1,8 @@
 package routine
 
 import (
+	"html/template"
+
 	"github.com/r7wx/easy-gate/internal/config"
 	"github.com/r7wx/easy-gate/internal/service"
 )
@@ -18,7 +20,7 @@ func (r *Routine) getServices(cfg *config.Config) []service.Service {
 				service: service.Service{
 					Icon:     r.getIconData(cfgService),
 					Name:     cfgService.Name,
-					URL:      cfgService.URL,
+					URL:      template.URL(cfgService.URL),
 					Category: cfgService.Category,
 					Groups:   cfgService.Groups,
 				},

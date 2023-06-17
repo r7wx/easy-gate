@@ -9,6 +9,12 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// Easy Gate environment variable names
+const (
+	cfgPathEnv = "EASY_GATE_CONFIG_PATH"
+	cfgEnv     = "EASY_GATE_CONFIG"
+)
+
 // Service - Easy Gate service configuration struct
 type Service struct {
 	Icon     string   `json:"icon" yaml:"icon"`
@@ -67,5 +73,5 @@ func Unmarshal(configBytes []byte) (*Config, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("Invalid configuration file format")
+	return nil, fmt.Errorf("invalid configuration file format")
 }
