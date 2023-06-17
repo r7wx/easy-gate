@@ -19,16 +19,16 @@
 <img src="assets/demo.png" />
 
 <p align="justify">
-Easy Gate is a simple web application that acts as the home page for your self-hosted infrastructure. Services and notes are parsed from a configuration file in real-time (without restarting the application). Items can also be assigned to one or more groups to show them only to specific users (based on their IP addresses).
+Easy Gate is a simple web application designed to serve as the central hub for your self-hosted infrastructure. With real-time parsing of services and notes from a configuration file, Easy Gate ensures seamless updates without the need to restart the application. Moreover, it offers the flexibility to assign items to specific user groups, allowing tailored access based on their IP addresses.
 </p>
 
 ### Features
 
-- Service and note parsing from a configuration file (JSON/YAML) in real-time (without restarting the application).
-- Service and note assignment to one or more groups to show items only to specific users (based on their IP addresses).
-- Services can be organized by category.
+- Real-time parsing of services and notes from a configuration file (JSON/YAML) without requiring application restarts.
+- Flexible assignment of services and notes to one or more user groups, ensuring items are displayed exclusively to specific users based on their IP addresses.
+- Organization of services into categories.
 - Customizable theme and icons.
-- Run as dependecy free standalone executable or as a Docker container.
+- Versatile deployment options with the choice to run Easy Gate as a standalone executable, free from external dependencies, or as a Docker container for enhanced portability and scalability.
 
 ## Deployment
 
