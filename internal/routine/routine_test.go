@@ -1,7 +1,6 @@
 package routine
 
 import (
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -29,7 +28,7 @@ func TestMain(m *testing.M) {
 "services": [],
 "notes": []
 }`
-	cfgFile, err := ioutil.TempFile(".", "easy_gate_test_")
+	cfgFile, err := os.CreateTemp(".", "easy_gate_test_")
 	if err != nil {
 		log.Fatal("Unable to write tmp files for test")
 	}

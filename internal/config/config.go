@@ -73,5 +73,5 @@ func Unmarshal(configBytes []byte) (*Config, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("Invalid configuration file format")
+	return nil, fmt.Errorf("invalid configuration file format")
 }

@@ -1,7 +1,6 @@
 package config
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -60,7 +59,7 @@ func TestLoadEnv(t *testing.T) {
 }
 
 func TestLoadFile(t *testing.T) {
-	cfgFile, err := ioutil.TempFile(".", "easy_gate_test_")
+	cfgFile, err := os.CreateTemp(".", "easy_gate_test_")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -71,7 +70,7 @@ func TestLoadFile(t *testing.T) {
 	}
 	defer os.Remove(cfgFile.Name())
 
-	cfgFile, err = ioutil.TempFile(".", "easy_gate_test_")
+	cfgFile, err = os.CreateTemp(".", "easy_gate_test_")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -82,7 +81,7 @@ func TestLoadFile(t *testing.T) {
 	}
 	defer os.Remove(cfgFile.Name())
 
-	cfgFile, err = ioutil.TempFile(".", "easy_gate_test_")
+	cfgFile, err = os.CreateTemp(".", "easy_gate_test_")
 	if err != nil {
 		t.Fatal(err)
 	}

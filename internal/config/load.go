@@ -3,7 +3,7 @@ package config
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"io/ioutil"
+	"io"
 	"os"
 )
 
@@ -20,7 +20,7 @@ func Load(filePath string) (*Config, string, error) {
 	}
 	defer cfgFile.Close()
 
-	fileData, _ := ioutil.ReadAll(cfgFile)
+	fileData, _ := io.ReadAll(cfgFile)
 	return loadConfig(fileData)
 }
 

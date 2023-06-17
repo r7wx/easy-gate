@@ -34,15 +34,15 @@ func isURL(url string) bool {
 
 func validateConfig(cfg *Config) error {
 	if !isHexColor(cfg.Theme.Background) {
-		return fmt.Errorf("Invalid background color")
+		return fmt.Errorf("invalid background color")
 	}
 	if !isHexColor(cfg.Theme.Foreground) {
-		return fmt.Errorf("Invalid foreground color")
+		return fmt.Errorf("invalid foreground color")
 	}
 
 	for _, service := range cfg.Services {
 		if !isURL(service.URL) {
-			return fmt.Errorf("Invalid URL for service %s", service.Name)
+			return fmt.Errorf("invalid URL for service %s", service.Name)
 		}
 	}
 
