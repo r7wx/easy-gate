@@ -19,11 +19,6 @@ jobs:
         with:
           go-version: 1.19
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 19
-
       - name: Go Releaser
         uses: goreleaser/goreleaser-action@v3
         with:
