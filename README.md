@@ -19,7 +19,7 @@
 <img src="assets/demo.png" />
 
 <p align="justify">
-Easy Gate is a simple web application built in Go and React that acts as the home page for your self-hosted infrastructure. Services and notes are parsed from a configuration file in real-time (without restarting the application). Items can also be assigned to one or more groups to show them only to specific users (based on their IP addresses).
+Easy Gate is a simple web application that acts as the home page for your self-hosted infrastructure. Services and notes are parsed from a configuration file in real-time (without restarting the application). Items can also be assigned to one or more groups to show them only to specific users (based on their IP addresses).
 </p>
 
 ### Features
@@ -122,7 +122,7 @@ services:
       - ./easy-gate.yml:/etc/easy-gate/easy-gate.yml
 ```
 
-### Docker Compose (behind nginx)
+### Docker Compose (behind proxy)
 
 <p align="justify">
 If you need to host Easy Gate behind an already running nginx instance (or other reverse proxies), you can use the docker-compose file in the examples directory:
@@ -168,7 +168,7 @@ location / {
 [...]
 ```
 
-It is also mandatory to set "behind_proxy" to true in your configuration file:
+It is also mandatory to set "behind_proxy" to true in your easy-gate configuration file:
 
 ```json
 [...]
@@ -257,7 +257,7 @@ A service entry is used to define a service that is available in the infrastruct
 
 - **name:** the name of the service (ex. Internal Git, Jenkins, ...)
 - **url:** the service url (must be a valid url starting with http(s)://)
-- **category:** service category (each service will appear under its own category).
+- **category (optional):** service category (each service will appear under its own category).
 - **groups:** list of groups associated to this service (defined in the groups section). If no group is provided the item can be seen by all users:
 - **icon (optional):** the icon parameter accepts image URLs or data URI. If the icon parameter is not provided or empty, Easy Gate will try to fetch the service favicon and display it or fallback to a default icon.
 
