@@ -63,26 +63,6 @@ func (e Engine) Serve() {
 		return c.Send(data)
 	})
 
-	app.Get("/link.svg", func(c *fiber.Ctx) error {
-		data, err := staticFS.ReadFile("static/link.svg")
-		if err != nil {
-			return c.SendStatus(http.StatusNotFound)
-		}
-
-		c.Set("Content-type", "image/svg+xml")
-		return c.Send(data)
-	})
-
-	app.Get("/note.svg", func(c *fiber.Ctx) error {
-		data, err := staticFS.ReadFile("static/note.svg")
-		if err != nil {
-			return c.SendStatus(http.StatusNotFound)
-		}
-
-		c.Set("Content-type", "image/svg+xml")
-		return c.Send(data)
-	})
-
 	app.Get("/", func(c *fiber.Ctx) error {
 		status, err := e.Routine.GetStatus()
 		if err != nil {
