@@ -12,6 +12,7 @@
 <a href="https://github.com/r7wx/easy-gate/actions/workflows/test.yml">
 <img src="https://github.com/r7wx/easy-gate/actions/workflows/test.yml/badge.svg"/></a>
 <a href="https://www.codefactor.io/repository/github/r7wx/easy-gate"><img src="https://www.codefactor.io/repository/github/r7wx/easy-gate/badge?s=3531cadc71a73618609de429289d9524a38c33cd" alt="CodeFactor" /></a>
+<a href="https://app.fossa.com/projects/git%2Bgithub.com%2Fr7wx%2Feasy-gate?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Fr7wx%2Feasy-gate.svg?type=shield"/></a>
 </p>
 
 ---
@@ -336,3 +337,7 @@ A note entry is used to define a simple text note which has a title and a conten
 
 - **EASY_GATE_CONFIG_PATH:** Easy Gate configuration file path can be provided by this environment variable. The value will have precedence over the configuration file path provided in the command line.
 - **EASY_GATE_CONFIG:** Insted of providing a configuration file, it is possible to provide the entire configuration as a JSON or YAML string in this environment variable. The content of this variable will have precedence over the configuration file.
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fr7wx%2Feasy-gate.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fr7wx%2Feasy-gate?ref=badge_large)
