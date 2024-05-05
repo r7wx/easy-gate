@@ -171,3 +171,28 @@ func TestValidate(t *testing.T) {
 		t.Fatal()
 	}
 }
+
+func TestCustomCSS(t *testing.T) {
+	var config = `{
+		"addr": "0.0.0.0:8080",
+		"use_tls": false,
+		"cert_file": "",
+		"key_file": "",
+		"behind_proxy": false,
+		"title": "Easy Gate",
+		"theme": {
+			"custom_css": "tmp.css",
+		},
+		"groups": [],
+		"services": [],
+		"notes": []
+		}`
+	cfg, err := Unmarshal([]byte(config))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if cfg.Theme.CustomCss != "tmp.css" {
+		t.Fatal()
+	}
+}

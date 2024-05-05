@@ -6,130 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{.Title}}</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-  <style>
-    @font-face {
-      font-family: 'Roboto';
-      src: url('/roboto-regular.ttf') format('truetype');
-    }
-
-    body {
-      background-color: {{.Background}};
-      color: {{.Foreground}};
-      font-family: 'Roboto',
-      sans-serif;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .main {
-      padding-top: 1.5rem;
-      padding-bottom: 1.5rem;
-      padding-left: 3rem;
-      padding-right: 3rem;
-    }
-
-    .category-title {
-      margin-left: 0.25rem;
-    }
-
-    .category-block {
-      display: grid;
-      grid-template-columns: repeat(1, minmax(0, 1fr));
-      margin-top: 0.5rem;
-      margin-bottom: 0.5rem;
-    }   
-
-    .service-block {
-      padding: 0.3rem;
-      border-radius: 0.5rem;
-      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      transition: box-shadow 0.2s ease;
-      margin: 0.25rem;
-    }
-
-    .service-block:hover {
-      box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2);
-    }
-
-    .service-icon {
-      fill: {{.Foreground}};
-      margin: auto;
-    }
-
-    .service-title {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-weight: 600;
-      width: 83.33%;
-    }
-
-    .notes-block {
-      margin-top: 3rem;
-      margin-bottom: 0.5rem;
-      display: grid;
-      grid-template-columns: repeat(1, minmax(0, 1fr));
-    }
-
-    .note-block {
-      padding: 1rem;
-      border-radius: 0.25rem;
-      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
-      margin: 0.25rem;
-    }
-
-    .note-icon {
-      fill: {{.Foreground}};
-      margin-right: 0.5rem;
-    }
-
-    .note-title {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-weight: 600;
-      width: 83.33%;
-    }
-
-    .flex-center {
-      align-items: center;
-      display: flex;
-    }
-
-    @media (min-width: 768px) {
-      .category-block {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-       .notes-block {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .category-block {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
-
-      .notes-block {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (min-width: 1280px) {
-      .category-block {
-        grid-template-columns: repeat(7, minmax(0, 1fr));
-      }
-
-      .notes-block {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="/style.css" />
 </head>
 
 <body>
@@ -167,8 +44,7 @@
         {{range $index, $note := .Data.Notes}}
         <div class="note-block">
           <div class="flex-center">
-            <svg class="note-icon" width="18px" height="18px" xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 448 512">
+            <svg class="note-icon" width="18px" height="18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
               <path
                 d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H288V368c0-26.5 21.5-48 48-48H448V96c0-35.3-28.7-64-64-64H64zM448 352H402.7 336c-8.8 0-16 7.2-16 16v66.7V480l32-32 64-64 32-32z" />
             </svg>

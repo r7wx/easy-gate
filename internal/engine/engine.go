@@ -2,8 +2,10 @@ package engine
 
 import (
 	"embed"
+	"html/template"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -33,6 +35,17 @@ func (e Engine) Serve() {
 	status, _ := e.Routine.GetStatus()
 
 	htmlEngine := html.NewFileSystem(http.FS(templateFS), ".html")
+
+	var styleData []byte
+
+	if status.Theme.CustomCss != "" {
+		data, _ := os.ReadFile(status.Theme.CustomCss)
+		styleData = data
+	} else {
+		data, _ := staticFS.ReadFile("static/styles/style.css")
+		styleData = data
+	}
+
 	app := fiber.New(fiber.Config{
 		Views:                 htmlEngine,
 		DisableStartupMessage: true,
@@ -63,6 +76,20 @@ func (e Engine) Serve() {
 		return c.Send(data)
 	})
 
+	app.Get("/style.css", func(c *fiber.Ctx) error {
+
+		tmpl, err := template.New("").Parse(string(styleData))
+		if err != nil {
+			return c.SendStatus(http.StatusInternalServerError)
+		}
+
+		c.Set("Content-type", "text/css")
+		return tmpl.Execute(c, fiber.Map{
+			"Background": status.Theme.Background,
+			"Foreground": status.Theme.Foreground,
+		})
+	})
+
 	app.Get("/", func(c *fiber.Ctx) error {
 		status, err := e.Routine.GetStatus()
 		if err != nil {
@@ -74,10 +101,8 @@ func (e Engine) Serve() {
 		data := getData(status, addr)
 
 		return c.Render("template/index", fiber.Map{
-			"Title":      status.Title,
-			"Background": status.Theme.Background,
-			"Foreground": status.Theme.Foreground,
-			"Data":       data,
+			"Title": status.Title,
+			"Data":  data,
 		})
 	})
 
