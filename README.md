@@ -213,6 +213,14 @@ Example of a dark mode theme:
 }
 ```
 
+#### YAML
+
+```yml
+theme:
+  background: "#FFFFFF"
+  foreground: "#000000"
+```
+
 <p align="justify">
 It is also possible to use a custom css file by providing the path to the file:
 </p>
@@ -234,14 +242,6 @@ body {
 }
 ```
 
-
-#### YAML
-
-```yml
-theme:
-  background: "#FFFFFF"
-  foreground: "#000000"
-```
 
 ### Groups
 
