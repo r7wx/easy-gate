@@ -2,7 +2,6 @@ package engine
 
 import (
 	"embed"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -100,8 +99,6 @@ func (e Engine) Serve() {
 
 		addr := getAddr(status, c)
 		data := getData(status, addr)
-
-		fmt.Println(data)
 
 		return c.Render("template/index", fiber.Map{
 			"Title": status.Title,
