@@ -41,8 +41,8 @@ func validateConfig(cfg *Config) error {
 		return fmt.Errorf("invalid foreground color")
 	}
 
-	if cfg.Theme.CustomCss != "" {
-		fi, err := os.Stat(cfg.Theme.CustomCss)
+	if cfg.Theme.CustomCSS != "" {
+		fi, err := os.Stat(cfg.Theme.CustomCSS)
 		if err != nil {
 			return fmt.Errorf("invalid custom CSS file path")
 		}

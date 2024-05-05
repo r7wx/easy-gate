@@ -192,7 +192,7 @@ func TestCustomCSS(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if cfg.Theme.CustomCss != "tmp.css" {
+	if cfg.Theme.CustomCSS != "tmp.css" {
 		t.Fatal()
 	}
 }
