@@ -213,6 +213,28 @@ Example of a dark mode theme:
 }
 ```
 
+<p align="justify">
+It is also possible to use a custom css file by providing the path to the file:
+</p>
+
+```json
+"theme": {
+  "custom_css": "/path/to/custom.css"
+}
+```
+
+<p align="justify">
+Keep in mind, even if you provide a custom css file, the background and foreground colors will still be applied as long as you provide the correct templating keys in your custom css file like so:
+</p>
+
+```css
+body {
+  background: {{.Background}};
+  color: {{.Foreground}};
+}
+```
+
+
 #### YAML
 
 ```yml
