@@ -4,10 +4,12 @@ import (
 	"crypto/tls"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
 	"github.com/r7wx/easy-gate/internal/config"
+	"github.com/r7wx/easy-gate/internal/engine/static"
 )
 
 // Routine - Routine struct
@@ -33,14 +35,36 @@ func NewRoutine(filePath string, interval time.Duration) (*Routine, error) {
 			},
 		},
 		Interval: interval,
+		Status:   &Status{},
 	}
 
 	cfg, checksum, err := config.Load(filePath)
 	if err != nil {
 		return nil, err
 	}
+
 	routine.Status = routine.updateStatus(cfg)
 	routine.LastChecksum = checksum
+
+	styleData, err := static.StaticFS.ReadFile("public/styles/style.css")
+	if err != nil {
+		return nil, err
+	}
+
+	if cfg.Theme.CustomCSS != "" {
+		styleData, err = os.ReadFile(cfg.Theme.CustomCSS)
+		if err != nil {
+			return nil, err
+		}
+
+		fileInfo, err := os.Stat(cfg.Theme.CustomCSS)
+		if err != nil {
+			return nil, err
+		}
+		routine.Status.CSSLastEdit = fileInfo.ModTime().Unix()
+	}
+
+	routine.Status.CSSData = string(styleData)
 
 	return &routine, nil
 }
@@ -70,8 +94,29 @@ func (r *Routine) Start() {
 			r.Status = r.updateStatus(cfg)
 		}
 		r.LastChecksum = checksum
-		r.Unlock()
 
+		if cfg.Theme.CustomCSS != "" {
+			fileInfo, err := os.Stat(cfg.Theme.CustomCSS)
+			if err != nil {
+				log.Println("Error in getting custom css file info:", err)
+				r.Unlock()
+				continue
+			}
+
+			if fileInfo.ModTime().Unix() != r.Status.CSSLastEdit {
+				data, err := os.ReadFile(cfg.Theme.CustomCSS)
+				if err != nil {
+					log.Println("Error in reading custom css file:", err)
+					r.Unlock()
+					continue
+				}
+
+				r.Status.CSSData = string(data)
+				r.Status.CSSLastEdit = fileInfo.ModTime().Unix()
+			}
+		}
+
+		r.Unlock()
 		time.Sleep(r.Interval)
 	}
 }

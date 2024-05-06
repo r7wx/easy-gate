@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"regexp"
 )
 
@@ -38,6 +39,17 @@ func validateConfig(cfg *Config) error {
 	}
 	if !isHexColor(cfg.Theme.Foreground) {
 		return fmt.Errorf("invalid foreground color")
+	}
+
+	if cfg.Theme.CustomCSS != "" {
+		fi, err := os.Stat(cfg.Theme.CustomCSS)
+		if err != nil {
+			return fmt.Errorf("invalid custom CSS file path")
+		}
+
+		if fi.IsDir() {
+			return fmt.Errorf("custom CSS path is a directory")
+		}
 	}
 
 	for _, service := range cfg.Services {

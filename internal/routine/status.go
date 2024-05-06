@@ -11,6 +11,8 @@ import (
 // Status - Status struct
 type Status struct {
 	Theme       theme.Theme
+	CSSLastEdit int64
+	CSSData     string
 	Addr        string
 	Title       string
 	CertFile    string
@@ -25,6 +27,8 @@ type Status struct {
 func (r *Routine) updateStatus(cfg *config.Config) *Status {
 	return &Status{
 		Theme:       cfg.Theme,
+		CSSLastEdit: r.Status.CSSLastEdit,
+		CSSData:     r.Status.CSSData,
 		Addr:        cfg.Addr,
 		Title:       cfg.Title,
 		CertFile:    cfg.CertFile,

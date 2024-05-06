@@ -1,21 +1,16 @@
 package engine
 
 import (
-	"embed"
+	htmltemplate "html/template"
 	"log"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html/v2"
+	"github.com/r7wx/easy-gate/internal/engine/static"
+	"github.com/r7wx/easy-gate/internal/engine/template"
 	"github.com/r7wx/easy-gate/internal/routine"
-)
-
-var (
-	//go:embed template/*
-	templateFS embed.FS
-	//go:embed static/*
-	staticFS embed.FS
 )
 
 // Engine - Easy Gate engine struct
@@ -32,7 +27,8 @@ func NewEngine(routine *routine.Routine) *Engine {
 func (e Engine) Serve() {
 	status, _ := e.Routine.GetStatus()
 
-	htmlEngine := html.NewFileSystem(http.FS(templateFS), ".html")
+	htmlEngine := html.NewFileSystem(http.FS(template.TemplateFS), ".html")
+
 	app := fiber.New(fiber.Config{
 		Views:                 htmlEngine,
 		DisableStartupMessage: true,
@@ -44,7 +40,7 @@ func (e Engine) Serve() {
 	}))
 
 	app.Get("/favicon.ico", func(c *fiber.Ctx) error {
-		data, err := staticFS.ReadFile("static/favicon.ico")
+		data, err := static.StaticFS.ReadFile("public/favicon.ico")
 		if err != nil {
 			return c.SendStatus(http.StatusNotFound)
 		}
@@ -54,13 +50,32 @@ func (e Engine) Serve() {
 	})
 
 	app.Get("/roboto-regular.ttf", func(c *fiber.Ctx) error {
-		data, err := staticFS.ReadFile("static/font/roboto-regular.ttf")
+		data, err := static.StaticFS.ReadFile("public/font/roboto-regular.ttf")
 		if err != nil {
 			return c.SendStatus(http.StatusNotFound)
 		}
 
 		c.Set("Content-type", "font/ttf")
 		return c.Send(data)
+	})
+
+	app.Get("/style.css", func(c *fiber.Ctx) error {
+		status, err := e.Routine.GetStatus()
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			return c.SendString(err.Error())
+		}
+
+		tmpl, err := htmltemplate.New("").Parse(status.CSSData)
+		if err != nil {
+			return c.SendStatus(http.StatusInternalServerError)
+		}
+
+		c.Set("Content-type", "text/css")
+		return tmpl.Execute(c, fiber.Map{
+			"Background": status.Theme.Background,
+			"Foreground": status.Theme.Foreground,
+		})
 	})
 
 	app.Get("/", func(c *fiber.Ctx) error {
@@ -73,11 +88,9 @@ func (e Engine) Serve() {
 		addr := getAddr(status, c)
 		data := getData(status, addr)
 
-		return c.Render("template/index", fiber.Map{
-			"Title":      status.Title,
-			"Background": status.Theme.Background,
-			"Foreground": status.Theme.Foreground,
-			"Data":       data,
+		return c.Render("views/index", fiber.Map{
+			"Title": status.Title,
+			"Data":  data,
 		})
 	})
 

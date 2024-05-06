@@ -221,6 +221,38 @@ theme:
   foreground: "#000000"
 ```
 
+<p align="justify">
+It is also possible to use a custom css file by providing the path to the file:
+</p>
+
+#### JSON
+
+```json
+"theme": {
+  "custom_css": "/path/to/custom.css"
+}
+```
+
+#### YAML
+
+```yml
+theme:
+  custom_css: "/path/to/custom.css"
+```
+
+
+<p align="justify">
+Keep in mind, even if you provide a custom css file, the background and foreground colors will still be applied as long as you provide the correct templating keys in your custom css file like so:
+</p>
+
+```css
+body {
+  background: {{.Background}};
+  color: {{.Foreground}};
+}
+```
+
+
 ### Groups
 
 <p align="justify">

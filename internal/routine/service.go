@@ -37,8 +37,7 @@ func (r *Routine) getServices(cfg *config.Config) []service.Service {
 
 	services := []service.Service{}
 	for index := range cfg.Services {
-		services = append(services,
-			processedServices[index])
+		services = append(services, processedServices[index])
 	}
 
 	return services
