@@ -240,18 +240,16 @@ theme:
   custom_css: "/path/to/custom.css"
 ```
 
-
 <p align="justify">
 Keep in mind, even if you provide a custom css file, the background and foreground colors will still be applied as long as you provide the correct templating keys in your custom css file like so:
 </p>
 
-```css
+```
 body {
   background: {{.Background}};
   color: {{.Foreground}};
 }
 ```
-
 
 ### Groups
 
@@ -370,3 +368,4 @@ A note entry is used to define a simple text note which has a title and a conten
 
 - **EASY_GATE_CONFIG_PATH:** Easy Gate configuration file path can be provided by this environment variable. The value will have precedence over the configuration file path provided in the command line.
 - **EASY_GATE_CONFIG:** Insted of providing a configuration file, it is possible to provide the entire configuration as a JSON or YAML string in this environment variable. The content of this variable will have precedence over the configuration file.
+- **EASY_GATE_ROOT_PATH:** This environment variable lets you specify a custom root directory for the Easy Gate application.

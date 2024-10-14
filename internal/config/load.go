@@ -7,6 +7,8 @@ import (
 	"os"
 )
 
+const cfgEnv = "EASY_GATE_CONFIG"
+
 // Load - Load configuration from environment or file
 func Load(filePath string) (*Config, string, error) {
 	envCfg := os.Getenv(cfgEnv)

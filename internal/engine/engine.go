@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html/v2"
+	"github.com/r7wx/easy-gate/internal/config"
 	"github.com/r7wx/easy-gate/internal/engine/static"
 	"github.com/r7wx/easy-gate/internal/engine/template"
 	"github.com/r7wx/easy-gate/internal/routine"
@@ -39,7 +40,9 @@ func (e Engine) Serve() {
 		TimeFormat: "2006/01/02 15:04:05",
 	}))
 
-	app.Get("/favicon.ico", func(c *fiber.Ctx) error {
+	rootPath := config.GetRootPath()
+
+	app.Get(config.JoinUrlPath(rootPath, "favicon.ico"), func(c *fiber.Ctx) error {
 		data, err := static.StaticFS.ReadFile("public/favicon.ico")
 		if err != nil {
 			return c.SendStatus(http.StatusNotFound)
@@ -49,7 +52,7 @@ func (e Engine) Serve() {
 		return c.Send(data)
 	})
 
-	app.Get("/roboto-regular.ttf", func(c *fiber.Ctx) error {
+	app.Get(config.JoinUrlPath(rootPath, "roboto-regular.ttf"), func(c *fiber.Ctx) error {
 		data, err := static.StaticFS.ReadFile("public/font/roboto-regular.ttf")
 		if err != nil {
 			return c.SendStatus(http.StatusNotFound)
@@ -59,7 +62,7 @@ func (e Engine) Serve() {
 		return c.Send(data)
 	})
 
-	app.Get("/style.css", func(c *fiber.Ctx) error {
+	app.Get(config.JoinUrlPath(rootPath, "style.css"), func(c *fiber.Ctx) error {
 		status, err := e.Routine.GetStatus()
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
@@ -75,10 +78,11 @@ func (e Engine) Serve() {
 		return tmpl.Execute(c, fiber.Map{
 			"Background": status.Theme.Background,
 			"Foreground": status.Theme.Foreground,
+			"FontURL":    config.JoinUrlPath(rootPath, "roboto-regular.ttf"),
 		})
 	})
 
-	app.Get("/", func(c *fiber.Ctx) error {
+	app.Get(rootPath, func(c *fiber.Ctx) error {
 		status, err := e.Routine.GetStatus()
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
@@ -89,13 +93,15 @@ func (e Engine) Serve() {
 		data := getData(status, addr)
 
 		return c.Render("views/index", fiber.Map{
-			"Title": status.Title,
-			"Data":  data,
+			"Title":       status.Title,
+			"Data":        data,
+			"FaviconPath": config.JoinUrlPath(rootPath, "favicon.ico"),
+			"StylePath":   config.JoinUrlPath(rootPath, "style.css"),
 		})
 	})
 
 	app.Use(func(c *fiber.Ctx) error {
-		return c.Redirect("/")
+		return c.Redirect(rootPath)
 	})
 
 	if status.UseTLS {
