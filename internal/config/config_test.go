@@ -135,6 +135,28 @@ func TestGetPath(t *testing.T) {
 	}
 }
 
+func TestRootPath(t *testing.T) {
+	os.Setenv(rootPathEnv, "")
+	path := GetRootPath()
+	if path != "/" {
+		t.Fatal()
+	}
+
+	os.Setenv(rootPathEnv, "aa")
+	path = GetRootPath()
+	if path != "/aa" {
+		t.Fatal()
+	}
+
+	os.Setenv(rootPathEnv, "../../../abc")
+	path = GetRootPath()
+	if path != "/abc" {
+		t.Fatal()
+	}
+
+	os.Unsetenv(rootPathEnv)
+}
+
 func TestValidate(t *testing.T) {
 	cfg := Config{}
 	err := validateConfig(&cfg)
